@@ -19,8 +19,8 @@ module.exports = {
         allowNull: true,
         type: Sequelize.INTEGER
       },
-      verres_id: {
-        allowNull: true,
+      verre_id: {
+        allowNull: false,
         type: Sequelize.UUID,
         references: {
           model: "verres",
