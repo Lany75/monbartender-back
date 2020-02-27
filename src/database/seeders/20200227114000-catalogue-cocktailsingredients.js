@@ -2,9 +2,12 @@ const catalogueCocktailsIngredients = require("../seeds/20200227114100-catalogue
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert("cocktailsingredients", catalogueCocktailsIngredients);
+    return queryInterface.bulkInsert(
+      "cocktails_ingredients",
+      catalogueCocktailsIngredients
+    );
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("cocktailsingredients", null, {});
+    return queryInterface.bulkDelete("cocktails_ingredients", null, {});
   }
 };

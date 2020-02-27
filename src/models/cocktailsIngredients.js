@@ -1,23 +1,31 @@
 module.exports = (sequelize, DataTypes) => {
-  const Ingredient = sequelize.define(
-    "Ingredient",
+  const cocktailIngredient = sequelize.define(
+    "CocktailIngredient",
     {
-      id: {
+      cocktailId: {
+        field: "id",
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
+        references: {
+          model: "cocktails",
+          key: "id"
+        },
         validate: {
           isUUID: 4,
           notNull: true
         }
       },
-      nom: {
+      ingredientId: {
+        field: "id",
         allowNull: false,
-        type: DataTypes.STRING,
-        validate: {
-          notNull: true,
-          len: [2, 30]
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        references: {
+          model: "ingredients",
+          key: "id"
         }
       },
       createdAt: {
@@ -42,16 +50,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      tableName: "ingredients"
+      tableName: "cocktails_ingredients"
     }
   );
 
-  Ingredient.associate = models => {
-    Ingredient.belongsToMany(models.Cocktail, {
-      through: "cocktailsingredients",
-      foreignKey: "id"
-    });
-  };
-
-  return Ingredient;
+  return cocktailIngredient;
 };

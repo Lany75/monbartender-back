@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("cocktailsingredients", {
+    return queryInterface.createTable("cocktails_ingredients", {
       cocktail_id: {
         allowNull: false,
         primaryKey: true,
@@ -34,6 +34,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("cocktailsingredients");
+    return queryInterface.dropTable("cocktails_ingredients");
   }
 };

@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4,
         validate: {
           isUUID: 4,
           notNull: true
@@ -75,7 +76,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     });
     Cocktail.belongsToMany(models.Ingredient, {
-      through: "cocktailsingredients"
+      through: "cocktailsingredients",
+      foreignKey: "id"
     });
   };
 
