@@ -17,12 +17,13 @@ const cocktailController = {
         {
           model: Verre,
           attributes: ["nom"]
-        },
+        }
+        /*,
         {
           model: Ingredient,
           attributes: ["nom"],
           through: { attributes: [] }
-        }
+        }*/
       ]
     });
 

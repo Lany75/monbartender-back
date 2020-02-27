@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         references: {
           model: "ingredients",
           key: "id"
+        },
+        validate: {
+          isUUID: 4,
+          notNull: true
         }
       },
       createdAt: {

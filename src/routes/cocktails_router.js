@@ -3,7 +3,7 @@ const express = require("express");
 const {
   recupererLesCocktails
 } = require("../controllers/cocktails_controller");
-const { recupererUneRecette } = require("../controllers/cocktails_controller");
+const { recupererUnCocktail } = require("../controllers/cocktails_controller");
 
 const cocktailsRouter = express.Router();
 

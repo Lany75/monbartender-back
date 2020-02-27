@@ -71,13 +71,13 @@ module.exports = (sequelize, DataTypes) => {
     Cocktail.belongsTo(models.Verre, {
       onDelete: "CASCADE",
       foreignKey: {
-        name: "verreId",
+        name: "verre_id",
         allowNull: false
       }
     });
     Cocktail.belongsToMany(models.Ingredient, {
-      through: "cocktailsingredients",
-      foreignKey: "id"
+      through: "cocktails_ingredients",
+      foreignKey: "cocktail_id"
     });
   };
 

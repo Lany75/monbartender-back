@@ -32,7 +32,7 @@ module.exports = [
     photo: "/api/images/margarita.jpg",
     verre_id: "c69758d1-b4ad-4038-b157-205fd12d9ace",
     etapes_preparation:
-      "1. Givrer le bord d'un verre à cocktail. /n 2. Verser la tequila, le cointreau et le jus de citron vert dans un shaker. /n 3. Ajouter les glacons, et secouez vigoureusement pendant environ 10 secondes. /n 4. Versez dans le verre. /n 5. Décorer d'une rondelle de citron",
+      "1. Givrer le bord d'un verre à cocktail. 2. Verser la tequila, le cointreau et le jus de citron vert dans un shaker. /n 3. Ajouter les glacons, et secouez vigoureusement pendant environ 10 secondes. /n 4. Versez dans le verre. /n 5. Décorer d'une rondelle de citron",
     created_at: now,
     updated_at: now
   }

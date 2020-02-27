@@ -48,8 +48,8 @@ module.exports = (sequelize, DataTypes) => {
 
   Ingredient.associate = models => {
     Ingredient.belongsToMany(models.Cocktail, {
-      through: "cocktailsingredients",
-      foreignKey: "id"
+      through: "cocktails_ingredients",
+      foreignKey: "ingredient_id"
     });
   };
 
