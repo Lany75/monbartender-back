@@ -4,7 +4,7 @@ const cocktailController = {
   recupererLesCocktails: async () => {
     const cocktails = await Cocktail.findAll({
       order: [["nom", "ASC"]],
-      attributes: ["id", "nom", "photo", "etapesPreparation"],
+      attributes: ["nom", "photo"],
       raw: true
     });
     return cocktails;

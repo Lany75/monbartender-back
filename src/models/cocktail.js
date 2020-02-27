@@ -74,6 +74,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       }
     });
+    Cocktail.belongsToMany(models.Ingredient, {
+      through: "cocktailsingredients"
+    });
   };
 
   return Cocktail;

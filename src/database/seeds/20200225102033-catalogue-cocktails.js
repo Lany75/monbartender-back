@@ -7,7 +7,7 @@ const now = moment()
 
 module.exports = [
   {
-    id: uuid(),
+    id: "7f73cf2f-7ed7-4be4-8640-69dbbc1b2927",
     nom: "Mojito",
     photo: "/api/images/mojito.jpg",
     verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
@@ -17,7 +17,7 @@ module.exports = [
     updated_at: now
   },
   {
-    id: uuid(),
+    id: "b258592b-57ac-4bda-8e07-1d2697f20770",
     nom: "Bloody Mary",
     photo: "/api/images/bloodyMary.jpg",
     verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
@@ -27,7 +27,7 @@ module.exports = [
     updated_at: now
   },
   {
-    id: uuid(),
+    id: "7e124810-e9a7-4724-ad48-c6a24bfaa1a5",
     nom: "Margarita",
     photo: "/api/images/margarita.jpg",
     verre_id: "c69758d1-b4ad-4038-b157-205fd12d9ace",
