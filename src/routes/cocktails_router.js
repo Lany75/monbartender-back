@@ -15,6 +15,15 @@ cocktailsRouter.get("/", async (request, response) => {
   response.json(cocktails);
 });
 
+cocktailsRouter.get("/aleatoire", async (request, response) => {
+  console.log("on est sur la route /aleatoire");
+
+  const cocktails = await recupererLesCocktailsDuMoment();
+
+  response.status(200);
+  response.json(cocktails);
+});
+
 cocktailsRouter.get("/:id", async (request, response) => {
   const { id } = request.params;
   const cocktail = await recupererUnCocktail(id);
@@ -22,5 +31,7 @@ cocktailsRouter.get("/:id", async (request, response) => {
   response.status(200);
   response.json(cocktail);
 });
+
+
 
 module.exports = cocktailsRouter;
