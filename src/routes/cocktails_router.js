@@ -1,9 +1,10 @@
 const express = require("express");
 
 const {
-  recupererLesCocktails
+  recupererLesCocktails,
+  recupererUnCocktail,
+  recupererLesCocktailsDuMoment
 } = require("../controllers/cocktails_controller");
-const { recupererUnCocktail } = require("../controllers/cocktails_controller");
 
 const cocktailsRouter = express.Router();
 
