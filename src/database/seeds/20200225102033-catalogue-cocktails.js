@@ -35,5 +35,15 @@ module.exports = [
       "1. Givrer le bord d'un verre à cocktail. 2. Verser la tequila, le cointreau et le jus de citron vert dans un shaker. /n 3. Ajouter les glacons, et secouez vigoureusement pendant environ 10 secondes. /n 4. Versez dans le verre. /n 5. Décorer d'une rondelle de citron",
     created_at: now,
     updated_at: now
+  },
+  {
+    id: "f3714a47-8359-4552-850c-277b3b56fdd0",
+    nom: "Virgin Mojito",
+    photo: "/api/images/mojito.jpg",
+    verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
+    etapes_preparation:
+      "1. Recette réalisée directement dans un verre de type \"Tumbler\". 2. Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'emsemble. 3. Ajouter les glacons pilés. 4. Compléter avec de l'eau gazeuse. 5. Décorer d'une feuille de menthe et servir avec une paille.",
+    created_at: now,
+    updated_at: now
   }
 ];

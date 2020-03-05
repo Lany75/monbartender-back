@@ -42,7 +42,9 @@ const cocktailController = {
     console.log("chiffre aleatoire : ", randomInt);
 
     return cocktailsMoment[randomInt];
-  }
+  },
+
+  
 };
 
 module.exports = cocktailController;
