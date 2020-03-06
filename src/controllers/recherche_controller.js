@@ -6,7 +6,14 @@ const rechercheController = {
   rechercherUnCocktailParSonNom: async nom => {
     console.log("nom", nom);
     const cocktail = await Cocktail.findAll({
-      where: { nom: { [Op.like]: "%" + nom + "%" } },
+      where: {
+        nom: Sequelize.where(
+          Sequelize.fn("LOWER", Sequelize.col("nom")),
+          "LIKE",
+          "%" + nom + "%"
+        )
+      },
+      //where: { nom: { [Op.like]: "%" + nom + "%" } },
       attributes: ["id", "nom", "photo"]
     });
     return cocktail;

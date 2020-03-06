@@ -12,6 +12,6 @@ server.use("/api", cors());
 
 server.use("/api", routes);
 
-server.listen(8080, () => {
-  console.log("Server lancé sur le port 8080");
+server.listen(8000, () => {
+  console.log("Server lancé sur le port 8000");
 });
