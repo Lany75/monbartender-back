@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Cocktail = sequelize.define(
-    "Cocktail",
+  const Bar = sequelize.define(
+    "Bar",
     {
       id: {
         allowNull: false,
@@ -12,34 +12,14 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true
         }
       },
-      nom: {
+      personneId: {
+        field: "personne_id",
         allowNull: false,
         type: DataTypes.STRING,
         validate: {
           notNull: true,
           len: [2, 50]
         }
-      },
-      photo: {
-        allowNull: true,
-        type: DataTypes.STRING,
-        validate: {
-          len: [0, 150]
-        }
-      },
-      note: {
-        allowNull: true,
-        type: DataTypes.INTEGER
-      },
-      verreId: {
-        field: "verre_id",
-        allowNull: false,
-        type: DataTypes.UUID
-      },
-      etapesPreparation: {
-        field: "etapes_preparation",
-        allowNull: false,
-        type: DataTypes.TEXT
       },
       createdAt: {
         field: "created_at",
@@ -63,23 +43,16 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      tableName: "cocktails"
+      tableName: "bars"
     }
   );
 
-  Cocktail.associate = models => {
-    Cocktail.belongsTo(models.Verre, {
-      onDelete: "CASCADE",
-      foreignKey: {
-        name: "verre_id",
-        allowNull: false
-      }
-    });
-    Cocktail.belongsToMany(models.Ingredient, {
-      through: "cocktails_ingredients",
-      foreignKey: "cocktail_id"
+  Bar.associate = models => {
+    Bar.belongsToMany(models.Ingredient, {
+      through: "bars_ingredients",
+      foreignKey: "bar_id"
     });
   };
 
-  return Cocktail;
+  return Bar;
 };

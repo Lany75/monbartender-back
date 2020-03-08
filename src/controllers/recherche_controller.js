@@ -4,7 +4,6 @@ const { Cocktail } = require("../models/");
 
 const rechercheController = {
   rechercherUnCocktailParSonNom: async nom => {
-    console.log("nom", nom);
     const cocktail = await Cocktail.findAll({
       where: {
         nom: Sequelize.where(

@@ -1,27 +1,39 @@
 module.exports = (sequelize, DataTypes) => {
-  const Ingredient = sequelize.define(
-    "Ingredient",
+  const barIngredient = sequelize.define(
+    "BarIngredient",
     {
-      id: {
+      barId: {
+        field: "id",
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
+        references: {
+          model: "bars",
+          key: "id"
+        },
         validate: {
           isUUID: 4,
           notNull: true
         }
       },
-      nom: {
+      ingredientId: {
+        field: "id",
         allowNull: false,
-        type: DataTypes.STRING,
+        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        references: {
+          model: "ingredients",
+          key: "id"
+        },
         validate: {
-          notNull: true,
-          len: [2, 30]
+          isUUID: 4,
+          notNull: true
         }
       },
       createdAt: {
-        field: "created_at",
+        field: "createdAt",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -31,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       updatedAt: {
-        field: "updated_at",
+        field: "updatedAt",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -42,20 +54,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      tableName: "ingredients"
+      tableName: "bars_ingredients"
     }
   );
-
-  Ingredient.associate = models => {
-    Ingredient.belongsToMany(models.Cocktail, {
-      through: "cocktails_ingredients",
-      foreignKey: "ingredient_id"
-    });
-    Ingredient.belongsToMany(models.Bar, {
-      through: "bars_ingredients",
-      foreignKey: "ingredient_id"
-    });
-  };
-
-  return Ingredient;
+  return barIngredient;
 };
