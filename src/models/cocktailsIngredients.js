@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     "CocktailIngredient",
     {
       cocktailId: {
-        field: "id",
+        field: "cocktail_id",
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       ingredientId: {
-        field: "id",
+        field: "ingredient_id",
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,

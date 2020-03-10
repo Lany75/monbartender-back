@@ -1,4 +1,5 @@
-const { Bar, Ingredient } = require("../models");
+const { Bar, Ingredient, BarIngredient } = require("../models");
+const uuid = require("uuid");
 
 const barController = {
   recupererLesBars: async () => {
@@ -13,7 +14,7 @@ const barController = {
     const bar = await Bar.findAll({
       where: { personne_id: mail },
       //   const bar = await Bar.findByPk(id, {
-      attributes: ["personne_id"],
+      attributes: ["id", "personne_id"],
       include: [
         {
           model: Ingredient,
@@ -22,14 +23,35 @@ const barController = {
         }
       ]
     });
+    console.log("bar", bar);
     return bar;
   },
 
-  ajouterUnIngredient: async (request, response) => {
+  recupererIdBar: async mail => {
+    const barId = await Bar.findAll({
+      where: { personne_id: mail },
+      attributes: ["id"]
+    });
+    //console.log("barId : ", barId);
+    return barId;
+  },
+
+  creerUnBar: async mail => {
+    await Bar.create({
+      id: uuid(),
+      personneId: mail
+    });
+  },
+
+  ajouterUnIngredient: async (ingredientId, userId) => {
     console.log("on veut ajouter un ingredient");
-    //console.log("request.body.ingredient", request.body.ingredient);
-    const nouvelIngredient = [{ nom: "toto" }];
-    return nouvelIngredient;
+    console.log("userId : ", userId);
+    console.log("ingredientId : ", ingredientId);
+
+    await BarIngredient.create({
+      barId: userId,
+      ingredientId: ingredientId
+    });
   },
 
   supprimerUnIngredientDuBar: async name => {

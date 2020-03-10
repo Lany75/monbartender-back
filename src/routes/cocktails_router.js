@@ -20,8 +20,6 @@ cocktailsRouter.get("/", async (request, response) => {
 });
 
 cocktailsRouter.get("/aleatoire", async (request, response) => {
-  console.log("on est sur la route /aleatoire");
-
   const cocktails = await recupererLesCocktailsDuMoment();
 
   response.status(200);

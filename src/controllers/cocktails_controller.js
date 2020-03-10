@@ -27,6 +27,8 @@ const cocktailController = {
         }
       ]
     });
+    //if !cocktail
+    // throw new NotFoundError("court", "long")
     return cocktail;
   },
 
@@ -36,15 +38,11 @@ const cocktailController = {
       attributes: ["id", "nom", "photo"],
       raw: true
     });
-    console.log(cocktailsMoment.length);
 
     const randomInt = getRandomInteger(cocktailsMoment.length);
-    console.log("chiffre aleatoire : ", randomInt);
 
     return cocktailsMoment[randomInt];
-  },
-
-  
+  }
 };
 
 module.exports = cocktailController;

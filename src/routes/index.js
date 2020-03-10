@@ -6,6 +6,6 @@ const barsRouter = require("./bars_router");
 const mainRouter = express.Router();
 
 mainRouter.use("/cocktails", cocktailsRouter);
-mainRouter.use("/bar", barsRouter);
+mainRouter.use("/bars", barsRouter);
 
 module.exports = mainRouter;
