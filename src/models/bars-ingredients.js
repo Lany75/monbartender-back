@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         field: "bar_id",
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.UUID,
+        type: DataTypes.UUIDV4,
         defaultValue: DataTypes.UUIDV4,
         references: {
           model: "bars",
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         field: "ingredient_id",
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.UUID,
+        type: DataTypes.UUIDV4,
         defaultValue: DataTypes.UUIDV4,
         references: {
           model: "ingredients",

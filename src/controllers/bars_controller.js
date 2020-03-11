@@ -23,7 +23,7 @@ const barController = {
         }
       ]
     });
-    console.log("bar", bar);
+    //console.log("bar", bar);
     return bar;
   },
 

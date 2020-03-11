@@ -12,7 +12,7 @@ const {
 
 const {
   recupererIdIngredient
-} = require("../controllers/ingredient_controller");
+} = require("../controllers/ingredients_controller");
 
 const barsRouter = express.Router();
 
@@ -31,10 +31,10 @@ barsRouter.get("/", verifyToken, async (request, response) => {
   //console.log("request.headers", request.headers);
   //console.log("request.body", request.body);
   const mail = request.body.email;
-  console.log("mail : ", mail);
+  //console.log("mail : ", mail);
 
   let bar = await recupererIdBar(mail);
-  console.log("bar : ", bar);
+  //console.log("bar : ", bar);
 
   if (bar.length === 0) {
     console.log("creation d'un bar");
@@ -47,7 +47,7 @@ barsRouter.get("/", verifyToken, async (request, response) => {
   response.json(bar);
 });
 
-barsRouter.post("/", verifyToken, async (request, response) => {
+/*barsRouter.post("/", verifyToken, async (request, response) => {
   console.log("route /bar/connexion");
   console.log("request.body", request.body);
 
@@ -62,7 +62,7 @@ barsRouter.post("/", verifyToken, async (request, response) => {
 
   response.status(201);
   response.json(mail);
-});
+});*/
 
 /*barsRouter.post("/", verifyToken, async (request, response) => {
   console.log("route ajouterUnIngredient");
