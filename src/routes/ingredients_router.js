@@ -22,59 +22,38 @@ ingredientRouter.get("/", async (request, response) => {
   response.json(ingredients);
 });
 
-/*ingredientRouter.get("/ingredient/:id", async (request, response) => {
-{id} = request.params;
-  const ingredient = await recupererUnIngredient(id);
-});*/
-
 ingredientRouter.post("/", verifyToken, async (request, response) => {
-  console.log("on est sur la route POST ingredient/");
-  /*console.log(
-    "request.headers.nouvelIngredient : ",
-    request.headers.nouvelingredient
-  );*/
-  //console.log("request.body : ", request.body);
   const mail = request.body.email;
   const nomNouvelIngredient = request.headers.nouvelingredient;
-  //console.log("nouvelIngredient : ", nomNouvelIngredient);
 
-  console.log("---------------------------------------------------------");
   const idIngredient = await recupererIdIngredient(nomNouvelIngredient);
-  console.log("idIngredient : ", idIngredient.dataValues.id);
+
   const idBar = await recupererIdBar(mail);
-  console.log("idBar", idBar.dataValues.id);
-  console.log("---------------------------------------------------------");
 
-  ajouterUnIngredientAuBar(idIngredient.dataValues.id, idBar.dataValues.id);
+  await ajouterUnIngredientAuBar(
+    idIngredient.dataValues.id,
+    idBar.dataValues.id
+  );
 
-  const bars = await recupererUnBar(mail);
-  //console.log("bars : ", bars);
+  const bar = await recupererUnBar(mail);
 
-  //console.log("idIngredient : ", idIngredient);
-
-  //console.log("request.body.name : ", request.body.name);
-  response.status(201).json(bars);
+  response.status(201).json(bar);
 });
 
 ingredientRouter.delete("/", verifyToken, async (request, response) => {
-  console.log("on est sur la route DELETE ingredient");
-
   const mail = request.body.email;
   const nomIngredientSupprime = request.headers.ingredientsupprime;
-  console.log("nomIngredientSupprime : ", nomIngredientSupprime);
 
   const idIngredient = await recupererIdIngredient(nomIngredientSupprime);
-  console.log("idIngredient : ", idIngredient.dataValues.id);
   const idBar = await recupererIdBar(mail);
-  console.log("idBar : ", idBar.dataValues.id);
 
   await supprimerUnIngredientDuBar(
     idIngredient.dataValues.id,
     idBar.dataValues.id
   );
 
-  const bars = await recupererUnBar(mail);
-  response.status(201).json(bars);
+  const bar = await recupererUnBar(mail);
+  response.status(201).json(bar);
 });
 
 module.exports = ingredientRouter;

@@ -13,7 +13,6 @@ const barController = {
   recupererUnBar: async mail => {
     const bar = await Bar.findOne({
       where: { personne_id: mail },
-      //   const bar = await Bar.findByPk(id, {
       attributes: ["id", "personne_id"],
       include: [
         {
@@ -23,7 +22,6 @@ const barController = {
         }
       ]
     });
-    //console.log("bar", bar);
     return bar;
   },
 
@@ -32,7 +30,6 @@ const barController = {
       where: { personne_id: mail },
       attributes: ["id"]
     });
-    //console.log("barId : ", barId);
     return barId;
   },
 
@@ -44,10 +41,6 @@ const barController = {
   },
 
   ajouterUnIngredientAuBar: async (ingredientId, userId) => {
-    console.log("on veut ajouter un ingredient");
-    console.log("userId : ", userId);
-    console.log("ingredientId : ", ingredientId);
-
     await BarIngredient.create({
       barId: userId,
       ingredientId: ingredientId
@@ -55,8 +48,6 @@ const barController = {
   },
 
   supprimerUnIngredientDuBar: async (ingredientId, userId) => {
-    console.log("on supprimer l'ingredient", ingredientId);
-
     await BarIngredient.destroy({
       where: {
         bar_id: userId,
