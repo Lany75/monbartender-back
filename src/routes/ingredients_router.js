@@ -13,12 +13,14 @@ const {
   supprimerUnIngredientDuBar
 } = require("../controllers/bars_controller");
 
+const { OK, CREATED } = require("../helpers/status_code");
+
 const ingredientRouter = express.Router();
 
 ingredientRouter.get("/", async (request, response) => {
   const ingredients = await recupererLesIngredients();
 
-  response.status(200);
+  response.status(OK);
   response.json(ingredients);
 });
 
@@ -37,7 +39,7 @@ ingredientRouter.post("/", verifyToken, async (request, response) => {
 
   const bar = await recupererUnBar(mail);
 
-  response.status(201).json(bar);
+  response.status(CREATED).json(bar);
 });
 
 ingredientRouter.delete("/", verifyToken, async (request, response) => {
@@ -53,7 +55,7 @@ ingredientRouter.delete("/", verifyToken, async (request, response) => {
   );
 
   const bar = await recupererUnBar(mail);
-  response.status(201).json(bar);
+  response.status(OK).json(bar);
 });
 
 module.exports = ingredientRouter;

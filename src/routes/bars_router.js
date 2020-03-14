@@ -14,6 +14,8 @@ const {
   recupererIdIngredient
 } = require("../controllers/ingredients_controller");
 
+const { OK } = require("../helpers/status_code");
+
 const barsRouter = express.Router();
 
 /*barsRouter.get("/", async (request, response) => {
@@ -43,7 +45,7 @@ barsRouter.get("/", verifyToken, async (request, response) => {
   }
   bar = await recupererUnBar(mail);
 
-  response.status(200);
+  response.status(OK);
   response.json(bar);
 });
 

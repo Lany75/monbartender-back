@@ -1,4 +1,7 @@
 const { Cocktail, Verre, Ingredient } = require("../models");
+require("express-async-errors");
+
+const NotFoundError = require("../helpers/errors/404_not_found");
 
 const getRandomInteger = require("../utils/getRandomInteger");
 
@@ -9,6 +12,9 @@ const cocktailController = {
       attributes: ["id", "nom", "photo"],
       raw: true
     });
+
+    //  if (!cocktails) throw new NotFoundError("court", "long");
+
     return cocktails;
   },
 
@@ -27,8 +33,9 @@ const cocktailController = {
         }
       ]
     });
-    //if !cocktail
-    // throw new NotFoundError("court", "long")
+
+    // if (!cocktail) throw new NotFoundError("court", "long");
+
     return cocktail;
   },
 
