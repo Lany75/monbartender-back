@@ -49,6 +49,11 @@ cocktailsRouter.get("/rechercher", async (request, response) => {
 
   const cocktail = await rechercherUnCocktailParSonNom(nom);
 
+  if (!cocktail) {
+    response.status(NOT_FOUND);
+    response.json("Le cocktail n'a pas été trouvé");
+  }
+
   response.status(OK);
   response.json(cocktail);
 });
