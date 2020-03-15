@@ -33,12 +33,12 @@ barsRouter.get("/", verifyToken, async (request, response) => {
   //console.log("request.headers", request.headers);
   //console.log("request.body", request.body);
   const mail = request.body.email;
-  //console.log("mail : ", mail);
+  // console.log("mail : ", mail);
 
   let bar = await recupererIdBar(mail);
-  //console.log("bar : ", bar);
+  console.log("bar : ", bar);
 
-  if (bar.length === 0) {
+  if (!bar || bar.length === 0) {
     console.log("creation d'un bar");
 
     await creerUnBar(mail);

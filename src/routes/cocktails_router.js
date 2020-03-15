@@ -10,12 +10,20 @@ const {
   rechercherUnCocktailParSonNom
 } = require("../controllers/recherche_controller");
 
-const { OK } = require("../helpers/status_code");
+const { OK, NOT_FOUND } = require("../helpers/status_code");
 
 const cocktailsRouter = express.Router();
 
 cocktailsRouter.get("/", async (request, response) => {
+  console.log("route recuperer tous les cocktails");
+
   const cocktails = await recupererLesCocktails();
+
+  if (!cocktails) {
+    response
+      .status(NOT_FOUND)
+      .json("La liste de cocktail n'a pas été récupérée");
+  }
 
   response.status(OK);
   response.json(cocktails);
@@ -23,6 +31,12 @@ cocktailsRouter.get("/", async (request, response) => {
 
 cocktailsRouter.get("/aleatoire", async (request, response) => {
   const cocktails = await recupererLesCocktailsDuMoment();
+
+  if (!cocktails) {
+    response
+      .status(NOT_FOUND)
+      .json("La liste de cocktail n'a pas été récupérée");
+  }
 
   response.status(OK);
   response.json(cocktails);
@@ -42,6 +56,11 @@ cocktailsRouter.get("/rechercher", async (request, response) => {
 cocktailsRouter.get("/:id", async (request, response) => {
   const { id } = request.params;
   const cocktail = await recupererUnCocktail(id);
+
+  if (!cocktail) {
+    response.status(NOT_FOUND);
+    response.json("Le cocktail n'a pas été trouvé");
+  }
 
   response.status(OK);
   response.json(cocktail);

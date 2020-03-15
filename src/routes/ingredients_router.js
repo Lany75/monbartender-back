@@ -13,7 +13,7 @@ const {
   supprimerUnIngredientDuBar
 } = require("../controllers/bars_controller");
 
-const { OK, CREATED } = require("../helpers/status_code");
+const { OK, CREATED, BAD_REQUEST } = require("../helpers/status_code");
 
 const ingredientRouter = express.Router();
 
@@ -32,10 +32,15 @@ ingredientRouter.post("/", verifyToken, async (request, response) => {
 
   const idBar = await recupererIdBar(mail);
 
-  await ajouterUnIngredientAuBar(
-    idIngredient.dataValues.id,
-    idBar.dataValues.id
-  );
+  try {
+    await ajouterUnIngredientAuBar(
+      idIngredient.dataValues.id,
+      idBar.dataValues.id
+    );
+  } catch {
+    const bar = await recupererUnBar(mail);
+    response.status(BAD_REQUEST).json("L'ingrédient existe déja");
+  }
 
   const bar = await recupererUnBar(mail);
 
