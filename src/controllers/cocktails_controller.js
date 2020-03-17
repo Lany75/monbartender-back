@@ -6,7 +6,7 @@ const NotFoundError = require("../helpers/errors/404_not_found");
 const getRandomInteger = require("../utils/getRandomInteger");
 
 const cocktailController = {
-  // fonction recupererLesCocktails = retourne un tableau de tous les cocktails de la tablea cocktails (modèle Cocktail)
+  // fonction recupererLesCocktails = retourne un tableau de tous les cocktails de la table cocktails (modèle Cocktail)
   recupererLesCocktails: async () => {
     const cocktails = await Cocktail.findAll({
       order: [["nom", "ASC"]],

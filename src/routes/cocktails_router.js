@@ -67,10 +67,15 @@ cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
   let idIngredient1, cocktailsIngredient1;
   let idIngredient2, cocktailsIngredient2;
   let idIngredient3, cocktailsIngredient3;
+  const cocktails = [];
 
-  console.log("ingredient1 : ", ingredient1);
-  console.log("ingredient2 : ", ingredient2);
-  console.log("ingredient3 : ", ingredient3);
+  if (ingredient1 === "" && ingredient2 === "" && ingredient3 === "") {
+    response.status(NOT_FOUND).json("Pas d'ingrédient, pas de cocktails");
+  }
+
+  if (!ingredient1 && !ingredient2 && !ingredient3) {
+    response.status(NOT_FOUND).json("Pas d'ingrédient, pas de cocktails");
+  }
 
   if (ingredient1) {
     idIngredient1 = await recupererIdIngredient(ingredient1);
@@ -80,7 +85,6 @@ cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
       idIngredient1
     );
   }
-  //console.log("cocktailsIngredient1", cocktailsIngredient1);
 
   if (ingredient2) {
     idIngredient2 = await recupererIdIngredient(ingredient2);
@@ -90,7 +94,6 @@ cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
       idIngredient2
     );
   }
-  //console.log("cocktailsIngredient2", cocktailsIngredient2);
 
   if (ingredient3) {
     idIngredient3 = await recupererIdIngredient(ingredient3);
@@ -99,35 +102,39 @@ cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
     cocktailsIngredient3 = await rechercherCocktailsParIngredients(
       idIngredient3
     );
-    //console.log("cocktailsIngredient3", cocktailsIngredient3);
   }
 
   const tableauCocktails = [];
 
   if (idIngredient1) {
     cocktailsIngredient1.map(ci1 => {
-      //console.log("ci1.dataValues.cocktailId : ", ci1.dataValues.cocktailId);
       tableauCocktails.push(ci1.dataValues.cocktailId);
     });
   }
   if (idIngredient2) {
     cocktailsIngredient2.map(ci2 => {
-      //console.log("ci1.dataValues.cocktailId : ", ci2.dataValues.cocktailId);
       tableauCocktails.push(ci2.dataValues.cocktailId);
     });
   }
   if (idIngredient3) {
     cocktailsIngredient3.map(ci3 => {
-      //console.log("ci1.dataValues.cocktailId : ", ci3.dataValues.cocktailId);
       tableauCocktails.push(ci3.dataValues.cocktailId);
     });
   }
-  console.log("tableauCocktails :", tableauCocktails);
 
   const tableauCocktailsUnique = new Set(tableauCocktails);
-  const tabResultat = [...tableauCocktailsUnique];
+  const tabIdResultat = [...tableauCocktailsUnique];
 
-  response.status(OK).json(tabResultat);
+  for (let i = 0; i < tabIdResultat.length; i++) {
+    cocktailProvisoire = await recupererUnCocktail(tabIdResultat[i]);
+    cocktails.push({
+      id: tabIdResultat[i],
+      nom: cocktailProvisoire.dataValues.nom,
+      photo: cocktailProvisoire.dataValues.photo
+    });
+  }
+
+  response.status(OK).json(cocktails);
 });
 
 cocktailsRouter.get("/:id", async (request, response) => {

@@ -19,7 +19,8 @@ const ingredientController = {
     return ingredient;
   },*/
 
-  //fonction recupererIdIngredient = retourne l'id de l'ingrédient trouvé dans la table ingredients (modèle Ingredient) à partir de son nom
+  //fonction recupererIdIngredient = retourne l'id de l'ingrédient trouvé dans la table ingredients (modèle Ingredient)
+  // à partir de son nom
   recupererIdIngredient: async nomIngredient => {
     if (nomIngredient === "") return "0";
     const idIngredient = await Ingredient.findOne({
@@ -27,11 +28,13 @@ const ingredientController = {
       attributes: ["id"]
     });
     //console.log("idIngredient : ", idIngredient);
+    if (idIngredient === null) return "0";
 
     return idIngredient.dataValues.id;
   },
 
-  //fonction recupererNomIngredient = retourne le nom de l'ingrédient trouvé dans la table ingredients (modèle Ingredient) à partir de son id
+  //fonction recupererNomIngredient = retourne le nom de l'ingrédient trouvé dans la table ingredients (modèle Ingredient)
+  // à partir de son id
   recupererNomIngredient: async idIngredient => {
     const nomIngredient = await Ingredient.findOne({
       where: { id: idIngredient },
