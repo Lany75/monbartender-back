@@ -5,10 +5,13 @@ const {
   recupererUnCocktail,
   recupererLesCocktailsDuMoment
 } = require("../controllers/cocktails_controller");
-
 const {
-  rechercherUnCocktailParSonNom
+  rechercherUnCocktailParSonNom,
+  rechercherCocktailsParIngredients
 } = require("../controllers/recherche_controller");
+const {
+  recupererIdIngredient
+} = require("../controllers/ingredients_controller");
 
 const { OK, NOT_FOUND } = require("../helpers/status_code");
 
@@ -42,8 +45,8 @@ cocktailsRouter.get("/aleatoire", async (request, response) => {
   response.json(cocktails);
 });
 
-cocktailsRouter.get("/rechercher", async (request, response) => {
-  console.log("on est sur la route /rechercher");
+cocktailsRouter.get("/rechercherparnom", async (request, response) => {
+  console.log("on est sur la route /rechercherparnom");
   const { nom } = request.query;
   //console.log("nom :", nom);
 
@@ -56,6 +59,75 @@ cocktailsRouter.get("/rechercher", async (request, response) => {
 
   response.status(OK);
   response.json(cocktail);
+});
+
+cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
+  console.log("on est sur la route /rechercherparingredient");
+  const { ingredient1, ingredient2, ingredient3 } = request.query;
+  let idIngredient1, cocktailsIngredient1;
+  let idIngredient2, cocktailsIngredient2;
+  let idIngredient3, cocktailsIngredient3;
+
+  console.log("ingredient1 : ", ingredient1);
+  console.log("ingredient2 : ", ingredient2);
+  console.log("ingredient3 : ", ingredient3);
+
+  if (ingredient1) {
+    idIngredient1 = await recupererIdIngredient(ingredient1);
+    if (idIngredient1 === "0")
+      response.status(NOT_FOUND).json("l'ingredient1 n'existe pas");
+    cocktailsIngredient1 = await rechercherCocktailsParIngredients(
+      idIngredient1
+    );
+  }
+  //console.log("cocktailsIngredient1", cocktailsIngredient1);
+
+  if (ingredient2) {
+    idIngredient2 = await recupererIdIngredient(ingredient2);
+    if (idIngredient2 === "0")
+      response.status(NOT_FOUND).json("l'ingredient2 n'existe pas");
+    cocktailsIngredient2 = await rechercherCocktailsParIngredients(
+      idIngredient2
+    );
+  }
+  //console.log("cocktailsIngredient2", cocktailsIngredient2);
+
+  if (ingredient3) {
+    idIngredient3 = await recupererIdIngredient(ingredient3);
+    if (idIngredient3 === "0")
+      response.status(NOT_FOUND).json("l'ingredient2 n'existe pas");
+    cocktailsIngredient3 = await rechercherCocktailsParIngredients(
+      idIngredient3
+    );
+    //console.log("cocktailsIngredient3", cocktailsIngredient3);
+  }
+
+  const tableauCocktails = [];
+
+  if (idIngredient1) {
+    cocktailsIngredient1.map(ci1 => {
+      //console.log("ci1.dataValues.cocktailId : ", ci1.dataValues.cocktailId);
+      tableauCocktails.push(ci1.dataValues.cocktailId);
+    });
+  }
+  if (idIngredient2) {
+    cocktailsIngredient2.map(ci2 => {
+      //console.log("ci1.dataValues.cocktailId : ", ci2.dataValues.cocktailId);
+      tableauCocktails.push(ci2.dataValues.cocktailId);
+    });
+  }
+  if (idIngredient3) {
+    cocktailsIngredient3.map(ci3 => {
+      //console.log("ci1.dataValues.cocktailId : ", ci3.dataValues.cocktailId);
+      tableauCocktails.push(ci3.dataValues.cocktailId);
+    });
+  }
+  console.log("tableauCocktails :", tableauCocktails);
+
+  const tableauCocktailsUnique = new Set(tableauCocktails);
+  const tabResultat = [...tableauCocktailsUnique];
+
+  response.status(OK).json(tabResultat);
 });
 
 cocktailsRouter.get("/:id", async (request, response) => {

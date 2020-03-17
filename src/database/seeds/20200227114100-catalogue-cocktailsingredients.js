@@ -109,5 +109,37 @@ module.exports = [
     ingredient_id: "38925fb2-2267-47c7-b62e-e134e41a51c7",
     createdAt: now,
     updatedAt: now
+  },
+  {
+    //Virgin Mojito
+    cocktail_id: "f3714a47-8359-4552-850c-277b3b56fdd0",
+    //menthe
+    ingredient_id: "740367a4-dedf-4093-86d1-50eac62b2521",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    //Virgin Mojito
+    cocktail_id: "f3714a47-8359-4552-850c-277b3b56fdd0",
+    //sucre
+    ingredient_id: "c3fd98ec-cad4-49c9-9a74-63ca90489a0a",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    //Virgin Mojito
+    cocktail_id: "f3714a47-8359-4552-850c-277b3b56fdd0",
+    //jus de citron vert
+    ingredient_id: "38925fb2-2267-47c7-b62e-e134e41a51c7",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    //Virgin Mojito
+    cocktail_id: "f3714a47-8359-4552-850c-277b3b56fdd0",
+    //eau gazeuse
+    ingredient_id: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
+    createdAt: now,
+    updatedAt: now
   }
 ];

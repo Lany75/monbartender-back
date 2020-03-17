@@ -14,7 +14,7 @@ const {
   recupererIdIngredient
 } = require("../controllers/ingredients_controller");
 
-const { OK } = require("../helpers/status_code");
+const { OK, NOT_FOUND } = require("../helpers/status_code");
 
 const barsRouter = express.Router();
 
@@ -44,6 +44,9 @@ barsRouter.get("/", verifyToken, async (request, response) => {
     await creerUnBar(mail);
   }
   bar = await recupererUnBar(mail);
+  console.log("bar : ", bar);
+
+  if (!bar) response.status(NOT_FOUND).json("Le bar n'a pas été trouvé");
 
   response.status(OK);
   response.json(bar);

@@ -1,6 +1,7 @@
 const { Ingredient } = require("../models");
 
 const ingredientController = {
+  //fonction recupererLesIngredients = retourne un tableau de tous les ingrédients de la table ingredients (modele Ingredient)
   recupererLesIngredients: async () => {
     const ingredients = await Ingredient.findAll({
       order: [["nom", "ASC"]],
@@ -18,23 +19,26 @@ const ingredientController = {
     return ingredient;
   },*/
 
+  //fonction recupererIdIngredient = retourne l'id de l'ingrédient trouvé dans la table ingredients (modèle Ingredient) à partir de son nom
   recupererIdIngredient: async nomIngredient => {
-    //console.log("--------------------------------------------------");
-
+    if (nomIngredient === "") return "0";
     const idIngredient = await Ingredient.findOne({
       where: { nom: nomIngredient },
       attributes: ["id"]
     });
-    //console.log("idIngredient : ", idIngredient[0].dataValues);
+    //console.log("idIngredient : ", idIngredient);
 
-    return idIngredient;
+    return idIngredient.dataValues.id;
   },
 
+  //fonction recupererNomIngredient = retourne le nom de l'ingrédient trouvé dans la table ingredients (modèle Ingredient) à partir de son id
   recupererNomIngredient: async idIngredient => {
     const nomIngredient = await Ingredient.findOne({
       where: { id: idIngredient },
       attributes: ["nom"]
     });
+
+    return nomIngredient.dataValues.nom;
   }
 };
 

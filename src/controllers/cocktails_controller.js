@@ -6,6 +6,7 @@ const NotFoundError = require("../helpers/errors/404_not_found");
 const getRandomInteger = require("../utils/getRandomInteger");
 
 const cocktailController = {
+  // fonction recupererLesCocktails = retourne un tableau de tous les cocktails de la tablea cocktails (modèle Cocktail)
   recupererLesCocktails: async () => {
     const cocktails = await Cocktail.findAll({
       order: [["nom", "ASC"]],
@@ -18,6 +19,8 @@ const cocktailController = {
     return cocktails;
   },
 
+  // fonction recupererUnCocktail = retourne le cocktail trouvé dans la table cocktails (modele Cocktail)
+  // grâce à l'id passé en paramètre
   recupererUnCocktail: async id => {
     const cocktail = await Cocktail.findByPk(id, {
       attributes: ["nom", "photo", "etapesPreparation"],
@@ -39,6 +42,7 @@ const cocktailController = {
     return cocktail;
   },
 
+  //fonction recupererLesCocktailsDuMoment = retourne un cocktail aléatoire à partir de tous les cocktails inclus dans la table cocktails
   recupererLesCocktailsDuMoment: async () => {
     const cocktailsMoment = await Cocktail.findAll({
       order: [["nom", "ASC"]],
