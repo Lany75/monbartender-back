@@ -41,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.TEXT
       },
+      etapesPreparationId: {
+        field: "etapes_preparation_id",
+        allowNull: false,
+        type: DataTypes.UUID
+      },
       createdAt: {
         field: "created_at",
         allowNull: false,
@@ -78,6 +83,12 @@ module.exports = (sequelize, DataTypes) => {
     Cocktail.belongsToMany(models.Ingredient, {
       through: "cocktails_ingredients",
       foreignKey: "cocktail_id"
+    });
+    Cocktail.belongsTo(models.EtapesPreparation, {
+      foreignKey: {
+        name: "etapes_preparation_id",
+        allowNull: false
+      }
     });
   };
 

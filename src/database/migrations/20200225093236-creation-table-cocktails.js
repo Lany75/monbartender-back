@@ -31,6 +31,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.TEXT
       },
+      etapes_preparation_id: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "etapes_preparation",
+          key: "id"
+        }
+      },
       /*personne_id: {
         allowNull: true,
         type: Sequelize.STRING(50),

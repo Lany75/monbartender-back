@@ -36,15 +36,15 @@ barsRouter.get("/", verifyToken, async (request, response) => {
   // console.log("mail : ", mail);
 
   let bar = await recupererIdBar(mail);
-  console.log("bar : ", bar);
+  //console.log("bar : ", bar);
 
   if (!bar || bar.length === 0) {
-    console.log("creation d'un bar");
+    //console.log("creation d'un bar");
 
     await creerUnBar(mail);
   }
   bar = await recupererUnBar(mail);
-  console.log("bar : ", bar);
+  //console.log("bar : ", bar);
 
   if (!bar) response.status(NOT_FOUND).json("Le bar n'a pas été trouvé");
 

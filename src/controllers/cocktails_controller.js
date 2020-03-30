@@ -1,4 +1,4 @@
-const { Cocktail, Verre, Ingredient } = require("../models");
+const { Cocktail, Verre, Ingredient, EtapesPreparation } = require("../models");
 require("express-async-errors");
 
 const NotFoundError = require("../helpers/errors/404_not_found");
@@ -10,7 +10,7 @@ const cocktailController = {
   recupererLesCocktails: async () => {
     const cocktails = await Cocktail.findAll({
       order: [["nom", "ASC"]],
-      attributes: ["id", "nom", "photo"],
+      attributes: ["id", "nom", "photo", "verre_id", "etapes_preparation_id"],
       raw: true
     });
 
@@ -27,12 +27,24 @@ const cocktailController = {
       include: [
         {
           model: Verre,
-          attributes: ["nom"]
+          attributes: ["id", "nom"]
         },
         {
           model: Ingredient,
-          attributes: ["nom"],
+          attributes: ["id", "nom"],
           through: { attributes: [] }
+        },
+        {
+          model: EtapesPreparation,
+          attributes: [
+            "id",
+            "etape1",
+            "etape2",
+            "etape3",
+            "etape4",
+            "etape5",
+            "etape6"
+          ]
         }
       ]
     });

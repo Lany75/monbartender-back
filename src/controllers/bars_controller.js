@@ -33,7 +33,8 @@ const barController = {
       where: { personne_id: mail },
       attributes: ["id"]
     });
-    return barId.dataValues.id;
+    if (!barId) return null;
+    else return barId.dataValues.id;
   },
 
   //fonction CreerUnBar = crée le bar de l'utilisateur grâce à son mail

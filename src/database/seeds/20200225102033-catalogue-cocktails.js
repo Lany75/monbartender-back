@@ -13,6 +13,7 @@ module.exports = [
     verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
     etapes_preparation:
       "1. Recette réalisée directement dans un verre de type \"Tumbler\". 2. Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'emsemble. 3. Ajouter les glacons pilés, puis le rhum à hauteur des glacons. 4. Compléter avec de l'eau gazeuse. 5. Décorer d'une feuille de menthe et servir avec une paille.",
+    etapes_preparation_id: "288e112a-a831-40fc-919f-a9b987d28c6b",
     created_at: now,
     updated_at: now
   },
@@ -23,6 +24,7 @@ module.exports = [
     verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
     etapes_preparation:
       "1. Recette réalisée directement dans un verre de type \"Tumbler\". 2. Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'emsemble. 3. Ajouter les glacons pilés, puis le rhum à hauteur des glacons. 4. Compléter avec de l'eau gazeuse. 5. Décorer d'une feuille de menthe et servir avec une paille.",
+    etapes_preparation_id: "cc2235c4-5214-4774-82f9-100ff72e5d39",
     created_at: now,
     updated_at: now
   },
@@ -33,6 +35,7 @@ module.exports = [
     verre_id: "c69758d1-b4ad-4038-b157-205fd12d9ace",
     etapes_preparation:
       "1. Givrer le bord d'un verre à cocktail. 2. Verser la tequila, le cointreau et le jus de citron vert dans un shaker. /n 3. Ajouter les glacons, et secouez vigoureusement pendant environ 10 secondes. /n 4. Versez dans le verre. /n 5. Décorer d'une rondelle de citron",
+    etapes_preparation_id: "5d5f5ea3-0ace-4d3a-b402-83c5dec95dbc",
     created_at: now,
     updated_at: now
   },
@@ -43,6 +46,7 @@ module.exports = [
     verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
     etapes_preparation:
       "1. Recette réalisée directement dans un verre de type \"Tumbler\". 2. Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'emsemble. 3. Ajouter les glacons pilés. 4. Compléter avec de l'eau gazeuse. 5. Décorer d'une feuille de menthe et servir avec une paille.",
+    etapes_preparation_id: "afdc0d66-ae51-4c28-bf1f-d0503303ae72",
     created_at: now,
     updated_at: now
   }
