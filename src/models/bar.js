@@ -21,6 +21,13 @@ module.exports = (sequelize, DataTypes) => {
           len: [2, 50]
         }
       },
+      droits: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        validate: {
+          notNull: true
+        }
+      },
       createdAt: {
         field: "created_at",
         allowNull: false,

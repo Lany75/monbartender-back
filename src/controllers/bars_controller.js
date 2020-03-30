@@ -15,7 +15,7 @@ const barController = {
   recupererUnBar: async mail => {
     const bar = await Bar.findOne({
       where: { personne_id: mail },
-      attributes: ["id", "personne_id"],
+      attributes: ["id", "personne_id", "droits"],
       include: [
         {
           model: Ingredient,
@@ -42,7 +42,8 @@ const barController = {
   creerUnBar: async mail => {
     await Bar.create({
       id: uuid(),
-      personneId: mail
+      personneId: mail,
+      droits: false
     });
   },
 

@@ -39,7 +39,7 @@ barsRouter.get("/", verifyToken, async (request, response) => {
   //console.log("bar : ", bar);
 
   if (!bar || bar.length === 0) {
-    //console.log("creation d'un bar");
+    console.log("creation d'un bar");
 
     await creerUnBar(mail);
   }
