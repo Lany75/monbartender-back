@@ -36,11 +36,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.UUID
       },
-      etapesPreparation: {
+      /*       etapesPreparation: {
         field: "etapes_preparation",
         allowNull: false,
         type: DataTypes.TEXT
-      },
+      }, */
       etapesPreparationId: {
         field: "etapes_preparation_id",
         allowNull: false,

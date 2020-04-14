@@ -3,7 +3,8 @@ const express = require("express");
 const {
   recupererLesCocktails,
   recupererUnCocktail,
-  recupererLesCocktailsDuMoment
+  recupererUnCocktailAleatoire,
+  recupererIdCocktailsMoment
 } = require("../controllers/cocktails_controller");
 const {
   rechercherUnCocktailParSonNom,
@@ -18,8 +19,6 @@ const { OK, NOT_FOUND } = require("../helpers/status_code");
 const cocktailsRouter = express.Router();
 
 cocktailsRouter.get("/", async (request, response) => {
-  console.log("route recuperer tous les cocktails");
-
   const cocktails = await recupererLesCocktails();
 
   if (!cocktails) {
@@ -32,23 +31,49 @@ cocktailsRouter.get("/", async (request, response) => {
   response.json(cocktails);
 });
 
-cocktailsRouter.get("/aleatoire", async (request, response) => {
-  const cocktails = await recupererLesCocktailsDuMoment();
+cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
+  const cocktailsMoment = [];
 
-  if (!cocktails) {
+  const idCocktailsMoment = await recupererIdCocktailsMoment();
+
+  if (!idCocktailsMoment) {
     response
       .status(NOT_FOUND)
       .json("La liste de cocktail n'a pas été récupérée");
+  } else {
+    for (let i = 0; i < idCocktailsMoment.length; i++) {
+      const cocktail = await recupererUnCocktail(
+        idCocktailsMoment[i].cocktail_id
+      );
+
+      cocktailsMoment.push({
+        id: idCocktailsMoment[i].cocktail_id,
+        nom: cocktail.dataValues.nom,
+        photo: cocktail.dataValues.photo
+      });
+    }
+    console.log("cocktailsMoment : ", cocktailsMoment);
   }
 
   response.status(OK);
-  response.json(cocktails);
+  response.json(cocktailsMoment);
+});
+
+cocktailsRouter.get("/aleatoire", async (request, response) => {
+  const cocktailAleatoire = await recupererUnCocktailAleatoire();
+
+  if (!cocktailAleatoire) {
+    response
+      .status(NOT_FOUND)
+      .json("Le cocktail aléatoire n'a pas été récupéré");
+  }
+
+  response.status(OK);
+  response.json(cocktailAleatoire);
 });
 
 cocktailsRouter.get("/rechercherparnom", async (request, response) => {
-  console.log("on est sur la route /rechercherparnom");
   const { nom } = request.query;
-  //console.log("nom :", nom);
 
   const cocktail = await rechercherUnCocktailParSonNom(nom);
 
@@ -127,6 +152,7 @@ cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
 
   for (let i = 0; i < tabIdResultat.length; i++) {
     cocktailProvisoire = await recupererUnCocktail(tabIdResultat[i]);
+
     cocktails.push({
       id: tabIdResultat[i],
       nom: cocktailProvisoire.dataValues.nom,

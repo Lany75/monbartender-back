@@ -18,33 +18,15 @@ const { OK, NOT_FOUND } = require("../helpers/status_code");
 
 const barsRouter = express.Router();
 
-/*barsRouter.get("/", async (request, response) => {
-  console.log("on est sur la route /bars/");
-
-  const bars = await recupererLesBars();
-
-  response.status(200);
-  response.json(bars);
-});*/
-
 barsRouter.get("/", verifyToken, async (request, response) => {
-  console.log("route recupererUnBar");
-  //console.log("request.body : ", request.body);
-  //console.log("request.headers", request.headers);
-  //console.log("request.body", request.body);
   const mail = request.body.email;
-  // console.log("mail : ", mail);
 
   let bar = await recupererIdBar(mail);
-  //console.log("bar : ", bar);
 
   if (!bar || bar.length === 0) {
-    console.log("creation d'un bar");
-
     await creerUnBar(mail);
   }
   bar = await recupererUnBar(mail);
-  //console.log("bar : ", bar);
 
   if (!bar) response.status(NOT_FOUND).json("Le bar n'a pas été trouvé");
 

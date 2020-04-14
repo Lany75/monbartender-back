@@ -3,7 +3,8 @@ const verifyToken = require("../middlewares/verify_token");
 
 const {
   recupererLesIngredients,
-  recupererIdIngredient
+  recupererIdIngredient,
+  ajouterUnIngredientDB
 } = require("../controllers/ingredients_controller");
 
 const {
@@ -29,12 +30,11 @@ ingredientRouter.get("/", async (request, response) => {
   response.json(ingredients);
 });
 
-ingredientRouter.post("/", verifyToken, async (request, response) => {
+ingredientRouter.post("/ajouter", verifyToken, async (request, response) => {
   const mail = request.body.email;
-  //const nomNouvelIngredient = request.body.nouvelingredient;
-  const nomNouvelIngredient = request.headers.nouvelingredient;
+  const nomNouvelIngredient = request.query.ingredient;
 
-  const idIngredient = await recupererIdIngredient(nomNouvelIngredient);
+  let idIngredient = await recupererIdIngredient(nomNouvelIngredient);
   const idBar = await recupererIdBar(mail);
 
   try {
@@ -42,7 +42,6 @@ ingredientRouter.post("/", verifyToken, async (request, response) => {
   } catch {
     const bar = await recupererUnBar(mail);
     response.status(BAD_REQUEST);
-    //.json(bar);
   }
 
   const bar = await recupererUnBar(mail);
@@ -50,19 +49,21 @@ ingredientRouter.post("/", verifyToken, async (request, response) => {
   response.status(CREATED).json(bar);
 });
 
-ingredientRouter.delete("/", verifyToken, async (request, response) => {
-  const mail = request.body.email;
-  const nomIngredientSupprime = request.headers.ingredientsupprime;
+ingredientRouter.delete(
+  "/supprimer",
+  verifyToken,
+  async (request, response) => {
+    const mail = request.body.email;
+    const nomIngredientSupprime = request.query.ingredient;
 
-  const idIngredient = await recupererIdIngredient(nomIngredientSupprime);
-  console.log("idIngredient : ", idIngredient);
-  const idBar = await recupererIdBar(mail);
-  console.log("idBar : ", idBar);
+    const idIngredient = await recupererIdIngredient(nomIngredientSupprime);
+    const idBar = await recupererIdBar(mail);
 
-  await supprimerUnIngredientDuBar(idIngredient, idBar);
+    await supprimerUnIngredientDuBar(idIngredient, idBar);
 
-  const bar = await recupererUnBar(mail);
-  response.status(OK).json(bar);
-});
+    const bar = await recupererUnBar(mail);
+    response.status(OK).json(bar);
+  }
+);
 
 module.exports = ingredientRouter;

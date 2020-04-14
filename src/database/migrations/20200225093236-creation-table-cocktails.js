@@ -27,10 +27,10 @@ module.exports = {
           key: "id"
         }
       },
-      etapes_preparation: {
+      /* etapes_preparation: {
         allowNull: false,
         type: Sequelize.TEXT
-      },
+      }, */
       etapes_preparation_id: {
         allowNull: false,
         type: Sequelize.UUID,

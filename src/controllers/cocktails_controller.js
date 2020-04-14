@@ -1,4 +1,10 @@
-const { Cocktail, Verre, Ingredient, EtapesPreparation } = require("../models");
+const {
+  Cocktail,
+  Verre,
+  Ingredient,
+  EtapesPreparation,
+  CocktailsMoment
+} = require("../models");
 require("express-async-errors");
 
 const NotFoundError = require("../helpers/errors/404_not_found");
@@ -23,7 +29,7 @@ const cocktailController = {
   // grâce à l'id passé en paramètre
   recupererUnCocktail: async id => {
     const cocktail = await Cocktail.findByPk(id, {
-      attributes: ["nom", "photo", "etapesPreparation"],
+      attributes: ["nom", "photo"],
       include: [
         {
           model: Verre,
@@ -54,17 +60,27 @@ const cocktailController = {
     return cocktail;
   },
 
-  //fonction recupererLesCocktailsDuMoment = retourne un cocktail aléatoire à partir de tous les cocktails inclus dans la table cocktails
-  recupererLesCocktailsDuMoment: async () => {
-    const cocktailsMoment = await Cocktail.findAll({
+  // fonction recupererIdCocktailsMoment = retourne tous les id de la table cocktails_moment
+  recupererIdCocktailsMoment: async () => {
+    const cocktails = await CocktailsMoment.findAll({
+      attributes: ["cocktail_id"],
+      raw: true
+    });
+
+    return cocktails;
+  },
+
+  //fonction recupererUnCocktailAleatoire = retourne un cocktail aléatoire à partir de tous les cocktails inclus dans la table cocktails
+  recupererUnCocktailAleatoire: async () => {
+    const cocktails = await Cocktail.findAll({
       order: [["nom", "ASC"]],
       attributes: ["id", "nom", "photo"],
       raw: true
     });
 
-    const randomInt = getRandomInteger(cocktailsMoment.length);
+    const randomInt = getRandomInteger(cocktails.length);
 
-    return cocktailsMoment[randomInt];
+    return cocktails[randomInt];
   }
 };
 
