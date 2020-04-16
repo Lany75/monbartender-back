@@ -28,7 +28,6 @@ const ingredientController = {
       where: { nom: nomIngredient },
       attributes: ["id"]
     });
-    //console.log("idIngredient : ", idIngredient);
     if (idIngredient === null) return "0";
 
     return idIngredient.dataValues.id;

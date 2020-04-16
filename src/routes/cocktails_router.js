@@ -35,6 +35,9 @@ cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
   const cocktailsMoment = [];
 
   const idCocktailsMoment = await recupererIdCocktailsMoment();
+  // console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+  // console.log(idCocktailsMoment);
+  // console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
   if (!idCocktailsMoment) {
     response
@@ -52,7 +55,10 @@ cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
         photo: cocktail.dataValues.photo
       });
     }
-    console.log("cocktailsMoment : ", cocktailsMoment);
+
+    // console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+    // console.log(cocktailsMoment);
+    // console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
   }
 
   response.status(OK);
@@ -87,7 +93,6 @@ cocktailsRouter.get("/rechercherparnom", async (request, response) => {
 });
 
 cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
-  console.log("on est sur la route /rechercherparingredient");
   const { ingredient1, ingredient2, ingredient3 } = request.query;
   let idIngredient1, cocktailsIngredient1;
   let idIngredient2, cocktailsIngredient2;

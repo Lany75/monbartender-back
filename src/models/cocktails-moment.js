@@ -2,10 +2,19 @@ module.exports = (sequelize, DataTypes) => {
   const CocktailsMoment = sequelize.define(
     "CocktailsMoment",
     {
+      id: {
+        allowNull: false,
+        primaryKey: true,
+        type: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4,
+        validate: {
+          isUUID: 4,
+          notNull: true
+        }
+      },
       cocktailId: {
         field: "cocktail_id",
         allowNull: false,
-        primaryKey: true,
         type: DataTypes.UUIDV4,
         defaultValue: DataTypes.UUIDV4,
         validate: {

@@ -7,7 +7,6 @@ const { OK } = require("../helpers/status_code");
 const verresRouter = express.Router();
 
 verresRouter.get("/", async (request, response) => {
-  console.log("route récupérerLesVerres");
   const verres = await recupererLesVerres();
 
   response.status(OK).json(verres);
