@@ -8,11 +8,11 @@ const gestionRouter = require("./gestion_router");
 
 const mainRouter = express.Router();
 
-mainRouter.use("/cocktails", cocktailsRouter);
-mainRouter.use("/bars", barsRouter);
-mainRouter.use("/ingredients", ingredientsRouter);
-mainRouter.use("/verres", verresRouter);
-mainRouter.use("/gestion", gestionRouter);
+mainRouter.use("/api/v1/cocktails", cocktailsRouter);
+mainRouter.use("/api/v1/bars", barsRouter);
+mainRouter.use("/api/v1/ingredients", ingredientsRouter);
+mainRouter.use("/api/v1/verres", verresRouter);
+mainRouter.use("/api/v1/gestion", gestionRouter);
 
 /* mainRouter.use("*", (req, res) => {
   res.status(404).json("Tu t'es perdu !!!");

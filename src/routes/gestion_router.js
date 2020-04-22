@@ -1,5 +1,6 @@
 const express = require("express");
-const verifyToken = require("../middlewares/verify_token");
+//const verifyToken = require("../middlewares/verify_token");
+const isAuthenticated = require("../middlewares/is_authenticated");
 
 const {
   recupererIdCocktail,
@@ -15,7 +16,7 @@ const gestionRouter = express.Router();
 
 gestionRouter.put(
   "/cocktails-du-moment",
-  verifyToken,
+  isAuthenticated,
   async (request, response) => {
     const nomAncienCocktail = request.query.nomAncienCocktail;
     const nomNouveauCocktail = request.query.nomNouveauCocktail;

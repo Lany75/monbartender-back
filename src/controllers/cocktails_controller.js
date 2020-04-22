@@ -28,8 +28,6 @@ const cocktailController = {
   // fonction recupererUnCocktail = retourne le cocktail trouvé dans la table cocktails (modele Cocktail)
   // grâce à l'id passé en paramètre
   recupererUnCocktail: async id => {
-    //console.log(id);
-
     const cocktail = await Cocktail.findByPk(id, {
       attributes: ["nom", "photo"],
       include: [

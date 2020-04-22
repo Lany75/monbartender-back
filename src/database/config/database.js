@@ -1,11 +1,24 @@
 require("dotenv").config();
+const logger = require('../../helpers/logger');
 
 module.exports = {
-  development: {
-    dialect: "postgres",
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST
+  dialect: "postgres",
+  url: process.env.DATABASE_URL,
+   // pool configuration used to pool database connections
+  pool: {
+    min: 0,
+    max: 5,
+    idle: 15000,
+    acquire: 30000,
+  },
+  ssl:true, 
+  dialectOptions:{ 
+    ssl: {
+      require:true 
+    } 
+  },
+  logging:(...msg) =>
+  {
+    logger.debug(msg);
   }
 };
