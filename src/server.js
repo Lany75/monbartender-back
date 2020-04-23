@@ -35,6 +35,7 @@ app.get("/swagger.json", function(req, res) {
 app.get("/oauth2-redirect.html", function(req, res) {
   logger.info("Redirecting oauth2 response");
   const targetUrl = req.baseUrl + "/api-docs" + "/oauth2-redirect.html";
+  logger.info(`targetURL:${targetUrl} et req:${req}`);
   res.redirect(targetUrl);
 });
 
