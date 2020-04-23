@@ -132,7 +132,7 @@ ingredientRouter.post(
  *   delete:
  *     tags:
  *       - Ingredients
- *     description: Ajoute un nouvel ingredient au bar
+ *     description: Supprime un ingredient du bar
  *     produces:
  *       - application/json
  *     parameters:
