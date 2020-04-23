@@ -48,6 +48,7 @@ const cocktailsRouter = express.Router();
 cocktailsRouter.get("/", async (request, response) => {
   logger.info(`Trying to get all cocktails`);
   const cocktails = await recupererLesCocktails();
+
   response.status(OK);
   response.json(cocktails);
 });
@@ -99,6 +100,9 @@ cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
       });
     }
   }
+
+  response.status(OK);
+  response.json(cocktailsMoment);
 });
 
 /**
