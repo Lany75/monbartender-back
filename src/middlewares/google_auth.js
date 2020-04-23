@@ -3,9 +3,7 @@ var google = require("googleapis").google;
 var OAuth2 = google.auth.OAuth2;
 
 async function googleAuth(req, res, next) {
-  console.log("AAAAAAAAAAAAAAa");
-  console.log("user : ", req.user);
-  console.log("token : ", req.headers.authorization);
+  logger.info(`google req.headers.authorization:${req.headers.authorization}`);
 
   if (!req.user && req.headers.authorization) {
     try {

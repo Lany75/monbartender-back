@@ -2,6 +2,9 @@ var admin = require("../firebase-admin/admin");
 const logger = require("../helpers/logger");
 
 async function verifyToken(req, res, next) {
+  logger.info(
+    `firebase req.headers.authorization:${req.headers.authorization}`
+  );
   if (!req.user && req.headers.authorization) {
     try {
       req.user = await getUser(req.headers.authorization);
