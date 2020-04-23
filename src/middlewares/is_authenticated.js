@@ -1,3 +1,5 @@
+const logger = require("../helpers/logger");
+
 async function isAuthenticated(req, res, next) {
   logger.info(`isAuthenticated req.user:${req.user}`);
 
