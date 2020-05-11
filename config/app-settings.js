@@ -64,7 +64,7 @@ const appSettings = {
         contact: {
           name: "API Support",
           url: "https://github.com/Lany75/monbartender-back/issues",
-          email: "mlany.parry@gmail.com"
+          email: "mlanie.parry@gmail.com"
         },
         license: {
           name: "Apache 2.0",
