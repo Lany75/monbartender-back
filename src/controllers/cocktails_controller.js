@@ -20,8 +20,6 @@ const cocktailController = {
       raw: true
     });
 
-    //  if (!cocktails) throw new NotFoundError("court", "long");
-
     return cocktails;
   },
 

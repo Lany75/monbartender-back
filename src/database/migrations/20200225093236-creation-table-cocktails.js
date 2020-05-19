@@ -27,10 +27,6 @@ module.exports = {
           key: "id"
         }
       },
-      /* etapes_preparation: {
-        allowNull: false,
-        type: Sequelize.TEXT
-      }, */
       etapes_preparation_id: {
         allowNull: false,
         type: Sequelize.UUID,
@@ -39,14 +35,6 @@ module.exports = {
           key: "id"
         }
       },
-      /*personne_id: {
-        allowNull: true,
-        type: Sequelize.STRING(50),
-        references: {
-          model: "personnes",
-          key: "id"
-        }
-      },*/
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

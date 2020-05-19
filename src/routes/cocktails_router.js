@@ -35,8 +35,6 @@ const cocktailsRouter = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cocktail'
- *       401:
- *         description: Non autorisé
  *       404:
  *         description: Aucun cocktail n'existe
  *     security:
@@ -49,8 +47,13 @@ cocktailsRouter.get("/", async (request, response) => {
   logger.info(`Trying to get all cocktails`);
   const cocktails = await recupererLesCocktails();
 
-  response.status(OK);
-  response.json(cocktails);
+  if (!cocktails) {
+    response.statut(NOT_FOUND);
+    response.json("La liste de cocktail n'a pas été récupérée");
+  } else {
+    response.status(OK);
+    response.json(cocktails);
+  }
 });
 
 /**

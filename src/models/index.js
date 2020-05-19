@@ -3,7 +3,7 @@ const path = require("path");
 const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
 const config = require("../database/config/database.js");
-const logger = require('../helpers/logger');
+const logger = require("../helpers/logger");
 const db = {};
 
 const sequelize = new Sequelize(config.url, config);
@@ -28,12 +28,12 @@ Object.keys(db).forEach(modelName => {
 sequelize
   .authenticate()
   .then(() => {
-    logger.info('Connection has been established successfully.');
+    logger.info("Connection has been established successfully.");
   })
   .catch(err => {
     logger.error(`Unable to connect to the database:${err}`);
-  });1
-  
+  });
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

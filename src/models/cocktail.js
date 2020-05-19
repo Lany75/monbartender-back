@@ -1,35 +1,36 @@
 module.exports = (sequelize, DataTypes) => {
   /**
- * @swagger
- * components:
- *   schemas:
- *     Cocktail:
- *       type: object
- *       required:
- *       - id
- *       - nom
- *       - verreId
- *       - etapesPreparation
- *       - createdAt
- *       - updatedAt
- *       properties:
- *         id:
- *           type: string
- *         nom:
- *           type: string
- *         photo:
- *           type: string
- *         note:
- *           type: int32
- *         verreId:
- *           type: string
- *         etapesPreparation:
- *           type: string
- *         createdAt:
- *           type: string
- *         updatedAt:
- *           type: string
- */
+   * @swagger
+   * components:
+   *   schemas:
+   *     Cocktail:
+   *       type: object
+   *       required:
+   *       - id
+   *       - nom
+   *       - verreId
+   *       - etapesPreparation
+   *       - createdAt
+   *       - updatedAt
+   *       properties:
+   *         id:
+   *           type: string
+   *         nom:
+   *           type: string
+   *         photo:
+   *           type: string
+   *         note:
+   *           type: int32
+   *         verreId:
+   *           type: string
+   *         etapesPreparation:
+   *           type: string
+   *         createdAt:
+   *           type: string
+   *         updatedAt:
+   *           type: string
+   */
+
   const Cocktail = sequelize.define(
     "Cocktail",
     {
@@ -67,11 +68,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.UUID
       },
-      /*       etapesPreparation: {
-        field: "etapes_preparation",
-        allowNull: false,
-        type: DataTypes.TEXT
-      }, */
       etapesPreparationId: {
         field: "etapes_preparation_id",
         allowNull: false,
