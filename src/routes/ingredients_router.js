@@ -11,7 +11,12 @@ const {
   recupererUnBar,
   supprimerUnIngredientDuBar
 } = require("../controllers/bars_controller");
-const { OK, CREATED, BAD_REQUEST } = require("../helpers/status_code");
+const {
+  OK,
+  CREATED,
+  BAD_REQUEST,
+  NOT_FOUND
+} = require("../helpers/status_code");
 const logger = require("../helpers/logger");
 const ingredientRouter = express.Router();
 
@@ -26,55 +31,56 @@ const ingredientRouter = express.Router();
  *       - application/json
  *     responses:
  *       200:
- *         description: Un tableau d'ingredient
+ *         description: Un tableau d'ingredients
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Ingredient'
- *       401:
- *         description: Non autorisé
  *       404:
  *         description: Aucun ingredient n'existe
- *     security:
- *         - googleAuth:
- *            - email
- *            - openid
- *            - profile
  */
 ingredientRouter.get("/", async (request, response) => {
-  logger.info(`Trying to get the ingredients`);
+  logger.info(`Trying to get all ingredients`);
   const ingredients = await recupererLesIngredients();
 
-  response.status(OK);
-  response.json(ingredients);
+  if (!ingredients) {
+    logger.info(`Ingredients not found`);
+    response.statut(NOT_FOUND);
+    response.json("La liste des ingrédients n'a pas été récupérée");
+  } else {
+    logger.info(`Ingredients found`);
+    response.status(OK);
+    response.json(ingredients);
+  }
 });
 
 /**
  * @swagger
- * /api/v1/ingredients:
+ * /api/v1/ingredients/{nomNouvelIngredient}:
  *   post:
  *     tags:
  *       - Ingredients
- *     description: Ajoute un nouvel ingredient au bar
+ *     description: Ajoute un nouvel ingredient au bar de l'utilisateur
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: email
- *         description: Email de l'utilisateur
- *         in: body
+ *       - name: nomNouvelIngredient
+ *         description: nom de l'ingrédient à ajouter
+ *         in: path
  *         required: true
- *         type: integer
+ *         schema:
+ *           type: string
  *     responses:
- *       200:
- *         description: Retourne le bar modifie
+ *       201:
+ *         description: Ajout de l'ingrédient réussi, retourne le bar modifié
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Ingredient'
+ *       400:
+ *         description: Impossible d'ajouter l'ingrédient au bar de l'utilisateur
  *       401:
  *         description: Non autorisé
- *       400:
- *         description: L ingredient existe deja dans le bar
  *     security:
  *         - googleAuth:
  *            - email
@@ -128,26 +134,29 @@ ingredientRouter.post(
 
 /**
  * @swagger
- * /api/v1/ingredients/:
+ * /api/v1/ingredients/{nomIngredientSupprime}:
  *   delete:
  *     tags:
  *       - Ingredients
- *     description: Supprime un ingredient du bar
+ *     description: Supprime l'ingredient du bar de l'utilisateur
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: email
- *         description: Email de l'utilisateur
- *         in: body
+ *       - name: nomIngredientSupprime
+ *         description: nom de l'ingrédient à supprimer
+ *         in: path
  *         required: true
- *         type: integer
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: Retourne le bar modifie
+ *         description: Suppression de l'ingrédient réussi, retourne le bar modifié
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Ingredient'
+ *       400:
+ *         description: Impossible de supprimer l'ingrédient du bar de l'utilisateur
  *       401:
  *         description: Non autorisé
  *     security:

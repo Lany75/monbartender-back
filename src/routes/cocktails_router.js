@@ -30,27 +30,24 @@ const cocktailsRouter = express.Router();
  *       - application/json
  *     responses:
  *       200:
- *         description: Un tableau de cocktail
+ *         description: Un tableau de cocktails
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cocktail'
  *       404:
  *         description: Aucun cocktail n'existe
- *     security:
- *         - googleAuth:
- *            - email
- *            - openid
- *            - profile
  */
 cocktailsRouter.get("/", async (request, response) => {
   logger.info(`Trying to get all cocktails`);
   const cocktails = await recupererLesCocktails();
 
   if (!cocktails) {
+    logger.info(`Cocktails list has not been found`);
     response.statut(NOT_FOUND);
-    response.json("La liste de cocktail n'a pas été récupérée");
+    response.json("La liste de cocktails n'a pas été récupérée");
   } else {
+    logger.info(`Cocktails list has been found`);
     response.status(OK);
     response.json(cocktails);
   }
@@ -62,35 +59,32 @@ cocktailsRouter.get("/", async (request, response) => {
  *   get:
  *     tags:
  *       - Cocktails
- *     description: Retourne la liste de cocktail du moment
+ *     description: Retourne la liste des cocktails du moment
  *     produces:
  *       - application/json
  *     responses:
  *       200:
- *         description: Un tableau de cocktail
+ *         description: Un tableau de cocktails
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cocktail'
  *       404:
  *         description: Aucun cocktail n'existe
- *     security:
- *         - googleAuth:
- *            - email
- *            - openid
- *            - profile
  */
 cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
-  logger.info(`Trying to get cocktails of the day`);
   const cocktailsMoment = [];
 
+  logger.info(`Trying to get cocktails of the day`);
   const idCocktailsMoment = await recupererIdCocktailsMoment();
 
   if (!idCocktailsMoment) {
+    logger.info(`Cocktails of the day list has not been found`);
     response
       .status(NOT_FOUND)
       .json("La liste de cocktail n'a pas été récupérée");
   } else {
+    logger.info(`Cocktails of the day list has been found`);
     for (let i = 0; i < idCocktailsMoment.length; i++) {
       const cocktail = await recupererUnCocktail(
         idCocktailsMoment[i].cocktail_id
@@ -114,46 +108,51 @@ cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
  *   get:
  *     tags:
  *       - Cocktails
- *     description: Retourne une liste de cocktail aléatoire
+ *     description: Retourne un cocktail au hasard
  *     produces:
  *       - application/json
  *     responses:
  *       200:
- *         description: Un tableau de cocktail
+ *         description: Un cocktail
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cocktail'
  *       404:
  *         description: Aucun cocktail n'existe
- *     security:
- *         - googleAuth:
- *            - email
- *            - openid
- *            - profile
  */
 cocktailsRouter.get("/aleatoire", async (request, response) => {
+  logger.info(`Trying to get a random cocktail`);
   const cocktailAleatoire = await recupererUnCocktailAleatoire();
 
   if (!cocktailAleatoire) {
+    logger.info(`Random cocktail has not been found`);
     response
       .status(NOT_FOUND)
       .json("Le cocktail aléatoire n'a pas été récupéré");
   }
 
+  logger.info(`Random cocktail has been found`);
   response.status(OK);
   response.json(cocktailAleatoire);
 });
 
 /**
  * @swagger
- * /api/v1/cocktails/rechercherparnom:
+ * /api/v1/cocktails/rechercher-par-nom:
  *   get:
  *     tags:
  *       - Cocktails
- *     description: Recherche une liste de cocktail à partir de son nom
+ *     description: Recherche une liste de cocktails à partir d'un nom
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: nom
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: le nom du cocktail recherché
  *     responses:
  *       200:
  *         description: Un tableau de cocktail
@@ -161,18 +160,17 @@ cocktailsRouter.get("/aleatoire", async (request, response) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cocktail'
+ *       400:
+ *         description : Le nom du cocktail n'est pas renseigné
  *       404:
  *         description: Aucun cocktail n'existe
- *     security:
- *         - googleAuth:
- *            - email
- *            - openid
- *            - profile
  */
-cocktailsRouter.get("/rechercherparnom", async (request, response) => {
+
+cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
   const { nom } = request.query;
 
   if (!nom) {
+    logger.info(`Cocktail's name is not given`);
     response.status(BAD_REQUEST);
     response.json("Un nom de cocktail est obligatoire");
   }
@@ -181,15 +179,53 @@ cocktailsRouter.get("/rechercherparnom", async (request, response) => {
   const cocktail = await rechercherUnCocktailParSonNom(nom);
 
   if (!cocktail) {
+    logger.info(`Cocktail has not been found`);
     response.status(NOT_FOUND);
     response.json("Le cocktail n'a pas été trouvé");
   }
 
+  logger.info(`Cocktail has been found`);
   response.status(OK);
   response.json(cocktail);
 });
 
-cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
+/**
+ * @swagger
+ * /api/v1/cocktails/rechercher-par-ingredient:
+ *   get:
+ *     tags:
+ *       - Cocktails
+ *     description: Recherche une liste de cocktails à partir d'ingrédients
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: ingredient1
+ *         schema:
+ *           type: string
+ *         description: le nom d'un ingrédient
+ *       - in: query
+ *         name: ingredient2
+ *         schema:
+ *           type: string
+ *         description: le nom d'un ingrédient
+ *       - in: query
+ *         name: ingredient3
+ *         schema:
+ *           type: string
+ *         description: le nom d'un ingrédient
+ *     responses:
+ *       200:
+ *         description: Un tableau de cocktail
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cocktail'
+ *       404:
+ *         description: Aucun cocktail trouvé
+ */
+
+cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
   const { ingredient1, ingredient2, ingredient3 } = request.query;
   let idIngredient1, cocktailsIngredient1;
   let idIngredient2, cocktailsIngredient2;
@@ -197,35 +233,49 @@ cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
   const cocktails = [];
 
   if (ingredient1 === "" && ingredient2 === "" && ingredient3 === "") {
+    logger.info(`Ingredients are not given`);
     response.status(NOT_FOUND).json("Pas d'ingrédient, pas de cocktails");
   }
 
   if (!ingredient1 && !ingredient2 && !ingredient3) {
+    logger.info(`Ingredients are not given`);
     response.status(NOT_FOUND).json("Pas d'ingrédient, pas de cocktails");
   }
 
   if (ingredient1) {
+    logger.info(`Trying to get ${ingredient1}'s id`);
     idIngredient1 = await recupererIdIngredient(ingredient1);
-    if (idIngredient1 === "0")
-      response.status(NOT_FOUND).json("l'ingredient1 n'existe pas");
+    if (!idIngredient1) {
+      logger.info(`${ingredient1} does not exist`);
+      response.status(NOT_FOUND).json("l'ingredient n'existe pas");
+    }
+    logger.info(`Trying to get cocktails include ${ingredient1}`);
     cocktailsIngredient1 = await rechercherCocktailsParIngredients(
       idIngredient1
     );
   }
 
   if (ingredient2) {
+    logger.info(`Trying to get ${ingredient2}'s id`);
     idIngredient2 = await recupererIdIngredient(ingredient2);
-    if (idIngredient2 === "0")
-      response.status(NOT_FOUND).json("l'ingredient2 n'existe pas");
+    if (!idIngredient2) {
+      logger.info(`${ingredient2} does not exist`);
+      response.status(NOT_FOUND).json("l'ingredient n'existe pas");
+    }
+    logger.info(`Trying to get cocktails include ${ingredient2}`);
     cocktailsIngredient2 = await rechercherCocktailsParIngredients(
       idIngredient2
     );
   }
 
   if (ingredient3) {
+    logger.info(`Trying to get ${ingredient3}'s id`);
     idIngredient3 = await recupererIdIngredient(ingredient3);
-    if (idIngredient3 === "0")
-      response.status(NOT_FOUND).json("l'ingredient2 n'existe pas");
+    if (!idIngredient3) {
+      logger.info(`${ingredient3} does not exist`);
+      response.status(NOT_FOUND).json("l'ingredient n'existe pas");
+    }
+    logger.info(`Trying to get cocktails include ${ingredient3}`);
     cocktailsIngredient3 = await rechercherCocktailsParIngredients(
       idIngredient3
     );
@@ -279,29 +329,26 @@ cocktailsRouter.get("/rechercherparingredient", async (request, response) => {
  *         description: identifiant du cocktail
  *         in: path
  *         required: true
- *         type: integer
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: Un tableau de cocktail
+ *         description: Un cocktail
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Cocktail'
- *       401:
- *         description: Non autorisé
+ *       400:
+ *         description : L'id du cocktail n'est pas renseigné
  *       404:
  *         description: Aucun cocktail n'existe
- *     security:
- *         - googleAuth:
- *            - email
- *            - openid
- *            - profile
  */
 cocktailsRouter.get(
   "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
   async (request, response) => {
     const { id } = request.params;
     if (!id) {
+      logger.info(`cocktail's id is not given`);
       response.status(BAD_REQUEST);
       response.json("Un identifiant de cocktail est obligatoire");
     }
@@ -313,7 +360,7 @@ cocktailsRouter.get(
       response.status(NOT_FOUND);
       response.json("Le cocktail n'a pas été trouvé");
     }
-
+    logger.info(`Cocktail found`);
     response.status(OK);
     response.json(cocktail);
   }

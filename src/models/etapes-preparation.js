@@ -1,4 +1,35 @@
 module.exports = (sequelize, DataTypes) => {
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     EtapesPreparation:
+   *       type: object
+   *       required:
+   *       - id
+   *       - createdAt
+   *       - updatedAt
+   *       properties:
+   *         id:
+   *           type: string
+   *         etape1:
+   *           type: text
+   *         etape2:
+   *           type: text
+   *         etape3:
+   *           type: text
+   *         etape4:
+   *           type: text
+   *         etape5:
+   *           type: text
+   *         etape6:
+   *           type: text
+   *         createdAt:
+   *           type: string
+   *         updatedAt:
+   *           type: string
+   */
+
   const EtapesPreparation = sequelize.define(
     "EtapesPreparation",
     {

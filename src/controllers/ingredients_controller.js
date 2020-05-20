@@ -23,12 +23,12 @@ const ingredientController = {
   //fonction recupererIdIngredient = retourne l'id de l'ingrédient trouvé dans la table ingredients (modèle Ingredient)
   // à partir de son nom
   recupererIdIngredient: async nomIngredient => {
-    if (nomIngredient === "") return undefined;
+    if (nomIngredient === "") return null;
     const idIngredient = await Ingredient.findOne({
       where: { nom: nomIngredient },
       attributes: ["id"]
     });
-    if (!idIngredient) return undefined;
+    if (!idIngredient) return null;
 
     return idIngredient.dataValues.id;
   },

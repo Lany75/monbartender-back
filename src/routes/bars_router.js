@@ -39,14 +39,16 @@ const barsRouter = express.Router();
  */
 barsRouter.get("/", isAuthenticated, async (request, response) => {
   const mail = request.user.email;
+
   logger.info(`Trying to get ${mail}'s bar`);
-  let bar = await recupererIdBar(mail);
+  let bar = await recupererUnBar(mail);
 
   if (!bar || bar.length === 0) {
     logger.info(`${mail}'s bar has not been found. Creating it!`);
     await creerUnBar(mail);
+    bar = await recupererUnBar(mail);
   }
-  bar = await recupererUnBar(mail);
+
   logger.info(`${mail}'s bar:${bar}`);
   response.status(OK);
   response.json(bar);

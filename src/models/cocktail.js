@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
    *       - id
    *       - nom
    *       - verreId
-   *       - etapesPreparation
+   *       - etapesPreparationId
    *       - createdAt
    *       - updatedAt
    *       properties:
@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) => {
    *         photo:
    *           type: string
    *         note:
-   *           type: int32
+   *           type: integer
    *         verreId:
    *           type: string
-   *         etapesPreparation:
+   *         etapesPreparationId:
    *           type: string
    *         createdAt:
    *           type: string

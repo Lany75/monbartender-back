@@ -62,7 +62,7 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 // REGISTER ROUTES
-logger.info("Regitering routes");
+logger.info("Registering routes");
 app.use("/", routes);
 
 app.use(logErrorHandler);

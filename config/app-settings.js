@@ -115,9 +115,12 @@ const appSettings = {
       path.join(appRoot.path, "src/routes/bars_router.js"),
       path.join(appRoot.path, "src/routes/cocktails_router.js"),
       path.join(appRoot.path, "src/routes/ingredients_router.js"),
+      path.join(appRoot.path, "src/routes/verres_router.js"),
       path.join(appRoot.path, "src/models/bar.js"),
       path.join(appRoot.path, "src/models/cocktail.js"),
-      path.join(appRoot.path, "src/models/ingredient.js")
+      path.join(appRoot.path, "src/models/ingredient.js"),
+      path.join(appRoot.path, "src/models/verre.js"),
+      path.join(appRoot.path, "src/models/etapes-preparation.js")
     ]
   },
   hostname: "0.0.0.0",

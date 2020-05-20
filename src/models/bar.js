@@ -1,26 +1,28 @@
 module.exports = (sequelize, DataTypes) => {
-  
-/**
- * @swagger
- * components:
- *   schemas:
- *     Bar:
- *       type: object
- *       required:
- *       - id
- *       - personneId
- *       - createdAt
- *       - updatedAt
- *       properties:
- *         id:
- *           type: string
- *         personneId:
- *           type: string
- *         createdAt:
- *           type: string
- *         updatedAt:
- *           type: string
- */
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     Bar:
+   *       type: object
+   *       required:
+   *       - id
+   *       - personneId
+   *       - droits
+   *       - createdAt
+   *       - updatedAt
+   *       properties:
+   *         id:
+   *           type: string
+   *         personneId:
+   *           type: string
+   *         droits:
+   *           type: boolean
+   *         createdAt:
+   *           type: string
+   *         updatedAt:
+   *           type: string
+   */
   const Bar = sequelize.define(
     "Bar",
     {
