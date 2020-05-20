@@ -1,6 +1,7 @@
 const express = require("express");
 //const verifyToken = require("../middlewares/verify_token");
 const isAuthenticated = require("../middlewares/is_authenticated");
+const logger = require("../helpers/logger");
 
 const {
   recupererIdCocktail,
