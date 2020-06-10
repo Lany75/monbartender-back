@@ -32,6 +32,17 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true
         }
       },
+      quantite: {
+        allowNull: true,
+        type: DataTypes.DECIMAL
+      },
+      unite: {
+        allowNull: true,
+        type: DataTypes.STRING,
+        validate: {
+          len: [0, 50]
+        }
+      },
       createdAt: {
         field: "createdAt",
         allowNull: false,
@@ -60,3 +71,15 @@ module.exports = (sequelize, DataTypes) => {
 
   return cocktailIngredient;
 };
+
+/* module.exports = (sequelize, DataTypes) => {
+  const cocktailIngredient = sequelize.define(
+    "CocktailIngredient",
+    {},
+    {
+      tableName: "cocktails_ingredients"
+    }
+  );
+
+  return cocktailIngredient;
+}; */

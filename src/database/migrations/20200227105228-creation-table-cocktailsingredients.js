@@ -21,6 +21,14 @@ module.exports = {
           key: "id"
         }
       },
+      quantite: {
+        allowNull: true,
+        type: Sequelize.DECIMAL
+      },
+      unite: {
+        allowNull: true,
+        type: Sequelize.STRING(50)
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

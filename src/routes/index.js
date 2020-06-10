@@ -14,8 +14,8 @@ mainRouter.use("/api/v1/ingredients", ingredientsRouter);
 mainRouter.use("/api/v1/verres", verresRouter);
 mainRouter.use("/api/v1/gestion", gestionRouter);
 
-/* mainRouter.use("*", (req, res) => {
+mainRouter.use("*", (req, res) => {
   res.status(404).json("Tu t'es perdu !!!");
-}); */
+});
 
 module.exports = mainRouter;

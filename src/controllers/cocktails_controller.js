@@ -7,8 +7,6 @@ const {
 } = require("../models");
 require("express-async-errors");
 
-const NotFoundError = require("../helpers/errors/404_not_found");
-
 const getRandomInteger = require("../utils/getRandomInteger");
 
 const cocktailController = {
@@ -27,7 +25,7 @@ const cocktailController = {
   // grâce à l'id passé en paramètre
   recupererUnCocktail: async id => {
     const cocktail = await Cocktail.findByPk(id, {
-      attributes: ["nom", "photo"],
+      attributes: ["id", "nom", "photo"],
       include: [
         {
           model: Verre,
@@ -52,7 +50,6 @@ const cocktailController = {
         }
       ]
     });
-    // if (!cocktail) throw new NotFoundError("court", "long");
 
     return cocktail;
   },

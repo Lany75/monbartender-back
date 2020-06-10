@@ -1,3 +1,5 @@
+//const cocktailIngredientModel = require("./cocktails-Ingredients");
+
 module.exports = (sequelize, DataTypes) => {
   /**
    * @swagger

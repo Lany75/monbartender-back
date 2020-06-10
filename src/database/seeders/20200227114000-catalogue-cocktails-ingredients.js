@@ -1,4 +1,4 @@
-const catalogueCocktailsIngredients = require("../seeds/20200227114100-catalogue-cocktailsingredients");
+const catalogueCocktailsIngredients = require("../seeds/20200227114100-catalogue-cocktails-ingredients");
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
