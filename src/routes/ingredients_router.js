@@ -55,6 +55,31 @@ ingredientRouter.get("/", async (request, response) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/ingredients/quantite:
+ *   get:
+ *     tags:
+ *       - Ingredients
+ *     description: Retourne la quantité pour chaque ingrédient d'un cocktail
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: cocktailId
+ *         schema:
+ *           type: string
+ *         description: l'id d'un cocktail
+ *     responses:
+ *       200:
+ *         description: Un tableau contenant l'id de l'ingredient et sa quantité
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Ingredient'
+ *       404:
+ *         description: Aucun ingredient n'existe
+ */
 ingredientRouter.get("/quantite", async (request, response) => {
   const { cocktailId } = request.query;
   const quantiteIngredient = [];
