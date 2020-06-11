@@ -76,7 +76,7 @@ ingredientRouter.get("/", async (request, response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Ingredient'
+ *               $ref: '#/components/schemas/CocktailIngredient'
  *       404:
  *         description: Aucun ingredient n'existe
  */

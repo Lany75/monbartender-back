@@ -1,4 +1,31 @@
 module.exports = (sequelize, DataTypes) => {
+  /**
+   * @swagger
+   * components:
+   *   schemas:
+   *     CocktailIngredient:
+   *       type: object
+   *       required:
+   *       - cocktailId
+   *       - ingredientId
+   *       - quantite
+   *       - unite
+   *       - createdAt
+   *       - updatedAt
+   *       properties:
+   *         cocktailId:
+   *           type: string
+   *         ingredientId:
+   *           type: string
+   *         quantite:
+   *           type: float
+   *         unite:
+   *           type: string
+   *         createdAt:
+   *           type: string
+   *         updatedAt:
+   *           type: string
+   */
   const cocktailIngredient = sequelize.define(
     "CocktailIngredient",
     {
