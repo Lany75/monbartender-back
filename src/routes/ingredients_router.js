@@ -3,7 +3,8 @@ const isAuthenticated = require("../middlewares/is_authenticated");
 const {
   recupererLesIngredients,
   recupererIdIngredient,
-  ajouterUnIngredientDB
+  ajouterUnIngredientDB,
+  recupererQuantiteIngredient
 } = require("../controllers/ingredients_controller");
 const {
   recupererIdBar,
@@ -52,6 +53,21 @@ ingredientRouter.get("/", async (request, response) => {
     response.status(OK);
     response.json(ingredients);
   }
+});
+
+ingredientRouter.get("/quantite", async (request, response) => {
+  const { cocktailId } = request.query;
+  const quantiteIngredient = [];
+
+  logger.info(`Trying to get quantity of ingredient`);
+  const quantite = await recupererQuantiteIngredient(cocktailId);
+
+  for (let i = 0; i < quantite.length; i++) {
+    quantiteIngredient.push(quantite[i].dataValues);
+  }
+
+  response.status(OK);
+  response.json(quantiteIngredient);
 });
 
 /**

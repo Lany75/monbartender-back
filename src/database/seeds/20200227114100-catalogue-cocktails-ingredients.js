@@ -148,7 +148,7 @@ module.exports = [
     //sucre
     ingredient_id: "c3fd98ec-cad4-49c9-9a74-63ca90489a0a",
     quantite: "2",
-    unite: "gramme",
+    unite: "gr",
     createdAt: now,
     updatedAt: now
   },

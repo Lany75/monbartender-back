@@ -23,9 +23,11 @@ module.exports = [
     id: "cc2235c4-5214-4774-82f9-100ff72e5d39",
     etape_1: "Réalisez la recette dans un verre à mélange.",
     etape_2:
-      "Agiter les ingrédients dans un verre à mélange avec des glaçons (pour refroidir sans trop diluer). Verser dans le verre, puis ajouter à convenance sel de céleri, sel et poivre.",
-    etape_3: 'Servir dans un verre de type "Tumbler".',
-    etape_4: "Décorer d'une branche de celeri.",
+      "Agiter les ingrédients dans un verre à mélange avec des glaçons (pour refroidir sans trop diluer).",
+    etape_3:
+      "Verser dans le verre, puis ajouter à votre convenance le sel de céleri.",
+    etape_4: 'Servir dans un verre de type "Tumbler".',
+    etape_5: "Décorer d'une branche de celeri.",
     created_at: now,
     updated_at: now
   },
@@ -48,7 +50,7 @@ module.exports = [
     etape_1: 'Recette réalisée directement dans un verre de type "Tumbler".',
     etape_2:
       "Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'ensemble.",
-    etape_3: "Ajouter les glacons pilés, puis l'eau gazeuse'.",
+    etape_3: "Ajouter les glacons pilés, puis l'eau gazeuse.",
     etape_4: "Décorer d'une feuille de menthe et servir avec une paille.",
     created_at: now,
     updated_at: now

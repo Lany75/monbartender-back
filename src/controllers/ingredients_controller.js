@@ -1,4 +1,4 @@
-const { Ingredient } = require("../models");
+const { Ingredient, CocktailIngredient } = require("../models");
 const uuid = require("uuid");
 
 const ingredientController = {
@@ -49,6 +49,15 @@ const ingredientController = {
       id: uuid(),
       nom: nvIngredient
     });
+  },
+
+  recupererQuantiteIngredient: async cocktailId => {
+    const quantiteIngredient = await CocktailIngredient.findAll({
+      where: { cocktailId: cocktailId },
+      attributes: ["ingredientId", "quantite", "unite"]
+    });
+
+    return quantiteIngredient;
   }
 };
 
