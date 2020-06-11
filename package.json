@@ -7,7 +7,9 @@
     "start": "node src/server.js",
     "start:dev": "nodemon src/server.js",
     "test": "mocha test/*.js --recursive --timeout 10000",
-    "migrate:undo": "npx sequelize-cli db:migrate:undo:all --config config/config.json --env local",
+    "migrate:undo-local": "npx sequelize-cli db:migrate:undo:all --config config/config.json --env local",
+    "migrate:undo-staging": "npx sequelize-cli db:migrate:undo:all --config config/config.json --env staging",
+    "migrate:undo-prod": "npx sequelize-cli db:migrate:undo:all --config config/config.json --env production",
     "feed-local-db": "npx sequelize-cli db:migrate --config config/config.json --env local && npx sequelize-cli db:seed:all --config config/config.json --env local",
     "feed-staging-db": "npx sequelize-cli db:migrate --config config/config.json --env staging && npx sequelize-cli db:seed:all --config config/config.json --env staging",
     "feed-prod-db": "npx sequelize-cli db:migrate --config config/config.json --env production && npx sequelize-cli db:seed:all --config config/config.json --env production"
