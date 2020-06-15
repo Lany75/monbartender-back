@@ -40,7 +40,7 @@ const cocktailsList = [
 process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
-describe("MonBartender", function() {
+describe("MonBartender cocktails_router", function() {
   let server;
 
   // START NEW SERVER FOR EACH TEST
@@ -71,6 +71,25 @@ describe("MonBartender", function() {
     });
   });
 
+  describe("/GET /api/v1/cocktail-du-moment succeed", function() {
+    it("it should return 200 with the list of cocktail of the day", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/cocktail-du-moment")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          var array = Array.from(res.body);
+          array.forEach(element => {
+            element.should.have.property("id");
+            element.should.have.property("nom");
+            element.should.have.property("photo");
+          });
+        });
+    });
+  });
+
   describe("/GET /api/v1/cocktails/aleatoire succeed", function() {
     it("it should return 200 with a random list of cocktail", function() {
       return chai
@@ -86,11 +105,11 @@ describe("MonBartender", function() {
     });
   });
 
-  describe("/GET /api/v1/cocktails/rechercherparnom succeed", function() {
+  describe("/GET /api/v1/cocktails/rechercher-par-nom succeed", function() {
     it("it should return 200 with a list of cocktail where the name match the one provided", function() {
       return chai
         .request(server)
-        .get("/api/v1/cocktails/rechercherparnom?nom=mojito")
+        .get("/api/v1/cocktails/rechercher-par-nom?nom=mojito")
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(200);
@@ -105,11 +124,11 @@ describe("MonBartender", function() {
     });
   });
 
-  describe("/GET /api/v1/cocktails/rechercherparnom with unknown cocktail should return an empty array", function() {
+  describe("/GET /api/v1/cocktails/rechercher-par-nom with unknown cocktail should return an empty array", function() {
     it("it should return 200 with an empty array", function() {
       return chai
         .request(server)
-        .get("/api/v1/cocktails/rechercherparnom?nom=unknown")
+        .get("/api/v1/cocktails/rechercher-par-nom?nom=unknown")
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(200);
@@ -126,7 +145,9 @@ describe("MonBartender", function() {
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(200);
-          //res.body.should.have.property('id').eql('7f73cf2f-7ed7-4be4-8640-69dbbc1b2927');
+          res.body.should.have
+            .property("id")
+            .eql("7f73cf2f-7ed7-4be4-8640-69dbbc1b2927");
           res.body.should.have.property("nom").eql("Mojito");
           res.body.should.have.property("photo").eql("/api/images/mojito.jpg");
           res.body.should.have.property("Verre").eql({

@@ -359,10 +359,11 @@ cocktailsRouter.get(
       logger.info(`Cocktail not found`);
       response.status(NOT_FOUND);
       response.json("Le cocktail n'a pas été trouvé");
+    } else {
+      logger.info(`Cocktail found`);
+      response.status(OK);
+      response.json(cocktail);
     }
-    logger.info(`Cocktail found`);
-    response.status(OK);
-    response.json(cocktail);
   }
 );
 

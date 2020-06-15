@@ -10,8 +10,10 @@ const {
   recupererIdBar,
   ajouterUnIngredientAuBar,
   recupererUnBar,
-  supprimerUnIngredientDuBar
+  supprimerUnIngredientDuBar,
+  estDansLeBar
 } = require("../controllers/bars_controller");
+const { recupererUnCocktail } = require("../controllers/cocktails_controller");
 const {
   OK,
   CREATED,
@@ -20,6 +22,8 @@ const {
 } = require("../helpers/status_code");
 const logger = require("../helpers/logger");
 const ingredientRouter = express.Router();
+
+const regex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
 
 /**
  * @swagger
@@ -84,15 +88,32 @@ ingredientRouter.get("/quantite", async (request, response) => {
   const { cocktailId } = request.query;
   const quantiteIngredient = [];
 
-  logger.info(`Trying to get quantity of ingredient`);
-  const quantite = await recupererQuantiteIngredient(cocktailId);
+  logger.info("Verifying cocktailId match with a uuid definition");
+  if (!regex.test(cocktailId)) {
+    logger.info("cocktailId is not an uuid");
+    response.status(NOT_FOUND).json(`${cocktailId} is not an uuid`);
+  } else {
+    logger.info(`Verifying cocktail with id ${cocktailId} exist`);
+    const cocktail = await recupererUnCocktail(cocktailId);
+    //console.log(cocktail);
 
-  for (let i = 0; i < quantite.length; i++) {
-    quantiteIngredient.push(quantite[i].dataValues);
+    if (!cocktail) {
+      logger.info(`cocktail with id ${cocktailId} doesn't exist`);
+      response.status(NOT_FOUND).json("Aucun cocktail avec cet id n'existe");
+    } else {
+      logger.info(`Trying to get quantity of ingredient`);
+      const quantite = await recupererQuantiteIngredient(cocktailId);
+
+      for (let i = 0; i < quantite.length; i++) {
+        quantiteIngredient.push(quantite[i].dataValues);
+      }
+
+      logger.info(`quantity of ingredient has been found`);
+
+      response.status(OK);
+      response.json(quantiteIngredient);
+    }
   }
-
-  response.status(OK);
-  response.json(quantiteIngredient);
 });
 
 /**
@@ -134,12 +155,15 @@ ingredientRouter.post(
   async (request, response) => {
     const mail = request.user.email;
     const nomNouvelIngredient = request.params.nomNouvelIngredient;
+    let exist = false;
 
     logger.info(
       `Trying to add the ingredient:${nomNouvelIngredient} to ${mail}'s bar`
     );
 
     const idIngredient = await recupererIdIngredient(nomNouvelIngredient);
+    console.log(idIngredient);
+
     const idBar = await recupererIdBar(mail);
 
     if (!idBar) {
@@ -157,19 +181,32 @@ ingredientRouter.post(
         );
     }
 
-    try {
-      logger.info(`Adding ingredient ${nomNouvelIngredient} to ${mail}'s bar`);
-      await ajouterUnIngredientAuBar(idIngredient, idBar);
-    } catch (e) {
-      logger.error(
-        `An error has occured while adding ingredient:${nomNouvelIngredient} to ${mail}'s bar, message: ${e.message}, stack trace: ${e.stack}`
+    if (idBar && idIngredient) {
+      logger.info(
+        `verify ingredient:${nomNouvelIngredient} to ${mail}'s bar is existing`
       );
-      response.status(BAD_REQUEST).json("L'ingrédient existe déja");
+      exist = await estDansLeBar(idBar, idIngredient);
+
+      if (exist === false) {
+        logger.info(`${nomNouvelIngredient} doesn't exist in ${mail}'s bar `);
+        try {
+          logger.info(
+            `Adding ingredient ${nomNouvelIngredient} to ${mail}'s bar`
+          );
+          await ajouterUnIngredientAuBar(idIngredient, idBar);
+        } catch (e) {
+          logger.error(
+            `An error has occured while adding ingredient:${nomNouvelIngredient} to ${mail}'s bar, message: ${e.message}, stack trace: ${e.stack}`
+          );
+        }
+      } else {
+        logger.info(`${nomNouvelIngredient} already exist in ${mail}'s bar`);
+      }
+
+      const bar = await recupererUnBar(mail);
+
+      response.status(CREATED).json(bar);
     }
-
-    const bar = await recupererUnBar(mail);
-
-    response.status(CREATED).json(bar);
   }
 );
 
@@ -237,13 +274,15 @@ ingredientRouter.delete(
         );
     }
 
-    logger.info(
-      `Removing ingredient ${nomIngredientSupprime} from ${mail}'s bar`
-    );
-    await supprimerUnIngredientDuBar(idIngredient, idBar);
+    if (idBar && idIngredient) {
+      logger.info(
+        `Removing ingredient ${nomIngredientSupprime} from ${mail}'s bar`
+      );
+      await supprimerUnIngredientDuBar(idIngredient, idBar);
 
-    const bar = await recupererUnBar(mail);
-    response.status(OK).json(bar);
+      const bar = await recupererUnBar(mail);
+      response.status(OK).json(bar);
+    }
   }
 );
 

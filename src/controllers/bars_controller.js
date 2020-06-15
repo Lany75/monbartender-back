@@ -67,6 +67,18 @@ const barController = {
         ingredient_id: ingredientId
       }
     });
+  },
+
+  estDansLeBar: async (userId, ingredientId) => {
+    const exist = await BarIngredient.findOne({
+      where: {
+        bar_id: userId,
+        ingredient_id: ingredientId
+      }
+    });
+
+    if (!exist) return false;
+    else return true;
   }
 };
 

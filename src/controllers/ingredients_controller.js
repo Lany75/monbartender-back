@@ -6,7 +6,7 @@ const ingredientController = {
   recupererLesIngredients: async () => {
     const ingredients = await Ingredient.findAll({
       order: [["nom", "ASC"]],
-      attributes: ["nom"],
+      attributes: ["id", "nom"],
       raw: true
     });
 
@@ -29,8 +29,7 @@ const ingredientController = {
       attributes: ["id"]
     });
     if (!idIngredient) return null;
-
-    return idIngredient.dataValues.id;
+    else return idIngredient.dataValues.id;
   },
 
   //fonction recupererNomIngredient = retourne le nom de l'ingrédient trouvé dans la table ingredients (modèle Ingredient)

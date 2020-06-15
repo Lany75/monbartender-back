@@ -10,17 +10,17 @@ const unknownUnitTestUser = "unit-testing-unknown@monbartender.com";
 process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
-describe("MonBartender", function() {
+describe("MonBartender bars_router", function() {
   var server;
 
   // START NEW SERVER FOR EACH TEST
   beforeEach(async function() {
     delete require.cache[require.resolve("../src/server")];
     server = require("../src/server");
-    await cleanDb();
+    await cleanDbBefore();
   });
 
-  async function cleanDb() {
+  async function cleanDbBefore() {
     // Clean BAR Unknown User
     var bar = await Bar.findOne({
       where: { personne_id: unknownUnitTestUser },
@@ -52,13 +52,38 @@ describe("MonBartender", function() {
     });
     await BarIngredient.create({
       barId: existingUnitTestUserBarId,
-      ingredientId: "b233195d-a090-4b96-a76d-f016c842c472" // JUS DE CITRON
+      ingredientId: "64b1111d-8ab9-4051-887b-90a275cec851" // Sel de Celeri
     });
   }
 
   afterEach(async function() {
-    await cleanDb();
+    await cleanDbAfter();
   });
+
+  async function cleanDbAfter() {
+    // Clean BAR Unknown User
+    var bar = await Bar.findOne({
+      where: { personne_id: unknownUnitTestUser },
+      attributes: ["id"]
+    });
+
+    if (bar) {
+      await BarIngredient.destroy({
+        where: { bar_id: bar.id }
+      });
+      await Bar.destroy({
+        where: { id: bar.id }
+      });
+    }
+
+    // Clean BAR Known User
+    await BarIngredient.destroy({
+      where: { bar_id: existingUnitTestUserBarId }
+    });
+    await Bar.destroy({
+      where: { id: existingUnitTestUserBarId }
+    });
+  }
 
   // BAR Unit Testing
   describe("/GET /api/v1/bars authorized existing user", function() {
@@ -79,6 +104,7 @@ describe("MonBartender", function() {
         });
     });
   });
+
   describe("/GET /api/v1/bars authorized unexisting user", function() {
     it("it should GET an existing user's bar", function() {
       return chai
@@ -95,6 +121,7 @@ describe("MonBartender", function() {
         });
     });
   });
+
   describe("/GET /api/v1/bars unauthorized", function() {
     it("it should return 401 Non autorisé", function() {
       return chai

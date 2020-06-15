@@ -50,6 +50,7 @@ const cocktailController = {
         }
       ]
     });
+    //console.log(cocktail);
 
     return cocktail;
   },
