@@ -227,92 +227,32 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
 
 cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
   const { ingredient1, ingredient2, ingredient3 } = request.query;
-  let idIngredient1, cocktailsIngredient1;
-  let idIngredient2, cocktailsIngredient2;
-  let idIngredient3, cocktailsIngredient3;
-  const cocktails = [];
-
-  if (ingredient1 === "" && ingredient2 === "" && ingredient3 === "") {
-    logger.info(`Ingredients are not given`);
-    response.status(NOT_FOUND).json("Pas d'ingrédient, pas de cocktails");
-  }
-
-  if (!ingredient1 && !ingredient2 && !ingredient3) {
-    logger.info(`Ingredients are not given`);
-    response.status(NOT_FOUND).json("Pas d'ingrédient, pas de cocktails");
-  }
-
-  if (ingredient1) {
-    logger.info(`Trying to get ${ingredient1}'s id`);
-    idIngredient1 = await recupererIdIngredient(ingredient1);
-    if (!idIngredient1) {
-      logger.info(`${ingredient1} does not exist`);
-      response.status(NOT_FOUND).json("l'ingredient n'existe pas");
-    }
-    logger.info(`Trying to get cocktails include ${ingredient1}`);
-    cocktailsIngredient1 = await rechercherCocktailsParIngredients(
-      idIngredient1
-    );
-  }
-
-  if (ingredient2) {
-    logger.info(`Trying to get ${ingredient2}'s id`);
-    idIngredient2 = await recupererIdIngredient(ingredient2);
-    if (!idIngredient2) {
-      logger.info(`${ingredient2} does not exist`);
-      response.status(NOT_FOUND).json("l'ingredient n'existe pas");
-    }
-    logger.info(`Trying to get cocktails include ${ingredient2}`);
-    cocktailsIngredient2 = await rechercherCocktailsParIngredients(
-      idIngredient2
-    );
-  }
-
-  if (ingredient3) {
-    logger.info(`Trying to get ${ingredient3}'s id`);
-    idIngredient3 = await recupererIdIngredient(ingredient3);
-    if (!idIngredient3) {
-      logger.info(`${ingredient3} does not exist`);
-      response.status(NOT_FOUND).json("l'ingredient n'existe pas");
-    }
-    logger.info(`Trying to get cocktails include ${ingredient3}`);
-    cocktailsIngredient3 = await rechercherCocktailsParIngredients(
-      idIngredient3
-    );
-  }
-
+  const tableauIngredient = [ingredient1, ingredient2, ingredient3];
   const tableauCocktails = [];
 
-  if (idIngredient1) {
-    cocktailsIngredient1.map(ci1 => {
-      tableauCocktails.push(ci1.dataValues.cocktailId);
-    });
-  }
-  if (idIngredient2) {
-    cocktailsIngredient2.map(ci2 => {
-      tableauCocktails.push(ci2.dataValues.cocktailId);
-    });
-  }
-  if (idIngredient3) {
-    cocktailsIngredient3.map(ci3 => {
-      tableauCocktails.push(ci3.dataValues.cocktailId);
-    });
-  }
+  logger.info(
+    `Trying to get cocktails with ingredients ${ingredient1}, ${ingredient2}, ${ingredient3}`
+  );
+  const cocktails = await rechercherCocktailsParIngredients(tableauIngredient);
 
-  const tableauCocktailsUnique = new Set(tableauCocktails);
-  const tabIdResultat = [...tableauCocktailsUnique];
-
-  for (let i = 0; i < tabIdResultat.length; i++) {
-    cocktailProvisoire = await recupererUnCocktail(tabIdResultat[i]);
-
-    cocktails.push({
-      id: tabIdResultat[i],
-      nom: cocktailProvisoire.dataValues.nom,
-      photo: cocktailProvisoire.dataValues.photo
+  cocktails.map(cocktail => {
+    tableauCocktails.push({
+      id: cocktail.dataValues.id,
+      nom: cocktail.dataValues.nom,
+      photo: cocktail.dataValues.photo
     });
-  }
+  });
 
-  response.status(OK).json(cocktails);
+  if (tableauCocktails.length === 0) {
+    logger.info(`No cocktails found`);
+    response.status(NOT_FOUND).json(`Aucun cocktail trouvé`);
+  } else {
+    logger.info(`Cocktails found, remove duplicate`);
+    const tableauCocktailsUnique = new Set(tableauCocktails);
+    const sortedCocktails = [...tableauCocktailsUnique];
+
+    response.status(OK).json(sortedCocktails);
+  }
 });
 
 /**

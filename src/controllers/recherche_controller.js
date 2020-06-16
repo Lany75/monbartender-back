@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-const { Cocktail, CocktailIngredient } = require("../models/");
+const { Cocktail, Ingredient } = require("../models/");
 
 const rechercheController = {
   //fonction rechercherUnCocktailParSonNom = retourne un tableau de tous les cocktails de la table cocktails (modele Cocktail)
@@ -14,7 +14,6 @@ const rechercheController = {
           "%" + nom + "%"
         )
       },
-      //where: { nom: { [Op.like]: "%" + nom + "%" } },
       attributes: ["id", "nom", "photo"]
     });
     return cocktail;
@@ -22,14 +21,23 @@ const rechercheController = {
 
   //fonction rechercherCocktailsParIngredients = retourne un tableau de tous les cocktails de la table cocktails (modele Cocktail)
   //comportant le nom passé en paramètre
-  rechercherCocktailsParIngredients: async idIng => {
-    const idCocktails = await CocktailIngredient.findAll({
-      where: {
-        ingredientId: idIng
-      },
-      attributes: ["cocktailId"]
+  rechercherCocktailsParIngredients: async ingredients => {
+    const cocktails = await Cocktail.findAll({
+      order: [["nom", "ASC"]],
+      attributes: ["id", "nom", "photo"],
+      include: [
+        {
+          model: Ingredient,
+          where: {
+            nom: {
+              [Op.any]: ingredients
+            }
+          }
+        }
+      ]
     });
-    return idCocktails;
+
+    return cocktails;
   }
 };
 

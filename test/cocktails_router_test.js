@@ -37,6 +37,17 @@ const cocktailsList = [
   }
 ];
 
+const etapesPreparation = {
+  id: "288e112a-a831-40fc-919f-a9b987d28c6b",
+  etape1: 'Recette réalisée directement dans un verre de type "Tumbler".',
+  etape2:
+    "Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'ensemble.",
+  etape3: "Ajouter les glacons pilés, puis le rhum à hauteur des glacons.",
+  etape4: "Compléter avec de l'eau gazeuse.",
+  etape5: "Décorer d'une feuille de menthe et servir avec une paille.",
+  etape6: null
+};
+
 process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
@@ -154,19 +165,9 @@ describe("MonBartender cocktails_router", function() {
             id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
             nom: "Tumbler"
           });
-          res.body.should.have.property("EtapesPreparation").eql({
-            id: "288e112a-a831-40fc-919f-a9b987d28c6b",
-            etape1:
-              'Recette réalisée directement dans un verre de type "Tumbler".',
-            etape2:
-              "Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'ensemble.",
-            etape3:
-              "Ajouter les glacons pilés, puis le rhum à hauteur des glacons.",
-            etape4: "Compléter avec de l'eau gazeuse.",
-            etape5:
-              "Décorer d'une feuille de menthe et servir avec une paille.",
-            etape6: null
-          });
+          res.body.should.have
+            .property("EtapesPreparation")
+            .eql(etapesPreparation);
         });
     });
   });
@@ -192,6 +193,60 @@ describe("MonBartender cocktails_router", function() {
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(404);
+        });
+    });
+  });
+
+  describe("/GET /api/v1/cocktails/rechercher-par-ingredient succeed", function() {
+    it("it should return status code 200 with a list of cocktail where one of ingredient is include", function() {
+      return chai
+        .request(server)
+        .get(
+          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco&ingredient2=vodka&ingredient3=jus%20de%20tomate"
+        )
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          var array = Array.from(res.body);
+          array.forEach(element => {
+            element.should.have.property("id");
+            element.should.have.property("nom");
+            element.should.have.property("photo");
+          });
+          res.body.should.be.eql([
+            {
+              id: "b258592b-57ac-4bda-8e07-1d2697f20770",
+              nom: "Bloody Mary",
+              photo: "/api/images/bloodyMary.jpg"
+            }
+          ]);
+        });
+    });
+  });
+
+  describe("/GET /api/v1/cocktails/rechercher-par-ingredient ingredients undefined", function() {
+    it("it should return status code 404 with the message Aucun cocktail trouvé", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-ingredient")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(404);
+          res.text.should.be.contain("Aucun cocktail trouvé");
+        });
+    });
+  });
+
+  describe("/GET /api/v1/cocktails/rechercher-par-ingredient one of ingredients doesn't exist in the db", function() {
+    it("it should return status code 404 with the message Aucun cocktail trouvé", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tomate")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(404);
+          res.text.should.be.contain("Aucun cocktail trouvé");
         });
     });
   });
