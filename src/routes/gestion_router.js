@@ -60,4 +60,12 @@ gestionRouter.put(
   }
 );
 
+gestionRouter.post("/cocktails", async (request, response) => {
+  console.log("on est dans l'ajout de cocktail");
+  console.log(request.body);
+
+  response.status(OK);
+  response.json(request.body);
+});
+
 module.exports = gestionRouter;
