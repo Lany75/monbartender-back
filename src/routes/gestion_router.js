@@ -64,6 +64,18 @@ gestionRouter.post("/cocktails", async (request, response) => {
   console.log("on est dans l'ajout de cocktail");
   console.log(request.body);
 
+  for (let i = 0; i < request.body.ingredients.length; i++) {
+    console.log(request.body.ingredients[0]);
+  }
+
+  /* console.log(request.body.nom);
+  console.log(request.body.photo);
+  console.log(request.body.verre);
+  console.log(request.body.ingredients.nomIng);
+  console.log(request.body.ingredients.quantiteIng);
+  console.log(request.body.ingredients.uniteIng);
+  console.log(request.body.etapes); */
+
   response.status(OK);
   response.json(request.body);
 });
