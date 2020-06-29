@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable("cocktails_ingredients", {
-      cocktail_id: {
+      cocktailId: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
@@ -11,7 +11,7 @@ module.exports = {
           key: "id"
         }
       },
-      ingredient_id: {
+      ingredientId: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,

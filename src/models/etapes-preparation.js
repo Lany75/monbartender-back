@@ -7,22 +7,16 @@ module.exports = (sequelize, DataTypes) => {
    *       type: object
    *       required:
    *       - id
+   *       - numEtape
+   *       - texte
    *       - createdAt
    *       - updatedAt
    *       properties:
    *         id:
    *           type: string
-   *         etape1:
-   *           type: text
-   *         etape2:
-   *           type: text
-   *         etape3:
-   *           type: text
-   *         etape4:
-   *           type: text
-   *         etape5:
-   *           type: text
-   *         etape6:
+   *         numEtape:
+   *           type: integer
+   *         texte:
    *           type: text
    *         createdAt:
    *           type: string
@@ -43,38 +37,15 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true
         }
       },
-      etape1: {
-        field: "etape_1",
-        allowNull: true,
-        type: DataTypes.TEXT
+      numEtape: {
+        allowNull: false,
+        type: DataTypes.INTEGER
       },
-      etape2: {
-        field: "etape_2",
-        allowNull: true,
-        type: DataTypes.TEXT
-      },
-      etape3: {
-        field: "etape_3",
-        allowNull: true,
-        type: DataTypes.TEXT
-      },
-      etape4: {
-        field: "etape_4",
-        allowNull: true,
-        type: DataTypes.TEXT
-      },
-      etape5: {
-        field: "etape_5",
-        allowNull: true,
-        type: DataTypes.TEXT
-      },
-      etape6: {
-        field: "etape_6",
-        allowNull: true,
+      texte: {
+        allowNull: false,
         type: DataTypes.TEXT
       },
       createdAt: {
-        field: "created_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -84,7 +55,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       updatedAt: {
-        field: "updated_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -98,6 +68,13 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "etapes_preparation"
     }
   );
+
+  EtapesPreparation.associate = models => {
+    EtapesPreparation.belongsToMany(models.Cocktail, {
+      through: "cocktails_etapes",
+      foreignKey: "etapeId"
+    });
+  };
 
   return EtapesPreparation;
 };

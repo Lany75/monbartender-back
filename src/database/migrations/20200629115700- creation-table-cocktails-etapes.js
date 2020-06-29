@@ -1,19 +1,25 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("bars", {
-      id: {
+    return queryInterface.createTable("cocktails_etapes", {
+      cocktailId: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        defaultValue: Sequelize.UUIDV4,
+        references: {
+          model: "cocktails",
+          key: "id"
+        }
       },
-      personneId: {
+      etapeId: {
         allowNull: false,
-        type: Sequelize.STRING(50)
-      },
-      droits: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN
+        primaryKey: true,
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        references: {
+          model: "etapes_preparation",
+          key: "id"
+        }
       },
       createdAt: {
         allowNull: false,
@@ -28,6 +34,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("bars");
+    return queryInterface.dropTable("cocktails_etapes");
   }
 };

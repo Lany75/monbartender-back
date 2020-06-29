@@ -1,4 +1,3 @@
-const uuid = require("uuid/v4");
 const moment = require("moment");
 
 const now = moment()
@@ -9,164 +8,152 @@ module.exports = [
   {
     //Mojito
     cocktailId: "7f73cf2f-7ed7-4be4-8640-69dbbc1b2927",
-    //menthe
-    ingredientId: "740367a4-dedf-4093-86d1-50eac62b2521",
-    quantite: "8",
-    unite: "feuilles",
+    //etape 1
+    etapeId: "e132fd2a-56b7-4a13-91ad-d4883a970baf",
     createdAt: now,
     updatedAt: now
   },
   {
     //Mojito
     cocktailId: "7f73cf2f-7ed7-4be4-8640-69dbbc1b2927",
-    //sucre
-    ingredientId: "c3fd98ec-cad4-49c9-9a74-63ca90489a0a",
-    quantite: "5",
-    unite: "gr",
+    //etape 2
+    etapeId: "aa00ab00-02de-44af-b5ab-cf808d18e82f",
     createdAt: now,
     updatedAt: now
   },
   {
     //Mojito
     cocktailId: "7f73cf2f-7ed7-4be4-8640-69dbbc1b2927",
-    //rhum
-    ingredientId: "bd799ef3-d7ae-4975-8be0-8f2397fa2b18",
-    quantite: "6",
-    unite: "cl",
+    //etape 3
+    etapeId: "ec0cfbb1-5911-46c1-a479-84fce3c62ddc",
     createdAt: now,
     updatedAt: now
   },
   {
     //Mojito
     cocktailId: "7f73cf2f-7ed7-4be4-8640-69dbbc1b2927",
-    //jus de citron vert
-    ingredientId: "38925fb2-2267-47c7-b62e-e134e41a51c7",
-    quantite: "3",
-    unite: "cl",
+    //etape 4
+    etapeId: "4528e3ec-be76-4202-ac1e-585a08f67dad",
     createdAt: now,
     updatedAt: now
   },
   {
     //Mojito
     cocktailId: "7f73cf2f-7ed7-4be4-8640-69dbbc1b2927",
-    //eau gazeuse
-    ingredientId: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
+    //etape 5
+    etapeId: "9bec4f6b-3516-4991-a888-540f3272694f",
     createdAt: now,
     updatedAt: now
   },
   {
     //Bloody Mary
     cocktailId: "b258592b-57ac-4bda-8e07-1d2697f20770",
-    //jus de tomate
-    ingredientId: "e624bd35-e414-4874-a406-14a7d9d24231",
-    quantite: "9",
-    unite: "cl",
+    //etape 1
+    etapeId: "7fe02232-a8f4-456d-ad52-cde165adad16",
     createdAt: now,
     updatedAt: now
   },
   {
     //Bloody Mary
     cocktailId: "b258592b-57ac-4bda-8e07-1d2697f20770",
-    //vodka
-    ingredientId: "26d4b1dc-91bf-49ed-9399-5c50bd11b69e",
-    quantite: "9",
-    unite: "cl",
+    //etape 2
+    etapeId: "398ec5e2-7865-4808-9e76-49a475ac2288",
     createdAt: now,
     updatedAt: now
   },
   {
     //Bloody Mary
     cocktailId: "b258592b-57ac-4bda-8e07-1d2697f20770",
-    //worcestershire
-    ingredientId: "13999790-02af-4b2e-9775-7ac19fc35f1b",
-    quantite: "2",
-    unite: "gouttes",
+    //etape 3
+    etapeId: "bc270049-d689-4ee9-bbcd-da8f1863ddb9",
     createdAt: now,
     updatedAt: now
   },
   {
     //Bloody Mary
     cocktailId: "b258592b-57ac-4bda-8e07-1d2697f20770",
-    //tabasco
-    ingredientId: "6793d13b-e38c-4183-825b-df2ca8957fca",
-    quantite: "1",
-    unite: "goutte",
+    //etape 4
+    etapeId: "0b30b16a-b8e1-4c66-b49e-fd7e6a425a48",
     createdAt: now,
     updatedAt: now
   },
   {
     //Bloody Mary
     cocktailId: "b258592b-57ac-4bda-8e07-1d2697f20770",
-    //sel de celeri
-    ingredientId: "64b1111d-8ab9-4051-887b-90a275cec851",
+    //etape 5
+    etapeId: "56e49143-164d-4dda-913f-c7da253e8a82",
     createdAt: now,
     updatedAt: now
   },
   {
     //Margarita
     cocktailId: "7e124810-e9a7-4724-ad48-c6a24bfaa1a5",
-    //tequila
-    ingredientId: "a2631513-a18f-4629-8bef-90a773290709",
-    quantite: "5",
-    unite: "cl",
+    //etape 1
+    etapeId: "0d36c58c-ab65-4a5c-9fc5-f71d4022e3e6",
     createdAt: now,
     updatedAt: now
   },
   {
     //Margarita
     cocktailId: "7e124810-e9a7-4724-ad48-c6a24bfaa1a5",
-    //triple sec
-    ingredientId: "5ef2e951-3704-43cf-b062-f60eac65ec5d",
-    quantite: "3",
-    unite: "cl",
+    //etape 2
+    etapeId: "8788b31d-5f6e-48ba-a847-220255bb7e90",
     createdAt: now,
     updatedAt: now
   },
   {
     //Margarita
     cocktailId: "7e124810-e9a7-4724-ad48-c6a24bfaa1a5",
-    //jus de citron vert
-    ingredientId: "38925fb2-2267-47c7-b62e-e134e41a51c7",
-    quantite: "2",
-    unite: "cl",
+    //etape 3
+    etapeId: "93ab24b2-bc51-4f9f-bdc9-0442cb71b3c5",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    //Margarita
+    cocktailId: "7e124810-e9a7-4724-ad48-c6a24bfaa1a5",
+    //etape 4
+    etapeId: "fd802959-a288-4265-b744-ad4e29feab2f",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    //Margarita
+    cocktailId: "7e124810-e9a7-4724-ad48-c6a24bfaa1a5",
+    //etape 5
+    etapeId: "2e438d8a-093b-4b29-9e92-59271a94a03c",
     createdAt: now,
     updatedAt: now
   },
   {
     //Virgin Mojito
     cocktailId: "f3714a47-8359-4552-850c-277b3b56fdd0",
-    //menthe
-    ingredientId: "740367a4-dedf-4093-86d1-50eac62b2521",
-    quantite: "8",
-    unite: "feuilles",
+    //etape 1
+    etapeId: "36b4e87f-ee3c-4d1e-9875-40701dc53da6",
     createdAt: now,
     updatedAt: now
   },
   {
     //Virgin Mojito
     cocktailId: "f3714a47-8359-4552-850c-277b3b56fdd0",
-    //sucre
-    ingredientId: "c3fd98ec-cad4-49c9-9a74-63ca90489a0a",
-    quantite: "2",
-    unite: "gr",
+    //etape 2
+    etapeId: "604f3c47-3233-4e90-bd79-92da5154bea5",
     createdAt: now,
     updatedAt: now
   },
   {
     //Virgin Mojito
     cocktailId: "f3714a47-8359-4552-850c-277b3b56fdd0",
-    //jus de citron vert
-    ingredientId: "38925fb2-2267-47c7-b62e-e134e41a51c7",
-    quantite: "3",
-    unite: "cl",
+    //etape 3
+    etapeId: "75e46d7e-5a1c-4a2b-acc4-5f1e179914a7",
     createdAt: now,
     updatedAt: now
   },
   {
     //Virgin Mojito
     cocktailId: "f3714a47-8359-4552-850c-277b3b56fdd0",
-    //eau gazeuse
-    ingredientId: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
+    //etape 4
+    etapeId: "8f09ee71-b660-4c61-ae77-60a315d59313",
     createdAt: now,
     updatedAt: now
   }

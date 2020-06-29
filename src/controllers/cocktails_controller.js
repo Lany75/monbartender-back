@@ -14,7 +14,7 @@ const cocktailController = {
   recupererLesCocktails: async () => {
     const cocktails = await Cocktail.findAll({
       order: [["nom", "ASC"]],
-      attributes: ["id", "nom", "photo", "verre_id", "etapes_preparation_id"],
+      attributes: ["id", "nom", "photo", "verreId"],
       raw: true
     });
 
@@ -38,19 +38,11 @@ const cocktailController = {
         },
         {
           model: EtapesPreparation,
-          attributes: [
-            "id",
-            "etape1",
-            "etape2",
-            "etape3",
-            "etape4",
-            "etape5",
-            "etape6"
-          ]
+          attributes: ["id", "numEtape", "texte"],
+          through: { attributes: [] }
         }
       ]
     });
-    //console.log(cocktail);
 
     return cocktail;
   },
@@ -67,7 +59,7 @@ const cocktailController = {
   // fonction recupererIdCocktailsMoment = retourne tous les id de la table cocktails_moment
   recupererIdCocktailsMoment: async () => {
     const cocktails = await CocktailsMoment.findAll({
-      attributes: ["cocktail_id"],
+      attributes: ["cocktailId"],
       raw: true
     });
 

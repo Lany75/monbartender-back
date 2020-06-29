@@ -51,13 +51,13 @@ describe("MonBartender ingredient_router", function() {
   async function cleanDbBefore() {
     // Clean BAR Unknown User
     var bar = await Bar.findOne({
-      where: { personne_id: unknownUnitTestUser },
+      where: { personneId: unknownUnitTestUser },
       attributes: ["id"]
     });
 
     if (bar) {
       await BarIngredient.destroy({
-        where: { bar_id: bar.id }
+        where: { barId: bar.id }
       });
       await Bar.destroy({
         where: { id: bar.id }
@@ -66,7 +66,7 @@ describe("MonBartender ingredient_router", function() {
 
     // Clean BAR Known User
     await BarIngredient.destroy({
-      where: { bar_id: existingUnitTestUserBarId }
+      where: { barId: existingUnitTestUserBarId }
     });
     await Bar.destroy({
       where: { id: existingUnitTestUserBarId }
@@ -91,13 +91,13 @@ describe("MonBartender ingredient_router", function() {
   async function cleanDbAfter() {
     // Clean BAR Unknown User
     var bar = await Bar.findOne({
-      where: { personne_id: unknownUnitTestUser },
+      where: { personneId: unknownUnitTestUser },
       attributes: ["id"]
     });
 
     if (bar) {
       await BarIngredient.destroy({
-        where: { bar_id: bar.id }
+        where: { barId: bar.id }
       });
       await Bar.destroy({
         where: { id: bar.id }
@@ -106,7 +106,7 @@ describe("MonBartender ingredient_router", function() {
 
     // Clean BAR Known User
     await BarIngredient.destroy({
-      where: { bar_id: existingUnitTestUserBarId }
+      where: { barId: existingUnitTestUserBarId }
     });
     await Bar.destroy({
       where: { id: existingUnitTestUserBarId }
@@ -143,9 +143,7 @@ describe("MonBartender ingredient_router", function() {
           res.should.have.status(201);
           res.body.should.be.a("object");
           res.body.should.have.property("id");
-          res.body.should.have
-            .property("personne_id")
-            .eql(existingUnitTestUser);
+          res.body.should.have.property("personneId").eql(existingUnitTestUser);
           res.body.should.have.property("droits");
           res.body.should.have.property("Ingredients");
         });
@@ -208,9 +206,7 @@ describe("MonBartender ingredient_router", function() {
           res.should.have.status(200);
           res.body.should.be.a("object");
           res.body.should.have.property("id");
-          res.body.should.have
-            .property("personne_id")
-            .eql(existingUnitTestUser);
+          res.body.should.have.property("personneId").eql(existingUnitTestUser);
           res.body.should.have.property("droits");
           res.body.should.have.property("Ingredients").that.is.empty;
         });

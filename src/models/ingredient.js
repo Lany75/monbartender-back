@@ -42,7 +42,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       createdAt: {
-        field: "created_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -52,7 +51,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       updatedAt: {
-        field: "updated_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -70,11 +68,11 @@ module.exports = (sequelize, DataTypes) => {
   Ingredient.associate = models => {
     Ingredient.belongsToMany(models.Cocktail, {
       through: "cocktails_ingredients",
-      foreignKey: "ingredient_id"
+      foreignKey: "ingredientId"
     });
     Ingredient.belongsToMany(models.Bar, {
       through: "bars_ingredients",
-      foreignKey: "ingredient_id"
+      foreignKey: "ingredientId"
     });
   };
 

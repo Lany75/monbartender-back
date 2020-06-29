@@ -7,36 +7,20 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      etape_1: {
-        allowNull: true,
+      numEtape: {
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
+      texte: {
+        allowNull: false,
         type: Sequelize.TEXT
       },
-      etape_2: {
-        allowNull: true,
-        type: Sequelize.TEXT
-      },
-      etape_3: {
-        allowNull: true,
-        type: Sequelize.TEXT
-      },
-      etape_4: {
-        allowNull: true,
-        type: Sequelize.TEXT
-      },
-      etape_5: {
-        allowNull: true,
-        type: Sequelize.TEXT
-      },
-      etape_6: {
-        allowNull: true,
-        type: Sequelize.TEXT
-      },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW

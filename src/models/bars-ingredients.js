@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
     "BarIngredient",
     {
       barId: {
-        field: "bar_id",
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUIDV4,
@@ -18,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       ingredientId: {
-        field: "ingredient_id",
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUIDV4,
@@ -33,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       createdAt: {
-        field: "createdAt",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -43,7 +40,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       updatedAt: {
-        field: "updatedAt",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,

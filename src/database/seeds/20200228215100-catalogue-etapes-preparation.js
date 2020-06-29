@@ -7,52 +7,164 @@ const now = moment()
 
 module.exports = [
   {
-    // Mojito
-    id: "288e112a-a831-40fc-919f-a9b987d28c6b",
-    etape_1: 'Recette réalisée directement dans un verre de type "Tumbler".',
-    etape_2:
-      "Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'ensemble.",
-    etape_3: "Ajouter les glacons pilés, puis le rhum à hauteur des glacons.",
-    etape_4: "Compléter avec de l'eau gazeuse.",
-    etape_5: "Décorer d'une feuille de menthe et servir avec une paille.",
-    created_at: now,
-    updated_at: now
+    // Mojito etape 1
+    id: "e132fd2a-56b7-4a13-91ad-d4883a970baf",
+    numEtape: 1,
+    texte: 'Recette réalisée directement dans un verre de type "Tumbler".',
+    createdAt: now,
+    updatedAt: now
   },
   {
-    // Bloody Mary
-    id: "cc2235c4-5214-4774-82f9-100ff72e5d39",
-    etape_1: "Réalisez la recette dans un verre à mélange.",
-    etape_2:
+    // Mojito etape 2
+    id: "aa00ab00-02de-44af-b5ab-cf808d18e82f",
+    numEtape: 2,
+    texte:
+      "Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'ensemble.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Mojito etape 3
+    id: "ec0cfbb1-5911-46c1-a479-84fce3c62ddc",
+    numEtape: 3,
+    texte: "Ajouter les glacons pilés, puis le rhum à hauteur des glacons.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Mojito etape 4
+    id: "4528e3ec-be76-4202-ac1e-585a08f67dad",
+    numEtape: 4,
+    texte: "Compléter avec de l'eau gazeuse.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Mojito etape 5
+    id: "9bec4f6b-3516-4991-a888-540f3272694f",
+    numEtape: 5,
+    texte: "Décorer d'une feuille de menthe et servir avec une paille.",
+    createdAt: now,
+    updatedAt: now
+  },
+
+  {
+    // Bloody Mary etape 1
+    id: "7fe02232-a8f4-456d-ad52-cde165adad16",
+    numEtape: 1,
+    texte: "Réalisez la recette dans un verre à mélange.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Bloody Mary etape 2
+    id: "398ec5e2-7865-4808-9e76-49a475ac2288",
+    numEtape: 2,
+    texte:
       "Agiter les ingrédients dans un verre à mélange avec des glaçons (pour refroidir sans trop diluer).",
-    etape_3:
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Bloody Mary etape 3
+    id: "bc270049-d689-4ee9-bbcd-da8f1863ddb9",
+    numEtape: 3,
+    texte:
       "Verser dans le verre, puis ajouter à votre convenance le sel de céleri.",
-    etape_4: 'Servir dans un verre de type "Tumbler".',
-    etape_5: "Décorer d'une branche de celeri.",
-    created_at: now,
-    updated_at: now
+    createdAt: now,
+    updatedAt: now
   },
   {
-    // Margarita
-    id: "5d5f5ea3-0ace-4d3a-b402-83c5dec95dbc",
-    etape_1: "Givrer le bord d'un verre à cocktail.",
-    etape_2:
+    // Bloody Mary etape 4
+    id: "0b30b16a-b8e1-4c66-b49e-fd7e6a425a48",
+    numEtape: 4,
+    texte: 'Servir dans un verre de type "Tumbler".',
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Bloody Mary etape 5
+    id: "56e49143-164d-4dda-913f-c7da253e8a82",
+    numEtape: 5,
+    texte: "Décorer d'une branche de celeri.",
+    createdAt: now,
+    updatedAt: now
+  },
+
+  {
+    // Margarita etape 1
+    id: "0d36c58c-ab65-4a5c-9fc5-f71d4022e3e6",
+    numEtape: 1,
+    texte: "Givrer le bord d'un verre à cocktail.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Margarita etape 2
+    id: "8788b31d-5f6e-48ba-a847-220255bb7e90",
+    numEtape: 2,
+    texte:
       "Verser la tequila, le cointreau et le jus de citron vert dans un shaker.",
-    etape_3:
-      "Ajouter les glacons, et secouez vigoureusement pendant environ 10 secondes.",
-    etape_4: "Versez dans le verre.",
-    etape_5: "Décorer d'une rondelle de citron.",
-    created_at: now,
-    updated_at: now
+    createdAt: now,
+    updatedAt: now
   },
   {
-    // Virgin Mojito
-    id: "afdc0d66-ae51-4c28-bf1f-d0503303ae72",
-    etape_1: 'Recette réalisée directement dans un verre de type "Tumbler".',
-    etape_2:
+    // Margarita etape 3
+    id: "93ab24b2-bc51-4f9f-bdc9-0442cb71b3c5",
+    numEtape: 3,
+    texte:
+      "Ajouter les glacons, et secouez vigoureusement pendant environ 10 secondes.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Margarita etape 4
+    id: "fd802959-a288-4265-b744-ad4e29feab2f",
+    numEtape: 4,
+    texte: "Versez dans le verre.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Margarita etape 5
+    id: "2e438d8a-093b-4b29-9e92-59271a94a03c",
+    numEtape: 5,
+    texte: "Décorer d'une rondelle de citron.",
+    createdAt: now,
+    updatedAt: now
+  },
+
+  {
+    // Virgin Mojito etape 1
+    id: "36b4e87f-ee3c-4d1e-9875-40701dc53da6",
+    numEtape: 1,
+    texte: 'Recette réalisée directement dans un verre de type "Tumbler".',
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Virgin Mojito etape 2
+    id: "604f3c47-3233-4e90-bd79-92da5154bea5",
+    numEtape: 2,
+    texte:
       "Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'ensemble.",
-    etape_3: "Ajouter les glacons pilés, puis l'eau gazeuse.",
-    etape_4: "Décorer d'une feuille de menthe et servir avec une paille.",
-    created_at: now,
-    updated_at: now
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Virgin Mojito etape 3
+    id: "75e46d7e-5a1c-4a2b-acc4-5f1e179914a7",
+    numEtape: 3,
+    texte: "Ajouter les glacons pilés, puis l'eau gazeuse.",
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    // Virgin Mojito etape 4
+    id: "8f09ee71-b660-4c61-ae77-60a315d59313",
+    numEtape: 4,
+    texte: "Décorer d'une feuille de menthe et servir avec une paille.",
+    createdAt: now,
+    updatedAt: now
   }
 ];

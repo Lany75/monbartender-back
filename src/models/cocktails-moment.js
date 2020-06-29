@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       cocktailId: {
-        field: "cocktail_id",
         allowNull: false,
         type: DataTypes.UUIDV4,
         defaultValue: DataTypes.UUIDV4,
@@ -23,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       createdAt: {
-        field: "created_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -33,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       updatedAt: {
-        field: "updated_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,

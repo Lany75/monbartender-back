@@ -44,11 +44,11 @@ gestionRouter.put(
       logger.info(`New cocktails of the day found`);
       for (let i = 0; i < idCocktailsMoment.length; i++) {
         const cocktail = await recupererUnCocktail(
-          idCocktailsMoment[i].cocktail_id
+          idCocktailsMoment[i].cocktailId
         );
 
         cocktailsMoment.push({
-          id: idCocktailsMoment[i].cocktail_id,
+          id: idCocktailsMoment[i].cocktailId,
           nom: cocktail.dataValues.nom,
           photo: cocktail.dataValues.photo
         });

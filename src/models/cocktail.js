@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
    *       - id
    *       - nom
    *       - verreId
-   *       - etapesPreparationId
    *       - createdAt
    *       - updatedAt
    *       properties:
@@ -22,8 +21,6 @@ module.exports = (sequelize, DataTypes) => {
    *         note:
    *           type: integer
    *         verreId:
-   *           type: string
-   *         etapesPreparationId:
    *           type: string
    *         createdAt:
    *           type: string
@@ -64,17 +61,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER
       },
       verreId: {
-        field: "verre_id",
-        allowNull: false,
-        type: DataTypes.UUID
-      },
-      etapesPreparationId: {
-        field: "etapes_preparation_id",
         allowNull: false,
         type: DataTypes.UUID
       },
       createdAt: {
-        field: "created_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -84,7 +74,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       updatedAt: {
-        field: "updated_at",
         allowNull: false,
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
@@ -103,19 +92,17 @@ module.exports = (sequelize, DataTypes) => {
     Cocktail.belongsTo(models.Verre, {
       onDelete: "CASCADE",
       foreignKey: {
-        name: "verre_id",
+        name: "verreId",
         allowNull: false
       }
     });
     Cocktail.belongsToMany(models.Ingredient, {
       through: "cocktails_ingredients",
-      foreignKey: "cocktail_id"
+      foreignKey: "cocktailId"
     });
-    Cocktail.belongsTo(models.EtapesPreparation, {
-      foreignKey: {
-        name: "etapes_preparation_id",
-        allowNull: false
-      }
+    Cocktail.belongsToMany(models.EtapesPreparation, {
+      through: "cocktails_etapes",
+      foreignKey: "cocktailId"
     });
   };
 

@@ -15,11 +15,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING(150)
       },
-      note: {
-        allowNull: true,
-        type: Sequelize.INTEGER
-      },
-      verre_id: {
+      verreId: {
         allowNull: false,
         type: Sequelize.UUID,
         references: {
@@ -27,20 +23,12 @@ module.exports = {
           key: "id"
         }
       },
-      etapes_preparation_id: {
-        allowNull: false,
-        type: Sequelize.UUID,
-        references: {
-          model: "etapes_preparation",
-          key: "id"
-        }
-      },
-      created_at: {
+      createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
       },
-      updated_at: {
+      updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW

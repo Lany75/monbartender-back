@@ -8,9 +8,9 @@ const now = moment()
 module.exports = [
   {
     id: uuid(),
-    personne_id: "mlanie.parry@gmail.com",
+    personneId: "mlanie.parry@gmail.com",
     droits: true,
-    created_at: now,
-    updated_at: now
+    createdAt: now,
+    updatedAt: now
   }
 ];

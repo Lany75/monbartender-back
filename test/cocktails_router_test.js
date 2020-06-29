@@ -11,29 +11,25 @@ const cocktailsList = [
     id: "b258592b-57ac-4bda-8e07-1d2697f20770",
     nom: "Bloody Mary",
     photo: "/api/images/bloodyMary.jpg",
-    verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
-    etapes_preparation_id: "cc2235c4-5214-4774-82f9-100ff72e5d39"
+    verreId: "0ec43307-8523-48c6-8fd9-06be72e484bd"
   },
   {
     id: "7e124810-e9a7-4724-ad48-c6a24bfaa1a5",
     nom: "Margarita",
     photo: "/api/images/margarita.jpg",
-    verre_id: "c69758d1-b4ad-4038-b157-205fd12d9ace",
-    etapes_preparation_id: "5d5f5ea3-0ace-4d3a-b402-83c5dec95dbc"
+    verre_id: "c69758d1-b4ad-4038-b157-205fd12d9ace"
   },
   {
     id: "7f73cf2f-7ed7-4be4-8640-69dbbc1b2927",
     nom: "Mojito",
     photo: "/api/images/mojito.jpg",
-    verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
-    etapes_preparation_id: "288e112a-a831-40fc-919f-a9b987d28c6b"
+    verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd"
   },
   {
     id: "f3714a47-8359-4552-850c-277b3b56fdd0",
     nom: "Virgin Mojito",
     photo: "/api/images/virgin-mojito.jpg",
-    verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
-    etapes_preparation_id: "afdc0d66-ae51-4c28-bf1f-d0503303ae72"
+    verre_id: "0ec43307-8523-48c6-8fd9-06be72e484bd"
   }
 ];
 

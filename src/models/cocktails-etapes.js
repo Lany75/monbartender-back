@@ -1,33 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  /**
-   * @swagger
-   * components:
-   *   schemas:
-   *     CocktailIngredient:
-   *       type: object
-   *       required:
-   *       - cocktailId
-   *       - ingredientId
-   *       - quantite
-   *       - unite
-   *       - createdAt
-   *       - updatedAt
-   *       properties:
-   *         cocktailId:
-   *           type: string
-   *         ingredientId:
-   *           type: string
-   *         quantite:
-   *           type: float
-   *         unite:
-   *           type: string
-   *         createdAt:
-   *           type: string
-   *         updatedAt:
-   *           type: string
-   */
-  const cocktailIngredient = sequelize.define(
-    "CocktailIngredient",
+  const cocktailEtape = sequelize.define(
+    "CocktailEtape",
     {
       cocktailId: {
         allowNull: false,
@@ -43,29 +16,18 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true
         }
       },
-      ingredientId: {
+      etapeId: {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         references: {
-          model: "ingredients",
+          model: "etapes_preparation",
           key: "id"
         },
         validate: {
           isUUID: 4,
           notNull: true
-        }
-      },
-      quantite: {
-        allowNull: true,
-        type: DataTypes.DECIMAL
-      },
-      unite: {
-        allowNull: true,
-        type: DataTypes.STRING,
-        validate: {
-          len: [0, 50]
         }
       },
       createdAt: {
@@ -88,9 +50,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      tableName: "cocktails_ingredients"
+      tableName: "cocktails_etapes"
     }
   );
 
-  return cocktailIngredient;
+  return cocktailEtape;
 };

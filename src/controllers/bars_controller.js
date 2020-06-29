@@ -3,19 +3,19 @@ const uuid = require("uuid");
 
 const barController = {
   //fonction recupererLesBars = retourne un tableau de tous les bars de la table bars (modele Bar)
-  recupererLesBars: async () => {
+  /* recupererLesBars: async () => {
     const bars = await Bar.findAll({
-      attributes: ["id", "personne_id"],
+      attributes: ["id", "personneId", "droits"],
       raw: true
     });
     return bars;
-  },
+  }, */
 
   //fonction recupererUnBars = retourne le bar trouvé dans la table bars (modele Bar) à partir du mail
   recupererUnBar: async mail => {
     const bar = await Bar.findOne({
-      where: { personne_id: mail },
-      attributes: ["id", "personne_id", "droits"],
+      where: { personneId: mail },
+      attributes: ["id", "personneId", "droits"],
       include: [
         {
           model: Ingredient,
@@ -30,7 +30,7 @@ const barController = {
   //fonction recupererIdBar = retourne l'id du bar trouvé dans la table bars (modèle Bar) à partir de son mail
   recupererIdBar: async mail => {
     const barId = await Bar.findOne({
-      where: { personne_id: mail },
+      where: { personneId: mail },
       attributes: ["id"]
     });
     if (!barId) return null;
@@ -63,8 +63,8 @@ const barController = {
   supprimerUnIngredientDuBar: async (ingredientId, userId) => {
     await BarIngredient.destroy({
       where: {
-        bar_id: userId,
-        ingredient_id: ingredientId
+        barId: userId,
+        ingredientId: ingredientId
       }
     });
   },
@@ -72,8 +72,8 @@ const barController = {
   estDansLeBar: async (userId, ingredientId) => {
     const exist = await BarIngredient.findOne({
       where: {
-        bar_id: userId,
-        ingredient_id: ingredientId
+        barId: userId,
+        ingredientId: ingredientId
       }
     });
 
