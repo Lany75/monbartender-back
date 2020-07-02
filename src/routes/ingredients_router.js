@@ -1,26 +1,39 @@
 const express = require("express");
+
 const isAuthenticated = require("../middlewares/is_authenticated");
+
 const {
   recupererLesIngredients,
   recupererIdIngredient,
-  ajouterUnIngredientDB,
-  recupererQuantiteIngredient
+  ajouterUnIngredientDB
 } = require("../controllers/ingredients_controller");
+
+const {
+  recupererQuantiteIngredient
+} = require("../controllers/cocktailsIngredientsController");
+
 const {
   recupererIdBar,
+  recupererUnBar
+} = require("../controllers/bars_controller");
+
+const {
   ajouterUnIngredientAuBar,
-  recupererUnBar,
   supprimerUnIngredientDuBar,
   estDansLeBar
-} = require("../controllers/bars_controller");
+} = require("../controllers/barsIngredients_controller");
+
 const { recupererUnCocktail } = require("../controllers/cocktails_controller");
+
 const {
   OK,
   CREATED,
   BAD_REQUEST,
   NOT_FOUND
 } = require("../helpers/status_code");
+
 const logger = require("../helpers/logger");
+
 const ingredientRouter = express.Router();
 
 const regex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;

@@ -4,17 +4,24 @@ const logger = require("../helpers/logger");
 const {
   recupererLesCocktails,
   recupererUnCocktail,
+  rechercherUnCocktailParSonNom,
+  rechercherCocktailsParIngredients,
   recupererUnCocktailAleatoire,
-  recupererIdCocktailsMoment
+  supprimerUnCocktail
 } = require("../controllers/cocktails_controller");
 const {
-  rechercherUnCocktailParSonNom,
-  rechercherCocktailsParIngredients
-} = require("../controllers/recherche_controller");
+  recupererIdCocktailsMoment
+} = require("../controllers/cocktailsMoment_controller");
 const {
-  recupererIdIngredient
-} = require("../controllers/ingredients_controller");
-
+  recupererEtapesId,
+  supprimerCocktailEtape
+} = require("../controllers/cocktailsEtapes_controller");
+const {
+  supprimerEtapePreparation
+} = require("../controllers/etapesPreparation_controller");
+const {
+  supprimerCocktailIngredient
+} = require("../controllers/cocktailsIngredientsController");
 const { OK, NOT_FOUND } = require("../helpers/status_code");
 
 const cocktailsRouter = express.Router();
@@ -304,6 +311,52 @@ cocktailsRouter.get(
       response.status(OK);
       response.json(cocktail);
     }
+  }
+);
+
+cocktailsRouter.delete(
+  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  async (request, response) => {
+    const idCocktail = request.params.id;
+    if (!idCocktail) {
+      logger.info(`cocktail's id is not given`);
+      response.status(BAD_REQUEST);
+      response.json("Un identifiant de cocktail est obligatoire");
+    }
+
+    logger.info(
+      `Trying to get etapes id of the cocktail with id ${idCocktail}`
+    );
+    const idEtapes = await recupererEtapesId(idCocktail);
+    console.log(idEtapes.length);
+
+    logger.info(
+      `Trying to delete cocktail with id ${idCocktail} in table cocktails_etapes`
+    );
+    await supprimerCocktailEtape(idCocktail);
+
+    logger.info(
+      `Trying to delete etape with id .... in table etapes_preparation`
+    );
+    for (let i = 0; i < idEtapes.length; i++) {
+      console.log(idEtapes[i].dataValues.etapeId);
+      await supprimerEtapePreparation(idEtapes[i].dataValues.etapeId);
+    }
+
+    logger.info(
+      `Trying to delete cocktail with id ${idCocktail} in table cocktails_ingredients`
+    );
+    await supprimerCocktailIngredient(idCocktail);
+
+    logger.info(
+      `Trying to delete cocktail with id ${idCocktail} in table cocktails`
+    );
+    await supprimerUnCocktail(idCocktail);
+
+    const cocktails = await recupererLesCocktails();
+
+    response.status(OK);
+    response.json(cocktails);
   }
 );
 

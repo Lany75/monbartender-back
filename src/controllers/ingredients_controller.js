@@ -13,13 +13,6 @@ const ingredientController = {
     return ingredients;
   },
 
-  /*recupererUnIngredient: async id => {
-    const ingredient = await Ingredient.findByPk(id, {
-      attributes: ["nom"]
-    });
-    return ingredient;
-  },*/
-
   //fonction recupererIdIngredient = retourne l'id de l'ingrédient trouvé dans la table ingredients (modèle Ingredient)
   // à partir de son nom
   recupererIdIngredient: async nomIngredient => {
@@ -39,7 +32,6 @@ const ingredientController = {
       where: { id: idIngredient },
       attributes: ["nom"]
     });
-
     return nomIngredient.dataValues.nom;
   },
 
@@ -48,15 +40,6 @@ const ingredientController = {
       id: uuid(),
       nom: nvIngredient
     });
-  },
-
-  recupererQuantiteIngredient: async cocktailId => {
-    const quantiteIngredient = await CocktailIngredient.findAll({
-      where: { cocktailId: cocktailId },
-      attributes: ["ingredientId", "quantite", "unite"]
-    });
-
-    return quantiteIngredient;
   }
 };
 

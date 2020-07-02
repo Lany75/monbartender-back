@@ -1,13 +1,10 @@
-const {
-  Cocktail,
-  Verre,
-  Ingredient,
-  EtapesPreparation,
-  CocktailsMoment
-} = require("../models");
+const { Cocktail, Verre, Ingredient, EtapesPreparation } = require("../models");
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 require("express-async-errors");
 
 const getRandomInteger = require("../utils/getRandomInteger");
+const uuid = require("uuid");
 
 const cocktailController = {
   // fonction recupererLesCocktails = retourne un tableau de tous les cocktails de la table cocktails (modèle Cocktail)
@@ -56,16 +53,6 @@ const cocktailController = {
     return idCocktail.dataValues.id;
   },
 
-  // fonction recupererIdCocktailsMoment = retourne tous les id de la table cocktails_moment
-  recupererIdCocktailsMoment: async () => {
-    const cocktails = await CocktailsMoment.findAll({
-      attributes: ["cocktailId"],
-      raw: true
-    });
-
-    return cocktails;
-  },
-
   //fonction recupererUnCocktailAleatoire = retourne un cocktail aléatoire à partir de tous les cocktails inclus dans la table cocktails
   recupererUnCocktailAleatoire: async () => {
     const cocktails = await Cocktail.findAll({
@@ -77,6 +64,59 @@ const cocktailController = {
     const randomInt = getRandomInteger(cocktails.length);
 
     return cocktails[randomInt];
+  },
+
+  //fonction rechercherUnCocktailParSonNom = retourne un tableau de tous les cocktails de la table cocktails (modele Cocktail)
+  //comportant le nom passé en paramètre
+  rechercherUnCocktailParSonNom: async nom => {
+    const cocktails = await Cocktail.findAll({
+      where: {
+        nom: Sequelize.where(
+          Sequelize.fn("LOWER", Sequelize.col("nom")),
+          "LIKE",
+          "%" + nom + "%"
+        )
+      },
+      attributes: ["id", "nom", "photo"]
+    });
+    return cocktails;
+  },
+
+  //fonction rechercherCocktailsParIngredients = retourne un tableau de tous les cocktails de la table cocktails (modele Cocktail)
+  //comportant le nom passé en paramètre
+  rechercherCocktailsParIngredients: async ingredients => {
+    const cocktails = await Cocktail.findAll({
+      order: [["nom", "ASC"]],
+      attributes: ["id", "nom", "photo"],
+      include: [
+        {
+          model: Ingredient,
+          where: {
+            nom: { [Op.any]: ingredients }
+          }
+        }
+      ]
+    });
+
+    return cocktails;
+  },
+
+  ajouterUnCocktail: async (nom, photo, idVerre) => {
+    const cocktail = await Cocktail.create({
+      id: uuid(),
+      nom: nom,
+      photo: photo,
+      verreId: idVerre
+    });
+    return cocktail.id;
+  },
+
+  supprimerUnCocktail: async cocktailId => {
+    await Cocktail.destroy({
+      where: {
+        id: cocktailId
+      }
+    });
   }
 };
 

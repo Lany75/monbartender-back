@@ -42,6 +42,7 @@ app.get("/oauth2-redirect.html", function(req, res) {
 // REGISTER BODY PARSER
 logger.info("Registering Body Parser");
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // REGISTER ASSETS
 logger.info("Registering static Assets");
