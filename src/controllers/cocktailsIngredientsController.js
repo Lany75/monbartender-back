@@ -11,12 +11,19 @@ const cocktailIngredientController = {
   },
 
   lierCocktailIngredient: async (idCocktail, idIngredient, quantite, unite) => {
-    await CocktailIngredient.create({
-      cocktailId: idCocktail,
-      ingredientId: idIngredient,
-      quantite: quantite,
-      unite: unite
-    });
+    if (quantite === "" || unite === "") {
+      await CocktailIngredient.create({
+        cocktailId: idCocktail,
+        ingredientId: idIngredient
+      });
+    } else {
+      await CocktailIngredient.create({
+        cocktailId: idCocktail,
+        ingredientId: idIngredient,
+        quantite: quantite,
+        unite: unite
+      });
+    }
   },
 
   supprimerCocktailIngredient: async idCocktail => {

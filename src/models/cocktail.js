@@ -16,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
    *           type: string
    *         nom:
    *           type: string
-   *         photo:
-   *           type: string
-   *         note:
-   *           type: integer
    *         verreId:
    *           type: string
    *         createdAt:

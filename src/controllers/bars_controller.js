@@ -31,11 +31,13 @@ const barController = {
   //fonction CreerUnBar = crée le bar de l'utilisateur grâce à son mail
   // pas de valeur retournée
   creerUnBar: async mail => {
-    await Bar.create({
+    const bar = await Bar.create({
       id: uuid(),
       personneId: mail,
       droits: false
     });
+
+    return bar.dataValues;
   }
 };
 

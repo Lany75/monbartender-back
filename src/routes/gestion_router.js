@@ -1,5 +1,4 @@
 const express = require("express");
-//const verifyToken = require("../middlewares/verify_token");
 const isAuthenticated = require("../middlewares/is_authenticated");
 const logger = require("../helpers/logger");
 
@@ -7,7 +6,8 @@ const {
   recupererIdCocktail,
   recupererUnCocktail,
   ajouterUnCocktail,
-  recupererLesCocktails
+  recupererLesCocktails,
+  supprimerUnCocktail
 } = require("../controllers/cocktails_controller");
 const {
   recupererIdCocktailsMoment,
@@ -15,15 +15,19 @@ const {
 } = require("../controllers/cocktailsMoment_controller");
 
 const {
-  lierCocktailIngredient
+  lierCocktailIngredient,
+  supprimerCocktailIngredient
 } = require("../controllers/cocktailsIngredientsController");
 
 const {
-  ajouterEtapePreparation
+  ajouterEtapePreparation,
+  supprimerEtapePreparation
 } = require("../controllers/etapesPreparation_controller");
 
 const {
-  lierCocktailEtape
+  lierCocktailEtape,
+  recupererEtapesId,
+  supprimerCocktailEtape
 } = require("../controllers/cocktailsEtapes_controller");
 
 const { recupererIdVerre } = require("../controllers/verres_controller");
@@ -82,14 +86,7 @@ gestionRouter.put(
 );
 
 gestionRouter.post("/cocktails", isAuthenticated, async (request, response) => {
-  // console.log("on est dans l'ajout de cocktail");
-  //console.log(request.body);
   const { nom, photo, verre, ingredients, etapes } = request.body;
-  /*   console.log(nom);
-  console.log(photo);
-  console.log(verre);
-  console.log(ingredients, ingredients.length);
-  console.log(etapes); */
 
   logger.info(`Trying to get verre's id of ${verre}`);
   const idVerre = await recupererIdVerre(verre);
@@ -100,7 +97,6 @@ gestionRouter.post("/cocktails", isAuthenticated, async (request, response) => {
   for (let i = 0; i < ingredients.length; i++) {
     logger.info(`Trying to get ingredient's id of ${ingredients[i].nomIng}`);
     const idIngredient = await recupererIdIngredient(ingredients[i].nomIng);
-    //console.log("id ingredient : ", idIngredient);
 
     logger.info(
       `Trying to bind cocktail ${nom} whith ingredient ${ingredients[i].nomIng}}`
@@ -123,10 +119,56 @@ gestionRouter.post("/cocktails", isAuthenticated, async (request, response) => {
   }
 
   const cocktails = await recupererLesCocktails();
-  //console.log(cocktails);
 
   response.status(CREATED);
   response.json(cocktails);
 });
+
+gestionRouter.delete(
+  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  isAuthenticated,
+  async (request, response) => {
+    const idCocktail = request.params.id;
+    if (!idCocktail) {
+      logger.info(`cocktail's id is not given`);
+      response.status(BAD_REQUEST);
+      response.json("Un identifiant de cocktail est obligatoire");
+    }
+
+    logger.info(
+      `Trying to get etapes id of the cocktail with id ${idCocktail}`
+    );
+    const idEtapes = await recupererEtapesId(idCocktail);
+    console.log(idEtapes.length);
+
+    logger.info(
+      `Trying to delete cocktail with id ${idCocktail} in table cocktails_etapes`
+    );
+    await supprimerCocktailEtape(idCocktail);
+
+    logger.info(
+      `Trying to delete etape with id .... in table etapes_preparation`
+    );
+    for (let i = 0; i < idEtapes.length; i++) {
+      console.log(idEtapes[i].dataValues.etapeId);
+      await supprimerEtapePreparation(idEtapes[i].dataValues.etapeId);
+    }
+
+    logger.info(
+      `Trying to delete cocktail with id ${idCocktail} in table cocktails_ingredients`
+    );
+    await supprimerCocktailIngredient(idCocktail);
+
+    logger.info(
+      `Trying to delete cocktail with id ${idCocktail} in table cocktails`
+    );
+    await supprimerUnCocktail(idCocktail);
+
+    const cocktails = await recupererLesCocktails();
+
+    response.status(OK);
+    response.json(cocktails);
+  }
+);
 
 module.exports = gestionRouter;

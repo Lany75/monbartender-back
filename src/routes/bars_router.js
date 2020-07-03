@@ -45,8 +45,7 @@ barsRouter.get("/", isAuthenticated, async (request, response) => {
 
   if (!bar || bar.length === 0) {
     logger.info(`${mail}'s bar has not been found. Creating it!`);
-    await creerUnBar(mail);
-    bar = await recupererUnBar(mail);
+    bar = await creerUnBar(mail);
   }
 
   logger.info(`${mail}'s bar:${bar}`);
