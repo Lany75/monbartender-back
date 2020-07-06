@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
    *       - id
    *       - nom
    *       - verreId
+   *       - alcool
    *       - createdAt
    *       - updatedAt
    *       properties:
@@ -18,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
    *           type: string
    *         verreId:
    *           type: string
+   *         alcool:
+   *           type: boolean
    *         createdAt:
    *           type: string
    *         updatedAt:
@@ -52,13 +55,13 @@ module.exports = (sequelize, DataTypes) => {
           len: [0, 150]
         }
       },
-      note: {
-        allowNull: true,
-        type: DataTypes.INTEGER
-      },
       verreId: {
         allowNull: false,
         type: DataTypes.UUID
+      },
+      alcool: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN
       },
       createdAt: {
         allowNull: false,

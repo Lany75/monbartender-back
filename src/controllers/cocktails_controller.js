@@ -5,13 +5,14 @@ require("express-async-errors");
 
 const getRandomInteger = require("../utils/getRandomInteger");
 const uuid = require("uuid");
+const cocktailsRouter = require("../routes/cocktails_router");
 
 const cocktailController = {
   // fonction recupererLesCocktails = retourne un tableau de tous les cocktails de la table cocktails (modèle Cocktail)
   recupererLesCocktails: async () => {
     const cocktails = await Cocktail.findAll({
       order: [["nom", "ASC"]],
-      attributes: ["id", "nom", "photo", "verreId"],
+      attributes: ["id", "nom", "photo", "verreId", "alcool"],
       raw: true
     });
 
@@ -101,12 +102,13 @@ const cocktailController = {
     return cocktails;
   },
 
-  ajouterUnCocktail: async (nom, photo, idVerre) => {
+  ajouterUnCocktail: async (nom, photo, idVerre, alcoolise) => {
     const cocktail = await Cocktail.create({
       id: uuid(),
       nom: nom,
       photo: photo,
-      verreId: idVerre
+      verreId: idVerre,
+      alcool: alcoolise
     });
     return cocktail.id;
   },

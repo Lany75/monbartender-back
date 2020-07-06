@@ -86,13 +86,13 @@ gestionRouter.put(
 );
 
 gestionRouter.post("/cocktails", isAuthenticated, async (request, response) => {
-  const { nom, photo, verre, ingredients, etapes } = request.body;
+  const { nom, photo, verre, ingredients, etapes, alcoolise } = request.body;
 
   logger.info(`Trying to get verre's id of ${verre}`);
   const idVerre = await recupererIdVerre(verre);
 
   logger.info(`Trying to add cocktail ${nom}`);
-  const idCocktail = await ajouterUnCocktail(nom, photo, idVerre);
+  const idCocktail = await ajouterUnCocktail(nom, photo, idVerre, alcoolise);
 
   for (let i = 0; i < ingredients.length; i++) {
     logger.info(`Trying to get ingredient's id of ${ingredients[i].nomIng}`);
@@ -112,7 +112,6 @@ gestionRouter.post("/cocktails", isAuthenticated, async (request, response) => {
   for (let e = 0; e < etapes.length; e++) {
     logger.info(`Trying to add etape ${e + 1}`);
     const idEtape = await ajouterEtapePreparation(1, etapes[e]);
-    console.log("id etape: ", idEtape);
 
     logger.info(`Trying to bind cocktail ${nom} whith etape ${e + 1}}`);
     await lierCocktailEtape(idCocktail, idEtape);
@@ -139,7 +138,6 @@ gestionRouter.delete(
       `Trying to get etapes id of the cocktail with id ${idCocktail}`
     );
     const idEtapes = await recupererEtapesId(idCocktail);
-    console.log(idEtapes.length);
 
     logger.info(
       `Trying to delete cocktail with id ${idCocktail} in table cocktails_etapes`
@@ -150,7 +148,6 @@ gestionRouter.delete(
       `Trying to delete etape with id .... in table etapes_preparation`
     );
     for (let i = 0; i < idEtapes.length; i++) {
-      console.log(idEtapes[i].dataValues.etapeId);
       await supprimerEtapePreparation(idEtapes[i].dataValues.etapeId);
     }
 

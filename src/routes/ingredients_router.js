@@ -108,7 +108,6 @@ ingredientRouter.get("/quantite", async (request, response) => {
   } else {
     logger.info(`Verifying cocktail with id ${cocktailId} exist`);
     const cocktail = await recupererUnCocktail(cocktailId);
-    //console.log(cocktail);
 
     if (!cocktail) {
       logger.info(`cocktail with id ${cocktailId} doesn't exist`);
@@ -175,7 +174,6 @@ ingredientRouter.post(
     );
 
     const idIngredient = await recupererIdIngredient(nomNouvelIngredient);
-    console.log(idIngredient);
 
     const idBar = await recupererIdBar(mail);
 

@@ -11,6 +11,7 @@ module.exports = [
     nom: "Mojito",
     photo: "img_cocktail/mojito.jpg",
     verreId: "0ec43307-8523-48c6-8fd9-06be72e484bd",
+    alcool: true,
     createdAt: now,
     updatedAt: now
   },
@@ -19,6 +20,7 @@ module.exports = [
     nom: "Bloody Mary",
     photo: "img_cocktail/bloodyMary.jpg",
     verreId: "0ec43307-8523-48c6-8fd9-06be72e484bd",
+    alcool: true,
     createdAt: now,
     updatedAt: now
   },
@@ -27,6 +29,7 @@ module.exports = [
     nom: "Margarita",
     photo: "img_cocktail/margarita.jpg",
     verreId: "c69758d1-b4ad-4038-b157-205fd12d9ace",
+    alcool: true,
     createdAt: now,
     updatedAt: now
   },
@@ -35,6 +38,7 @@ module.exports = [
     nom: "Virgin Mojito",
     photo: "img_cocktail/virgin-mojito.jpg",
     verreId: "0ec43307-8523-48c6-8fd9-06be72e484bd",
+    alcool: false,
     createdAt: now,
     updatedAt: now
   }

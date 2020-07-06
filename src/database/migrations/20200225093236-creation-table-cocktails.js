@@ -23,6 +23,10 @@ module.exports = {
           key: "id"
         }
       },
+      alcool: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
