@@ -145,7 +145,7 @@ gestionRouter.delete(
     await supprimerCocktailEtape(idCocktail);
 
     logger.info(
-      `Trying to delete etape with id .... in table etapes_preparation`
+      `Trying to delete etape with id ${idEtapes} in table etapes_preparation`
     );
     for (let i = 0; i < idEtapes.length; i++) {
       await supprimerEtapePreparation(idEtapes[i].dataValues.etapeId);
