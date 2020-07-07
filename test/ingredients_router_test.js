@@ -231,17 +231,14 @@ describe("MonBartender ingredient_router", function() {
 
   describe("/DELETE /api/v1/ingredients/:nomIngredientSupprime user is unauthorized", function() {
     it("it should return 401 Non autorisé", function() {
-      return (
-        chai
-          .request(server)
-          .delete("/api/v1/ingredients/tabasco")
-          .set("Content-Type", "application/json")
-          //.set("Authorization", unknownUnitTestUser)
-          .then(res => {
-            res.should.have.status(401);
-            res.text.should.be.contain("Non autorisé");
-          })
-      );
+      return chai
+        .request(server)
+        .delete("/api/v1/ingredients/tabasco")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(401);
+          res.text.should.be.contain("Non autorisé");
+        });
     });
   });
 

@@ -224,14 +224,19 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
  */
 
 cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
-  const { ingredient1, ingredient2, ingredient3 } = request.query;
+  const { ingredient1, ingredient2, ingredient3, alcool } = request.query;
   const tableauIngredient = [ingredient1, ingredient2, ingredient3];
   const tableauCocktails = [];
 
   logger.info(
     `Trying to get cocktails with ingredients ${ingredient1}, ${ingredient2}, ${ingredient3}`
   );
-  const cocktails = await rechercherCocktailsParIngredients(tableauIngredient);
+  const cocktails = await rechercherCocktailsParIngredients(
+    tableauIngredient,
+    alcool
+  );
+
+  console.log(cocktails);
 
   cocktails.map(cocktail => {
     tableauCocktails.push({
@@ -242,8 +247,9 @@ cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
   });
 
   if (tableauCocktails.length === 0) {
-    logger.info(`No cocktails found`);
-    response.status(NOT_FOUND).json(`Aucun cocktail trouvé`);
+    logger.info(`No cocktails found for this search`);
+    response.status(OK).json(tableauCocktails);
+    //response.status(NOT_FOUND).json(`Aucun cocktail trouvé`);
   } else {
     logger.info(`Cocktails found, remove duplicate`);
     const tableauCocktailsUnique = new Set(tableauCocktails);

@@ -98,7 +98,10 @@ describe("MonBartender bars_router", function() {
           res.body.should.be.a("object");
           res.body.should.have.property("id");
           res.body.should.have.property("personneId").eql(existingUnitTestUser);
-          res.body.should.have.property("Ingredients");
+          res.body.should.have.property("droits");
+          res.body.should.have
+            .property("Ingredients")
+            .eql([{ nom: "sel de celeri" }]);
         });
     });
   });
@@ -115,7 +118,7 @@ describe("MonBartender bars_router", function() {
           res.body.should.be.a("object");
           res.body.should.have.property("id");
           res.body.should.have.property("personneId").eql(unknownUnitTestUser);
-          res.body.should.have.property("Ingredients");
+          res.body.should.have.property("droits");
         });
     });
   });

@@ -116,6 +116,7 @@ const appSettings = {
       path.join(appRoot.path, "src/routes/cocktails_router.js"),
       path.join(appRoot.path, "src/routes/ingredients_router.js"),
       path.join(appRoot.path, "src/routes/verres_router.js"),
+      path.join(appRoot.path, "src/routes/gestion_router.js"),
       path.join(appRoot.path, "src/models/bar.js"),
       path.join(appRoot.path, "src/models/cocktail.js"),
       path.join(appRoot.path, "src/models/cocktails-ingredients.js"),

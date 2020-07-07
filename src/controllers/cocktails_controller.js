@@ -85,19 +85,37 @@ const cocktailController = {
 
   //fonction rechercherCocktailsParIngredients = retourne un tableau de tous les cocktails de la table cocktails (modele Cocktail)
   //comportant le nom passé en paramètre
-  rechercherCocktailsParIngredients: async ingredients => {
-    const cocktails = await Cocktail.findAll({
-      order: [["nom", "ASC"]],
-      attributes: ["id", "nom", "photo"],
-      include: [
-        {
-          model: Ingredient,
-          where: {
-            nom: { [Op.any]: ingredients }
+  rechercherCocktailsParIngredients: async (ingredients, alcool) => {
+    console.log(ingredients, alcool);
+    let cocktails;
+    if (alcool === "indifferent") {
+      cocktails = await Cocktail.findAll({
+        order: [["nom", "ASC"]],
+        attributes: ["id", "nom", "photo"],
+        include: [
+          {
+            model: Ingredient,
+            where: {
+              nom: { [Op.any]: ingredients }
+            }
           }
-        }
-      ]
-    });
+        ]
+      });
+    } else {
+      cocktails = await Cocktail.findAll({
+        where: { alcool: alcool },
+        order: [["nom", "ASC"]],
+        attributes: ["id", "nom", "photo"],
+        include: [
+          {
+            model: Ingredient,
+            where: {
+              nom: { [Op.any]: ingredients }
+            }
+          }
+        ]
+      });
+    }
 
     return cocktails;
   },
