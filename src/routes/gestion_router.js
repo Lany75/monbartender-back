@@ -34,7 +34,9 @@ const {
 const { recupererIdVerre } = require("../controllers/verres_controller");
 
 const {
-  recupererIdIngredient
+  recupererIdIngredient,
+  ajouterUnIngredientDB,
+  recupererLesIngredients
 } = require("../controllers/ingredients_controller");
 
 const {
@@ -314,6 +316,20 @@ gestionRouter.delete(
 
     response.status(OK);
     response.json(cocktails);
+  }
+);
+
+gestionRouter.post(
+  "/ingredient",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { nvIngredient } = request.query;
+    console.log(nvIngredient);
+    await ajouterUnIngredientDB(nvIngredient);
+    const ingredients = await recupererLesIngredients();
+
+    response.status(OK).json(ingredients);
   }
 );
 
