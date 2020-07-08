@@ -234,7 +234,7 @@ gestionRouter.post(
         await lierCocktailEtape(idCocktail, idEtape);
       }
 
-      const cocktails = await recupererLesCocktails();
+      const cocktails = await recupererLesCocktails("indifferent");
 
       response.status(CREATED);
       response.json(cocktails);
@@ -310,7 +310,7 @@ gestionRouter.delete(
     );
     await supprimerUnCocktail(idCocktail);
 
-    const cocktails = await recupererLesCocktails();
+    const cocktails = await recupererLesCocktails("indifferent");
 
     response.status(OK);
     response.json(cocktails);
