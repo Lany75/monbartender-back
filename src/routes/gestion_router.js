@@ -324,12 +324,17 @@ gestionRouter.post(
   isAuthenticated,
   haveRight,
   async (request, response) => {
-    const { nvIngredient } = request.query;
-    console.log(nvIngredient);
-    await ajouterUnIngredientDB(nvIngredient);
-    const ingredients = await recupererLesIngredients();
+    const ingredients = request.body;
+    ingredients.map(async nomIngredient => {
+      logger.info(`Trying to add ${nomIngredient} in database`);
+      await ajouterUnIngredientDB(nomIngredient);
+    });
 
-    response.status(OK).json(ingredients);
+    logger.info(`Trying to get list of ingredients`);
+    const listeIngredients = await recupererLesIngredients();
+
+    response.status(CREATED);
+    response.json(listeIngredients);
   }
 );
 
