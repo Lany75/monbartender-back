@@ -26,6 +26,13 @@ const cocktailsRouter = express.Router();
  *     description: Retourne la liste de tous les cocktails
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: alcool
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: l'alcool du cocktail (true, false, indifferent)
  *     responses:
  *       200:
  *         description: Un tableau de cocktails
@@ -37,8 +44,9 @@ const cocktailsRouter = express.Router();
  *         description: Aucun cocktail n'existe
  */
 cocktailsRouter.get("/", async (request, response) => {
+  const { alcool } = request.query;
   logger.info(`Trying to get all cocktails`);
-  const cocktails = await recupererLesCocktails();
+  const cocktails = await recupererLesCocktails(alcool);
 
   if (!cocktails) {
     logger.info(`Cocktails list has not been found`);

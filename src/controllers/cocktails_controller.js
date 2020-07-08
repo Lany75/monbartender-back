@@ -9,12 +9,22 @@ const cocktailsRouter = require("../routes/cocktails_router");
 
 const cocktailController = {
   // fonction recupererLesCocktails = retourne un tableau de tous les cocktails de la table cocktails (modèle Cocktail)
-  recupererLesCocktails: async () => {
-    const cocktails = await Cocktail.findAll({
-      order: [["nom", "ASC"]],
-      attributes: ["id", "nom", "photo", "verreId", "alcool"],
-      raw: true
-    });
+  recupererLesCocktails: async alcool => {
+    let cocktails;
+    if (alcool === "indifferent") {
+      cocktails = await Cocktail.findAll({
+        order: [["nom", "ASC"]],
+        attributes: ["id", "nom", "photo", "verreId", "alcool"],
+        raw: true
+      });
+    } else {
+      cocktails = await Cocktail.findAll({
+        where: { alcool: alcool },
+        order: [["nom", "ASC"]],
+        attributes: ["id", "nom", "photo", "verreId", "alcool"],
+        raw: true
+      });
+    }
 
     return cocktails;
   },
