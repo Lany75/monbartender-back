@@ -34,7 +34,9 @@ const {
 const { recupererIdVerre } = require("../controllers/verres_controller");
 
 const {
-  recupererIdIngredient
+  recupererIdIngredient,
+  ajouterUnIngredientDB,
+  recupererLesIngredients
 } = require("../controllers/ingredients_controller");
 
 const {
@@ -314,6 +316,25 @@ gestionRouter.delete(
 
     response.status(OK);
     response.json(cocktails);
+  }
+);
+
+gestionRouter.post(
+  "/ingredient",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const ingredients = request.body;
+    ingredients.map(async nomIngredient => {
+      logger.info(`Trying to add ${nomIngredient} in database`);
+      await ajouterUnIngredientDB(nomIngredient);
+    });
+
+    logger.info(`Trying to get list of ingredients`);
+    const listeIngredients = await recupererLesIngredients();
+
+    response.status(CREATED);
+    response.json(listeIngredients);
   }
 );
 
