@@ -18,7 +18,7 @@ const {
 const {
   lierCocktailIngredient,
   supprimerCocktailIngredient
-} = require("../controllers/cocktailsIngredientsController");
+} = require("../controllers/cocktailsIngredients_controller");
 
 const {
   ajouterEtapePreparation,
@@ -43,7 +43,8 @@ const {
   OK,
   NOT_FOUND,
   CREATED,
-  BAD_REQUEST
+  BAD_REQUEST,
+  FORBIDDEN
 } = require("../helpers/status_code");
 
 const gestionRouter = express.Router();
@@ -246,7 +247,7 @@ gestionRouter.post(
 
 /**
  * @swagger
- * /api/v1/gestion/{id}:
+ * /api/v1/gestion/cocktail/{id}:
  *   delete:
  *     tags:
  *       - Gestion
@@ -267,6 +268,8 @@ gestionRouter.post(
  *         description: Impossible de supprimer le cocktail
  *       401:
  *         description: Non autorisé
+ *       403:
+ *         description: Suppression impossible à réaliser
  *     security:
  *         - googleAuth:
  *            - email
@@ -285,37 +288,53 @@ gestionRouter.delete(
       response.json("Un identifiant de cocktail est obligatoire");
     }
 
-    logger.info(
-      `Trying to get etapes id of the cocktail with id ${idCocktail}`
-    );
-    const idEtapes = await recupererEtapesId(idCocktail);
+    const idCocktailsMoment = await recupererIdCocktailsMoment();
+    console.log(idCocktailsMoment);
 
-    logger.info(
-      `Trying to delete cocktail with id ${idCocktail} in table cocktails_etapes`
-    );
-    await supprimerCocktailEtape(idCocktail);
+    if (
+      idCocktail !== idCocktailsMoment[0].cocktailId &&
+      idCocktail !== idCocktailsMoment[1].cocktailId
+    ) {
+      logger.info(
+        `Trying to get etapes id of the cocktail with id ${idCocktail}`
+      );
+      const idEtapes = await recupererEtapesId(idCocktail);
 
-    logger.info(
-      `Trying to delete etape with id ${idEtapes} in table etapes_preparation`
-    );
-    for (let i = 0; i < idEtapes.length; i++) {
-      await supprimerEtapePreparation(idEtapes[i].dataValues.etapeId);
+      logger.info(
+        `Trying to delete cocktail with id ${idCocktail} in table cocktails_etapes`
+      );
+      await supprimerCocktailEtape(idCocktail);
+
+      logger.info(
+        `Trying to delete etape with id ${idEtapes} in table etapes_preparation`
+      );
+      for (let i = 0; i < idEtapes.length; i++) {
+        await supprimerEtapePreparation(idEtapes[i].dataValues.etapeId);
+      }
+
+      logger.info(
+        `Trying to delete cocktail with id ${idCocktail} in table cocktails_ingredients`
+      );
+      await supprimerCocktailIngredient(idCocktail);
+
+      logger.info(
+        `Trying to delete cocktail with id ${idCocktail} in table cocktails`
+      );
+      await supprimerUnCocktail(idCocktail);
+
+      const cocktails = await recupererLesCocktails("indifferent");
+
+      response.status(OK);
+      response.json(cocktails);
+    } else {
+      logger.info(
+        `delete forbidden, cocktail with id ${idCocktail} is a cocktail of the day`
+      );
+      response.status(FORBIDDEN);
+      response.json(
+        "suppression impossible, le cocktail est un cocktail du moment"
+      );
     }
-
-    logger.info(
-      `Trying to delete cocktail with id ${idCocktail} in table cocktails_ingredients`
-    );
-    await supprimerCocktailIngredient(idCocktail);
-
-    logger.info(
-      `Trying to delete cocktail with id ${idCocktail} in table cocktails`
-    );
-    await supprimerUnCocktail(idCocktail);
-
-    const cocktails = await recupererLesCocktails("indifferent");
-
-    response.status(OK);
-    response.json(cocktails);
   }
 );
 

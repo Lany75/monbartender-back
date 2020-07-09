@@ -10,7 +10,7 @@ const {
 
 const {
   recupererQuantiteIngredient
-} = require("../controllers/cocktailsIngredientsController");
+} = require("../controllers/cocktailsIngredients_controller");
 
 const {
   recupererIdBar,
