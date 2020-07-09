@@ -274,7 +274,7 @@ gestionRouter.post(
  *            - profile
  */
 gestionRouter.delete(
-  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  "/cocktail/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
   isAuthenticated,
   haveRight,
   async (request, response) => {
