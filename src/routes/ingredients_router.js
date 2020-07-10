@@ -4,8 +4,7 @@ const isAuthenticated = require("../middlewares/is_authenticated");
 
 const {
   recupererLesIngredients,
-  recupererIdIngredient,
-  ajouterUnIngredientDB
+  recupererIdIngredient
 } = require("../controllers/ingredients_controller");
 
 const {

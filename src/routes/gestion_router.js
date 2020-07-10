@@ -35,8 +35,8 @@ const { recupererIdVerre } = require("../controllers/verres_controller");
 
 const {
   recupererIdIngredient,
-  ajouterUnIngredientDB,
-  recupererLesIngredients
+  recupererLesIngredients,
+  ajouterIngredientsDB
 } = require("../controllers/ingredients_controller");
 
 const {
@@ -46,6 +46,7 @@ const {
   BAD_REQUEST,
   FORBIDDEN
 } = require("../helpers/status_code");
+const removeDuplicate = require("../utils/removeDuplicate");
 
 const gestionRouter = express.Router();
 
@@ -344,10 +345,11 @@ gestionRouter.post(
   haveRight,
   async (request, response) => {
     const ingredients = request.body;
-    ingredients.map(async nomIngredient => {
-      logger.info(`Trying to add ${nomIngredient} in database`);
-      await ajouterUnIngredientDB(nomIngredient);
-    });
+
+    const uniqueIngredients = removeDuplicate(ingredients);
+
+    logger.info(`Adding ingredients in database`);
+    await ajouterIngredientsDB(uniqueIngredients);
 
     logger.info(`Trying to get list of ingredients`);
     const listeIngredients = await recupererLesIngredients();
