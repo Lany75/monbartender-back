@@ -2,9 +2,10 @@ const { Cocktail, Verre, Ingredient, EtapesPreparation } = require("../models");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 require("express-async-errors");
+const uuid = require("uuid");
 
 const getRandomInteger = require("../utils/getRandomInteger");
-const uuid = require("uuid");
+
 const cocktailsRouter = require("../routes/cocktails_router");
 
 const cocktailController = {
@@ -96,7 +97,6 @@ const cocktailController = {
   //fonction rechercherCocktailsParIngredients = retourne un tableau de tous les cocktails de la table cocktails (modele Cocktail)
   //comportant le nom passé en paramètre
   rechercherCocktailsParIngredients: async (ingredients, alcool) => {
-    console.log(ingredients, alcool);
     let cocktails;
     if (alcool === "indifferent") {
       cocktails = await Cocktail.findAll({
