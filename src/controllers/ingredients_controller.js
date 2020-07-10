@@ -35,11 +35,8 @@ const ingredientController = {
     return nomIngredient.dataValues.nom;
   },
 
-  ajouterUnIngredientDB: async nvIngredient => {
-    await Ingredient.create({
-      id: uuid(),
-      nom: nvIngredient
-    });
+  ajouterIngredientsDB: async ingredients => {
+    await Ingredient.bulkCreate(ingredients);
   }
 };
 
