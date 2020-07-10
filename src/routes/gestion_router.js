@@ -36,7 +36,8 @@ const { recupererIdVerre } = require("../controllers/verres_controller");
 const {
   recupererIdIngredient,
   recupererLesIngredients,
-  ajouterIngredientsDB
+  ajouterIngredientsDB,
+  estDansLaListe
 } = require("../controllers/ingredients_controller");
 
 const {
@@ -186,7 +187,6 @@ gestionRouter.post(
   async (request, response) => {
     const { nom, photo, verre, ingredients, etapes, alcoolise } = request.body;
 
-    console.log(nom, photo, verre, ingredients, etapes, alcoolise);
     if (
       !nom ||
       nom === "" ||
@@ -290,7 +290,6 @@ gestionRouter.delete(
     }
 
     const idCocktailsMoment = await recupererIdCocktailsMoment();
-    console.log(idCocktailsMoment);
 
     if (
       idCocktail !== idCocktailsMoment[0].cocktailId &&
@@ -345,8 +344,18 @@ gestionRouter.post(
   haveRight,
   async (request, response) => {
     const ingredients = request.body;
+    let exist = false;
 
+    //suppression des doublons
     const uniqueIngredients = removeDuplicate(ingredients);
+
+    //vérification de l'inexistance de l'ingrédient dans la liste
+    for (let i = 0; i < uniqueIngredients.length; i++) {
+      exist = await estDansLaListe(uniqueIngredients[i].nom);
+      if (exist === true) {
+        uniqueIngredients.splice(i, 1);
+      } else i++;
+    }
 
     logger.info(`Adding ingredients in database`);
     await ajouterIngredientsDB(uniqueIngredients);

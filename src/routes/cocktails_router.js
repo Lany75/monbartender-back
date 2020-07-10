@@ -1,6 +1,7 @@
 const express = require("express");
-const isAuthenticated = require("../middlewares/is_authenticated");
+
 const logger = require("../helpers/logger");
+const { OK, NOT_FOUND } = require("../helpers/status_code");
 
 const {
   recupererLesCocktails,
@@ -12,8 +13,6 @@ const {
 const {
   recupererIdCocktailsMoment
 } = require("../controllers/cocktailsMoment_controller");
-
-const { OK, NOT_FOUND } = require("../helpers/status_code");
 
 const cocktailsRouter = express.Router();
 
@@ -244,8 +243,6 @@ cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
     alcool
   );
 
-  console.log(cocktails);
-
   cocktails.map(cocktail => {
     tableauCocktails.push({
       id: cocktail.dataValues.id,
@@ -257,7 +254,6 @@ cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
   if (tableauCocktails.length === 0) {
     logger.info(`No cocktails found for this search`);
     response.status(OK).json(tableauCocktails);
-    //response.status(NOT_FOUND).json(`Aucun cocktail trouvé`);
   } else {
     logger.info(`Cocktails found, remove duplicate`);
     const tableauCocktailsUnique = new Set(tableauCocktails);
