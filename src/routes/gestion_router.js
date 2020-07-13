@@ -8,7 +8,9 @@ const {
   recupererUnCocktail,
   ajouterUnCocktail,
   recupererLesCocktails,
-  supprimerUnCocktail
+  supprimerUnCocktail,
+  modifierNomCocktail,
+  modifierPhotoCocktail
 } = require("../controllers/cocktails_controller");
 const {
   recupererIdCocktailsMoment,
@@ -243,6 +245,23 @@ gestionRouter.post(
       response.status(CREATED);
       response.json(cocktails);
     }
+  }
+);
+
+gestionRouter.put(
+  "/cocktails",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { id, nom, photo } = request.body;
+    console.log(id, photo);
+
+    if (nom !== "") await modifierNomCocktail(id, nom);
+    if (photo !== "") await modifierPhotoCocktail(id, photo);
+
+    const cocktails = await recupererLesCocktails("indifferent");
+
+    response.status(OK).json(cocktails);
   }
 );
 
