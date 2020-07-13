@@ -51,12 +51,12 @@ const ingredientsMojito = [
     nom: "rhum"
   },
   {
-    id: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
-    nom: "eau gazeuse"
-  },
-  {
     id: "38925fb2-2267-47c7-b62e-e134e41a51c7",
     nom: "jus de citron vert"
+  },
+  {
+    id: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
+    nom: "eau gazeuse"
   }
 ];
 
@@ -114,7 +114,7 @@ describe("MonBartender cocktails_router", function() {
     it("it should return 200 with a list of cocktail", function() {
       return chai
         .request(server)
-        .get("/api/v1/cocktails")
+        .get("/api/v1/cocktails?alcool=indifferent")
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(200);
@@ -244,7 +244,7 @@ describe("MonBartender cocktails_router", function() {
       return chai
         .request(server)
         .get(
-          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco&ingredient2=vodka&ingredient3=jus%20de%20tomate"
+          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco&ingredient2=vodka&ingredient3=jus%20de%20tomate&alcool=indifferent"
         )
         .set("Content-Type", "application/json")
         .then(res => {
