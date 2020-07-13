@@ -147,6 +147,22 @@ const cocktailController = {
         id: cocktailId
       }
     });
+  },
+
+  modifierNomCocktail: async (cocktailId, nvNomCocktail) => {
+    await Cocktail.update(
+      { nom: nvNomCocktail },
+      { where: { id: cocktailId } }
+    );
+    return true;
+  },
+
+  modifierPhotoCocktail: async (cocktailId, nvPhotoCocktail) => {
+    await Cocktail.update(
+      { photo: nvPhotoCocktail },
+      { where: { id: cocktailId } }
+    );
+    return true;
   }
 };
 
