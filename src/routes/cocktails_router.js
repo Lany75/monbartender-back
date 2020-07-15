@@ -1,7 +1,7 @@
 const express = require("express");
 
 const logger = require("../helpers/logger");
-const { OK, NOT_FOUND } = require("../helpers/status_code");
+const { OK, NOT_FOUND, BAD_REQUEST } = require("../helpers/status_code");
 
 const {
   recupererLesCocktails,
@@ -44,17 +44,24 @@ const cocktailsRouter = express.Router();
  */
 cocktailsRouter.get("/", async (request, response) => {
   const { alcool } = request.query;
-  logger.info(`Trying to get all cocktails`);
-  const cocktails = await recupererLesCocktails(alcool);
 
-  if (!cocktails) {
-    logger.info(`Cocktails list has not been found`);
-    response.statut(NOT_FOUND);
-    response.json("La liste de cocktails n'a pas été récupérée");
+  if (!alcool) {
+    logger.info(`Alcool variable is not defined`);
+    response.status(BAD_REQUEST);
+    response.json("La variable alcool n'est pas définie");
   } else {
-    logger.info(`Cocktails list has been found`);
-    response.status(OK);
-    response.json(cocktails);
+    if (alcool !== true && alcool !== false && alcool !== "indifferent") {
+      logger.info(`Alcool variable's value is not the good one`);
+      response.status(BAD_REQUEST);
+      response.json("La valeur de la variable alcool n'est pas celle attendue");
+    } else {
+      logger.info(`Trying to get all cocktails`);
+      const cocktails = await recupererLesCocktails(alcool);
+
+      logger.info(`Cocktails list has been found`);
+      response.status(OK);
+      response.json(cocktails);
+    }
   }
 });
 
@@ -80,27 +87,18 @@ cocktailsRouter.get("/", async (request, response) => {
 cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
   const cocktailsMoment = [];
 
-  logger.info(`Trying to get cocktails of the day`);
+  logger.info(`Trying to get id of cocktails of the day`);
   const idCocktailsMoment = await recupererIdCocktailsMoment();
 
-  if (!idCocktailsMoment) {
-    logger.info(`Cocktails of the day list has not been found`);
-    response
-      .status(NOT_FOUND)
-      .json("La liste de cocktail n'a pas été récupérée");
-  } else {
-    logger.info(`Cocktails of the day list has been found`);
-    for (let i = 0; i < idCocktailsMoment.length; i++) {
-      const cocktail = await recupererUnCocktail(
-        idCocktailsMoment[i].cocktailId
-      );
+  logger.info(`Cocktails of the day list has been found`);
+  for (let i = 0; i < idCocktailsMoment.length; i++) {
+    const cocktail = await recupererUnCocktail(idCocktailsMoment[i].cocktailId);
 
-      cocktailsMoment.push({
-        id: idCocktailsMoment[i].cocktailId,
-        nom: cocktail.dataValues.nom,
-        photo: cocktail.dataValues.photo
-      });
-    }
+    cocktailsMoment.push({
+      id: idCocktailsMoment[i].cocktailId,
+      nom: cocktail.dataValues.nom,
+      photo: cocktail.dataValues.photo
+    });
   }
 
   response.status(OK);
@@ -129,13 +127,6 @@ cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
 cocktailsRouter.get("/aleatoire", async (request, response) => {
   logger.info(`Trying to get a random cocktail`);
   const cocktailAleatoire = await recupererUnCocktailAleatoire();
-
-  if (!cocktailAleatoire) {
-    logger.info(`Random cocktail has not been found`);
-    response
-      .status(NOT_FOUND)
-      .json("Le cocktail aléatoire n'a pas été récupéré");
-  }
 
   logger.info(`Random cocktail has been found`);
   response.status(OK);
@@ -178,20 +169,18 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
     logger.info(`Cocktail's name is not given`);
     response.status(BAD_REQUEST);
     response.json("Un nom de cocktail est obligatoire");
+  } else {
+    logger.info(`Trying to get cocktails that match ${nom}`);
+    const cocktail = await rechercherUnCocktailParSonNom(nom);
+
+    if (cocktail.length === 0) {
+      logger.info("No cocktail with this name");
+    } else {
+      logger.info(`Cocktail has been found`);
+    }
+    response.status(OK);
+    response.json(cocktail);
   }
-
-  logger.info(`Trying to get cocktails that match ${nom}`);
-  const cocktail = await rechercherUnCocktailParSonNom(nom);
-
-  if (!cocktail) {
-    logger.info(`Cocktail has not been found`);
-    response.status(NOT_FOUND);
-    response.json("Le cocktail n'a pas été trouvé");
-  }
-
-  logger.info(`Cocktail has been found`);
-  response.status(OK);
-  response.json(cocktail);
 });
 
 /**
@@ -219,6 +208,11 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
  *         schema:
  *           type: string
  *         description: le nom d'un ingrédient
+ *       - in: query
+ *         name: alcool
+ *         schema:
+ *           type: string
+ *         description: alcool du cocktail (true, false, indifferent)
  *     responses:
  *       200:
  *         description: Un tableau de cocktail
