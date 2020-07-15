@@ -169,20 +169,18 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
     logger.info(`Cocktail's name is not given`);
     response.status(BAD_REQUEST);
     response.json("Un nom de cocktail est obligatoire");
+  } else {
+    logger.info(`Trying to get cocktails that match ${nom}`);
+    const cocktail = await rechercherUnCocktailParSonNom(nom);
+
+    if (cocktail.length === 0) {
+      logger.info("No cocktail with this name");
+    } else {
+      logger.info(`Cocktail has been found`);
+    }
+    response.status(OK);
+    response.json(cocktail);
   }
-
-  logger.info(`Trying to get cocktails that match ${nom}`);
-  const cocktail = await rechercherUnCocktailParSonNom(nom);
-
-  if (!cocktail) {
-    logger.info(`Cocktail has not been found`);
-    response.status(NOT_FOUND);
-    response.json("Le cocktail n'a pas été trouvé");
-  }
-
-  logger.info(`Cocktail has been found`);
-  response.status(OK);
-  response.json(cocktail);
 });
 
 /**
@@ -210,6 +208,11 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
  *         schema:
  *           type: string
  *         description: le nom d'un ingrédient
+ *       - in: query
+ *         name: alcool
+ *         schema:
+ *           type: string
+ *         description: alcool du cocktail (true, false, indifferent)
  *     responses:
  *       200:
  *         description: Un tableau de cocktail

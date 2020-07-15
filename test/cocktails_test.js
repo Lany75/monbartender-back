@@ -120,4 +120,45 @@ describe("MonBartender cocktails_router", function() {
         });
     });
   });
+
+  describe("Recherche par nom GET", function() {
+    it("it should return a list of cocktails whith status code 200 if the name match with the one provided", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-nom?nom=mojito")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          var array = Array.from(res.body);
+          array.forEach(element => {
+            element.should.have.property("id");
+            element.should.have.property("nom");
+            element.should.have.property("photo");
+          });
+        });
+    });
+
+    it("it should return an empty array with status code 200 if no cocktails match with the one provided", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-nom?nom=unknown")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.an("array").that.is.empty;
+        });
+    });
+
+    it("it should return an error message with status code 400 if the name is not defined", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-nom")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(400);
+          res.text.should.be.contain("Un nom de cocktail est obligatoire");
+        });
+    });
+  });
 });

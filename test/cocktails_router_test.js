@@ -157,7 +157,7 @@ describe("MonBartender cocktails_router", function() {
     });
   }); */
 
-  describe("/GET /api/v1/cocktails/rechercher-par-nom succeed", function() {
+  /*   describe("/GET /api/v1/cocktails/rechercher-par-nom succeed", function() {
     it("it should return 200 with a list of cocktail where the name match the one provided", function() {
       return chai
         .request(server)
@@ -174,9 +174,9 @@ describe("MonBartender cocktails_router", function() {
           });
         });
     });
-  });
+  }); */
 
-  describe("/GET /api/v1/cocktails/rechercher-par-nom with unknown cocktail should return an empty array", function() {
+  /*   describe("/GET /api/v1/cocktails/rechercher-par-nom with unknown cocktail should return an empty array", function() {
     it("it should return 200 with an empty array", function() {
       return chai
         .request(server)
@@ -187,7 +187,7 @@ describe("MonBartender cocktails_router", function() {
           res.body.should.be.an("array").that.is.empty;
         });
     });
-  });
+  }); */
 
   describe("/GET /api/v1/cocktails/:id succeed", function() {
     it("it should return 200 with a cocktail with id equal to the one provided", function() {
