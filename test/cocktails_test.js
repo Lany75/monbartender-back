@@ -161,4 +161,61 @@ describe("MonBartender cocktails_router", function() {
         });
     });
   });
+
+  describe("Recherche par ingredients GET", function() {
+    it("it should return a list of cocktails with status code 200 if one of ingredients provided is include", function() {
+      return chai
+        .request(server)
+        .get(
+          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco&alcool=indifferent"
+        )
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          res.body.should.be.eql([
+            {
+              id: "b258592b-57ac-4bda-8e07-1d2697f20770",
+              nom: "Bloody Mary",
+              photo: "img_cocktail/bloodyMary.jpg"
+            }
+          ]);
+        });
+    });
+
+    it("it should return an empty array with status code 200 if all ingredients are undefined", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-ingredient?alcool=true")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.an("array").that.is.empty;
+        });
+    });
+
+    it("it should return an error message with status code 400 if alcool variable is not defined", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(400);
+          res.text.should.be.contain("La variable alcool n'est pas définie");
+        });
+    });
+
+    it("it should return an empty array with status code 200 if ingredients doesn't exist in the database", function() {
+      return chai
+        .request(server)
+        .get(
+          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tomate&alcool=false"
+        )
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.an("array").that.is.empty;
+        });
+    });
+  });
 });

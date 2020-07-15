@@ -239,7 +239,7 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("/GET /api/v1/cocktails/rechercher-par-ingredient succeed", function() {
+  /* describe("/GET /api/v1/cocktails/rechercher-par-ingredient succeed", function() {
     it("it should return status code 200 with a list of cocktail where one of ingredient is include", function() {
       return chai
         .request(server)
@@ -265,9 +265,9 @@ describe("MonBartender cocktails_router", function() {
           ]);
         });
     });
-  });
+  }); */
 
-  describe("/GET /api/v1/cocktails/rechercher-par-ingredient ingredients undefined", function() {
+  /* describe("/GET /api/v1/cocktails/rechercher-par-ingredient ingredients undefined", function() {
     it("it should return status code 404 with the message Aucun cocktail trouvé", function() {
       return chai
         .request(server)
@@ -278,9 +278,9 @@ describe("MonBartender cocktails_router", function() {
           res.text.should.be.contain("Aucun cocktail trouvé");
         });
     });
-  });
+  }); */
 
-  describe("/GET /api/v1/cocktails/rechercher-par-ingredient one of ingredients doesn't exist in the db", function() {
+  /* describe("/GET /api/v1/cocktails/rechercher-par-ingredient one of ingredients doesn't exist in the db", function() {
     it("it should return status code 404 with the message Aucun cocktail trouvé", function() {
       return chai
         .request(server)
@@ -291,5 +291,5 @@ describe("MonBartender cocktails_router", function() {
           res.text.should.be.contain("Aucun cocktail trouvé");
         });
     });
-  });
+  }); */
 });

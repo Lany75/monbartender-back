@@ -229,31 +229,37 @@ cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
   const tableauIngredient = [ingredient1, ingredient2, ingredient3];
   const tableauCocktails = [];
 
-  logger.info(
-    `Trying to get cocktails with ingredients ${ingredient1}, ${ingredient2}, ${ingredient3}`
-  );
-  const cocktails = await rechercherCocktailsParIngredients(
-    tableauIngredient,
-    alcool
-  );
-
-  cocktails.map(cocktail => {
-    tableauCocktails.push({
-      id: cocktail.dataValues.id,
-      nom: cocktail.dataValues.nom,
-      photo: cocktail.dataValues.photo
-    });
-  });
-
-  if (tableauCocktails.length === 0) {
-    logger.info(`No cocktails found for this search`);
-    response.status(OK).json(tableauCocktails);
+  if (!alcool) {
+    logger.info(`Alcool variable is not defined`);
+    response.status(BAD_REQUEST);
+    response.json("La variable alcool n'est pas définie");
   } else {
-    logger.info(`Cocktails found, remove duplicate`);
-    const tableauCocktailsUnique = new Set(tableauCocktails);
-    const sortedCocktails = [...tableauCocktailsUnique];
+    logger.info(
+      `Trying to get cocktails with ingredients ${ingredient1}, ${ingredient2}, ${ingredient3}`
+    );
+    const cocktails = await rechercherCocktailsParIngredients(
+      tableauIngredient,
+      alcool
+    );
 
-    response.status(OK).json(sortedCocktails);
+    cocktails.map(cocktail => {
+      tableauCocktails.push({
+        id: cocktail.dataValues.id,
+        nom: cocktail.dataValues.nom,
+        photo: cocktail.dataValues.photo
+      });
+    });
+
+    if (tableauCocktails.length === 0) {
+      logger.info(`No cocktails found for this search`);
+      response.status(OK).json(tableauCocktails);
+    } else {
+      logger.info(`Cocktails found, remove duplicate`);
+      const tableauCocktailsUnique = new Set(tableauCocktails);
+      const sortedCocktails = [...tableauCocktailsUnique];
+
+      response.status(OK).json(sortedCocktails);
+    }
   }
 });
 
