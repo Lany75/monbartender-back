@@ -123,7 +123,7 @@ describe("MonBartender cocktails_router", function() {
     });
   }); */
 
-  describe("/GET /api/v1/cocktail-du-moment succeed", function() {
+  /*   describe("/GET /api/v1/cocktail-du-moment succeed", function() {
     it("it should return 200 with the list of cocktail of the day", function() {
       return chai
         .request(server)
@@ -140,9 +140,9 @@ describe("MonBartender cocktails_router", function() {
           });
         });
     });
-  });
+  }); */
 
-  describe("/GET /api/v1/cocktails/aleatoire succeed", function() {
+  /*   describe("/GET /api/v1/cocktails/aleatoire succeed", function() {
     it("it should return 200 with a random list of cocktail", function() {
       return chai
         .request(server)
@@ -155,7 +155,7 @@ describe("MonBartender cocktails_router", function() {
           res.body.should.have.property("photo");
         });
     });
-  });
+  }); */
 
   describe("/GET /api/v1/cocktails/rechercher-par-nom succeed", function() {
     it("it should return 200 with a list of cocktail where the name match the one provided", function() {

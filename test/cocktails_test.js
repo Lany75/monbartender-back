@@ -85,17 +85,38 @@ describe("MonBartender cocktails_router", function() {
           );
         });
     });
+  });
 
-    it.skip("it should return an error message with status code 404 if cocktail list has not been found", function() {
+  describe("Cocktails of the day GET", function() {
+    it("it should return a list of cocktails of the day with status code 200 if everything is OK", function() {
       return chai
         .request(server)
-        .get("/api/v1/cocktails?alcool=indifferent")
+        .get("/api/v1/cocktails/cocktail-du-moment")
         .set("Content-Type", "application/json")
         .then(res => {
-          res.should.have.status(404);
-          res.text.should.be.contain(
-            "La liste de cocktails n'a pas été récupérée"
-          );
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          var array = Array.from(res.body);
+          array.forEach(element => {
+            element.should.have.property("id");
+            element.should.have.property("nom");
+            element.should.have.property("photo");
+          });
+        });
+    });
+  });
+
+  describe("Random Cocktail GET", function() {
+    it("it should return a random cocktail with status code 200 if everything is OK", function() {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/aleatoire")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.have.property("id");
+          res.body.should.have.property("nom");
+          res.body.should.have.property("photo");
         });
     });
   });
