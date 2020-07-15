@@ -1,7 +1,7 @@
 const express = require("express");
 
 const logger = require("../helpers/logger");
-const { OK, NOT_FOUND } = require("../helpers/status_code");
+const { OK, NOT_FOUND, BAD_REQUEST } = require("../helpers/status_code");
 
 const {
   recupererLesCocktails,
@@ -44,17 +44,30 @@ const cocktailsRouter = express.Router();
  */
 cocktailsRouter.get("/", async (request, response) => {
   const { alcool } = request.query;
-  logger.info(`Trying to get all cocktails`);
-  const cocktails = await recupererLesCocktails(alcool);
 
-  if (!cocktails) {
-    logger.info(`Cocktails list has not been found`);
-    response.statut(NOT_FOUND);
-    response.json("La liste de cocktails n'a pas été récupérée");
+  if (!alcool) {
+    logger.info(`Alcool variable is not defined`);
+    response.status(BAD_REQUEST);
+    response.json("La variable alcool n'est pas définie");
   } else {
-    logger.info(`Cocktails list has been found`);
-    response.status(OK);
-    response.json(cocktails);
+    if (alcool !== true && alcool !== false && alcool !== "indifferent") {
+      logger.info(`Alcool variable's value is not the good one`);
+      response.status(BAD_REQUEST);
+      response.json("La valeur de la variable alcool n'est pas celle attendue");
+    } else {
+      logger.info(`Trying to get all cocktails`);
+      const cocktails = await recupererLesCocktails(alcool);
+
+      if (!cocktails) {
+        logger.info(`Cocktails list has not been found`);
+        response.statut(NOT_FOUND);
+        response.json("La liste de cocktails n'a pas été récupérée");
+      } else {
+        logger.info(`Cocktails list has been found`);
+        response.status(OK);
+        response.json(cocktails);
+      }
+    }
   }
 });
 

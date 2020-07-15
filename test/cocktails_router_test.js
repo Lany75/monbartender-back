@@ -110,7 +110,7 @@ describe("MonBartender cocktails_router", function() {
 
   // COCKTAIL Unit Testing
 
-  describe("/GET /api/v1/cocktails succeed", function() {
+  /* describe("/GET /api/v1/cocktails succeed", function() {
     it("it should return 200 with a list of cocktail", function() {
       return chai
         .request(server)
@@ -121,7 +121,7 @@ describe("MonBartender cocktails_router", function() {
           res.body.should.be.eql(cocktailsList);
         });
     });
-  });
+  }); */
 
   describe("/GET /api/v1/cocktail-du-moment succeed", function() {
     it("it should return 200 with the list of cocktail of the day", function() {
