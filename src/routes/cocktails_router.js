@@ -50,7 +50,7 @@ cocktailsRouter.get("/", async (request, response) => {
     response.status(BAD_REQUEST);
     response.json("La variable alcool n'est pas définie");
   } else {
-    if (alcool !== true && alcool !== false && alcool !== "indifferent") {
+    if (alcool !== "true" && alcool !== "false" && alcool !== "indifferent") {
       logger.info(`Alcool variable's value is not the good one`);
       response.status(BAD_REQUEST);
       response.json("La valeur de la variable alcool n'est pas celle attendue");
