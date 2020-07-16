@@ -300,7 +300,7 @@ describe("MonBartender cocktails_router", () => {
         });
     });
 
-    it("it should return an error message with status code 400 if the id does not match uuid definition", () => {
+    it("it should return a message with status code 404 if the id does not match uuid definition", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/test")

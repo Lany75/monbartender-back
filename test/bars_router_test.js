@@ -2,8 +2,9 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 
 const { Bar, BarIngredient } = require("../src/models");
+const cleanDb = require("../src/utils/test/cleanDb");
+const createBarBefore = require("../src/utils/test/createBarBefore");
 
-const existingUnitTestUserBarId = "38925fb2-2267-47c7-b62e-e134e41a51c7";
 const existingUnitTestUser = "unit-testing@monbartender.com";
 const unknownUnitTestUser = "unit-testing-unknown@monbartender.com";
 
@@ -24,44 +25,6 @@ describe("MonBartender bars_router", () => {
   afterEach(async () => {
     await cleanDb();
   });
-
-  const cleanDb = async () => {
-    // Clean BAR Unknown User
-    var bar = await Bar.findOne({
-      where: { personneId: unknownUnitTestUser },
-      attributes: ["id"]
-    });
-
-    if (bar) {
-      await BarIngredient.destroy({
-        where: { barId: bar.id }
-      });
-      await Bar.destroy({
-        where: { id: bar.id }
-      });
-    }
-
-    // Clean BAR Known User
-    await BarIngredient.destroy({
-      where: { barId: existingUnitTestUserBarId }
-    });
-    await Bar.destroy({
-      where: { id: existingUnitTestUserBarId }
-    });
-  };
-
-  const createBarBefore = async () => {
-    // Create a bar with an ingredient
-    await Bar.create({
-      id: existingUnitTestUserBarId,
-      personneId: existingUnitTestUser,
-      droits: true
-    });
-    await BarIngredient.create({
-      barId: existingUnitTestUserBarId,
-      ingredientId: "64b1111d-8ab9-4051-887b-90a275cec851" // Sel de Celeri
-    });
-  };
 
   describe("Bars GET", () => {
     it("it should return a bar with status code 200 if user exist", () => {

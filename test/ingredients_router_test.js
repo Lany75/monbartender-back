@@ -114,7 +114,7 @@ describe("MonBartender ingredient_router", function() {
   }
 
   // INGREDIENTS Unit Testing
-  describe("/GET /api/v1/ingredients succeed", function() {
+  /*  describe("/GET /api/v1/ingredients succeed", function() {
     it("it should return 200 with a list of ingredients", function() {
       return chai
         .request(server)
@@ -130,7 +130,7 @@ describe("MonBartender ingredient_router", function() {
           });
         });
     });
-  });
+  }); */
 
   describe("/POST /api/v1/ingredients/:nomNouvelIngredient authorized existing user", function() {
     it("it should add an ingredient to an existing user's bar", function() {
@@ -258,7 +258,7 @@ describe("MonBartender ingredient_router", function() {
     });
   });
 
-  describe("/GET /api/v1/ingredients/quantite succed, with cocktailId whitch exist", function() {
+  /* describe("/GET /api/v1/ingredients/quantite succed, with cocktailId whitch exist", function() {
     it("it should return status code 200 with an array of ingredient and quantity for each", function() {
       return chai
         .request(server)
@@ -278,9 +278,9 @@ describe("MonBartender ingredient_router", function() {
           res.body.should.be.eql(quantiteIngredient);
         });
     });
-  });
+  }); */
 
-  describe("/GET /api/v1/ingredients/quantite, with cocktailId whitch doesn't exist", function() {
+  /*   describe("/GET /api/v1/ingredients/quantite, with cocktailId whitch doesn't exist", function() {
     it("it should return status code 404 stating that no cocktail has been found", function() {
       return chai
         .request(server)
@@ -293,9 +293,9 @@ describe("MonBartender ingredient_router", function() {
           res.text.should.be.contain("Aucun cocktail avec cet id n'existe");
         });
     });
-  });
+  }); */
 
-  describe("/GET /api/v1/ingredients/quantite, with cocktailId does not match with uuid definition", function() {
+  /* describe("/GET /api/v1/ingredients/quantite, with cocktailId does not match with uuid definition", function() {
     it("it should return status code 404 stating that no resources has been found", function() {
       return chai
         .request(server)
@@ -306,5 +306,5 @@ describe("MonBartender ingredient_router", function() {
           res.text.should.be.contain(`test is not an uuid`);
         });
     });
-  });
+  }); */
 });
