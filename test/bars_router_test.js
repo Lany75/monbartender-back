@@ -1,8 +1,8 @@
-let chai = require("chai"),
-  chaiHttp = require("chai-http");
-let expect = chai.expect;
-let should = chai.should();
+const chai = require("chai");
+const chaiHttp = require("chai-http");
+
 const { Bar, BarIngredient } = require("../src/models");
+
 const existingUnitTestUserBarId = "38925fb2-2267-47c7-b62e-e134e41a51c7";
 const existingUnitTestUser = "unit-testing@monbartender.com";
 const unknownUnitTestUser = "unit-testing-unknown@monbartender.com";
@@ -11,16 +11,21 @@ process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
 describe("MonBartender bars_router", function() {
-  var server;
+  let server;
 
   // START NEW SERVER FOR EACH TEST
   beforeEach(async function() {
     delete require.cache[require.resolve("../src/server")];
     server = require("../src/server");
-    await cleanDbBefore();
+    await cleanDb();
+    await createBarBefore();
   });
 
-  async function cleanDbBefore() {
+  afterEach(async function() {
+    await cleanDb();
+  });
+
+  async function cleanDb() {
     // Clean BAR Unknown User
     var bar = await Bar.findOne({
       where: { personneId: unknownUnitTestUser },
@@ -43,7 +48,9 @@ describe("MonBartender bars_router", function() {
     await Bar.destroy({
       where: { id: existingUnitTestUserBarId }
     });
+  }
 
+  async function createBarBefore() {
     // Create a bar with an ingredient
     await Bar.create({
       id: existingUnitTestUserBarId,
@@ -56,38 +63,8 @@ describe("MonBartender bars_router", function() {
     });
   }
 
-  afterEach(async function() {
-    await cleanDbAfter();
-  });
-
-  async function cleanDbAfter() {
-    // Clean BAR Unknown User
-    var bar = await Bar.findOne({
-      where: { personneId: unknownUnitTestUser },
-      attributes: ["id"]
-    });
-
-    if (bar) {
-      await BarIngredient.destroy({
-        where: { barId: bar.id }
-      });
-      await Bar.destroy({
-        where: { id: bar.id }
-      });
-    }
-
-    // Clean BAR Known User
-    await BarIngredient.destroy({
-      where: { barId: existingUnitTestUserBarId }
-    });
-    await Bar.destroy({
-      where: { id: existingUnitTestUserBarId }
-    });
-  }
-
-  // BAR Unit Testing
-  describe("/GET /api/v1/bars authorized existing user", function() {
-    it("it should GET an existing user's bar", function() {
+  describe("Bars GET", function() {
+    it("it should return a bar with status code 200 if user exist", function() {
       return chai
         .request(server)
         .get("/api/v1/bars")
@@ -104,10 +81,8 @@ describe("MonBartender bars_router", function() {
             .eql([{ nom: "sel de celeri" }]);
         });
     });
-  });
 
-  describe("/GET /api/v1/bars authorized unexisting user", function() {
-    it("it should GET an existing user's bar", function() {
+    it("should return a bar with status code 200 after creating it if user doesn't exist", () => {
       return chai
         .request(server)
         .get("/api/v1/bars")
@@ -121,10 +96,8 @@ describe("MonBartender bars_router", function() {
           res.body.should.have.property("droits");
         });
     });
-  });
 
-  describe("/GET /api/v1/bars unauthorized", function() {
-    it("it should return 401 Non autorisé", function() {
+    it("should return an error message with status code 401 if unauthorized access", () => {
       return chai
         .request(server)
         .get("/api/v1/bars")
