@@ -295,18 +295,14 @@ cocktailsRouter.get(
   "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
   async (request, response) => {
     const { id } = request.params;
-    if (!id) {
-      logger.info(`cocktail's id is not given`);
-      response.status(BAD_REQUEST);
-      response.json("Un identifiant de cocktail est obligatoire");
-    }
+
     logger.info(`Trying to get cocktail with id ${id}`);
     const cocktail = await recupererUnCocktail(id);
 
     if (!cocktail) {
       logger.info(`Cocktail not found`);
-      response.status(NOT_FOUND);
-      response.json("Le cocktail n'a pas été trouvé");
+      response.status(OK);
+      response.json([]);
     } else {
       logger.info(`Cocktail found`);
       response.status(OK);
