@@ -87,7 +87,7 @@ const etapesPreparationMojito = [
 process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
-describe("MonBartender cocktails_router", function() {
+describe("MonBartender cocktails_router", () => {
   let server;
 
   // START NEW SERVER FOR EACH TEST
@@ -95,12 +95,9 @@ describe("MonBartender cocktails_router", function() {
     delete require.cache[require.resolve("../src/server")];
     server = require("../src/server");
   });
-  afterEach(async function() {
-    //
-  });
 
-  describe("Cocktails GET", function() {
-    it("it should return a list of cocktails with status code 200 if everything is OK", function() {
+  describe("Cocktails GET", () => {
+    it("it should return a list of cocktails with status code 200 if everything is OK", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails?alcool=indifferent")
@@ -111,7 +108,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an error message with status code 400 if alcool variable is not defined", function() {
+    it("it should return an error message with status code 400 if alcool variable is not defined", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails")
@@ -122,7 +119,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an error message with status code 400 if alcool variable is not true, false or indifferent", function() {
+    it("it should return an error message with status code 400 if alcool variable is not true, false or indifferent", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails?alcool=toto")
@@ -136,8 +133,8 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("Cocktails of the day GET", function() {
-    it("it should return a list of cocktails of the day with status code 200 if everything is OK", function() {
+  describe("Cocktails of the day GET", () => {
+    it("it should return a list of cocktails of the day with status code 200 if everything is OK", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/cocktail-du-moment")
@@ -155,8 +152,8 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("Random Cocktail GET", function() {
-    it("it should return a random cocktail with status code 200 if everything is OK", function() {
+  describe("Random Cocktail GET", () => {
+    it("it should return a random cocktail with status code 200 if everything is OK", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/aleatoire")
@@ -170,8 +167,8 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("Recherche par nom GET", function() {
-    it("it should return a list of cocktails whith status code 200 if the name match with the one provided", function() {
+  describe("Recherche par nom GET", () => {
+    it("it should return a list of cocktails whith status code 200 if the name match with the one provided", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/rechercher-par-nom?nom=mojito")
@@ -188,7 +185,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an empty array with status code 200 if no cocktails match with the one provided", function() {
+    it("it should return an empty array with status code 200 if no cocktails match with the one provided", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/rechercher-par-nom?nom=unknown")
@@ -199,7 +196,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an error message with status code 400 if the name is not defined", function() {
+    it("it should return an error message with status code 400 if the name is not defined", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/rechercher-par-nom")
@@ -211,8 +208,8 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("Recherche par ingredients GET", function() {
-    it("it should return a list of cocktails with status code 200 if one of ingredients provided is include", function() {
+  describe("Recherche par ingredients GET", () => {
+    it("it should return a list of cocktails with status code 200 if one of ingredients provided is include", () => {
       return chai
         .request(server)
         .get(
@@ -232,7 +229,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an empty array with status code 200 if all ingredients are undefined", function() {
+    it("it should return an empty array with status code 200 if all ingredients are undefined", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/rechercher-par-ingredient?alcool=true")
@@ -243,7 +240,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an error message with status code 400 if alcool variable is not defined", function() {
+    it("it should return an error message with status code 400 if alcool variable is not defined", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco")
@@ -254,7 +251,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an empty array with status code 200 if ingredients doesn't exist in the database", function() {
+    it("it should return an empty array with status code 200 if ingredients doesn't exist in the database", () => {
       return chai
         .request(server)
         .get(
@@ -268,8 +265,8 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("Specified cocktail recipe GET", function() {
-    it("it should return a cocktail recipe with status code 200 if the id match with the one provided", function() {
+  describe("Specified cocktail recipe GET", () => {
+    it("it should return a cocktail recipe with status code 200 if the id match with the one provided", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/7f73cf2f-7ed7-4be4-8640-69dbbc1b2927")
@@ -292,7 +289,7 @@ describe("MonBartender cocktails_router", function() {
         });
     });
 
-    it("it should return an empty array with status code 200 if no cocktails match with the id provided", function() {
+    it("it should return an empty array with status code 200 if no cocktails match with the id provided", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/1f23cf4f-1ed2-1be2-1234-12dbbc3b4567")

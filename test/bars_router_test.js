@@ -10,22 +10,22 @@ const unknownUnitTestUser = "unit-testing-unknown@monbartender.com";
 process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
-describe("MonBartender bars_router", function() {
+describe("MonBartender bars_router", () => {
   let server;
 
   // START NEW SERVER FOR EACH TEST
-  beforeEach(async function() {
+  beforeEach(async () => {
     delete require.cache[require.resolve("../src/server")];
     server = require("../src/server");
     await cleanDb();
     await createBarBefore();
   });
 
-  afterEach(async function() {
+  afterEach(async () => {
     await cleanDb();
   });
 
-  async function cleanDb() {
+  const cleanDb = async () => {
     // Clean BAR Unknown User
     var bar = await Bar.findOne({
       where: { personneId: unknownUnitTestUser },
@@ -48,9 +48,9 @@ describe("MonBartender bars_router", function() {
     await Bar.destroy({
       where: { id: existingUnitTestUserBarId }
     });
-  }
+  };
 
-  async function createBarBefore() {
+  const createBarBefore = async () => {
     // Create a bar with an ingredient
     await Bar.create({
       id: existingUnitTestUserBarId,
@@ -61,10 +61,10 @@ describe("MonBartender bars_router", function() {
       barId: existingUnitTestUserBarId,
       ingredientId: "64b1111d-8ab9-4051-887b-90a275cec851" // Sel de Celeri
     });
-  }
+  };
 
-  describe("Bars GET", function() {
-    it("it should return a bar with status code 200 if user exist", function() {
+  describe("Bars GET", () => {
+    it("it should return a bar with status code 200 if user exist", () => {
       return chai
         .request(server)
         .get("/api/v1/bars")
