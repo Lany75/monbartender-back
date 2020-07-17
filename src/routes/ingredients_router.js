@@ -68,67 +68,6 @@ ingredientRouter.get("/", async (request, response) => {
 
 /**
  * @swagger
- * /api/v1/ingredients/quantite:
- *   get:
- *     tags:
- *       - Ingredients
- *     description: Retourne la quantité pour chaque ingrédient d'un cocktail
- *     produces:
- *       - application/json
- *     parameters:
- *       - in: query
- *         name: cocktailId
- *         schema:
- *           type: string
- *         description: l'id d'un cocktail
- *     responses:
- *       200:
- *         description: Un tableau contenant l'id de l'ingredient et sa quantité
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CocktailIngredient'
- *       404:
- *         description: Aucun ingredient n'existe
- */
-ingredientRouter.get("/quantite", async (request, response) => {
-  const { cocktailId } = request.query;
-  const quantiteIngredient = [];
-
-  if (!cocktailId) {
-    logger.info("cocktail id is not defined");
-    response.status(BAD_REQUEST).json("L'id du cocktail n'est pas définie");
-  } else {
-    logger.info("Verifying cocktailId match with a uuid definition");
-    if (!regex.test(cocktailId)) {
-      logger.info(`${cocktailId} is not an uuid`);
-      response.status(NOT_FOUND).json(`${cocktailId} n'est pas un uuid`);
-    } else {
-      logger.info(`Verifying cocktail with id ${cocktailId} exist`);
-      const cocktail = await recupererUnCocktail(cocktailId);
-
-      if (!cocktail) {
-        logger.info(`cocktail with id ${cocktailId} doesn't exist`);
-        response.status(NOT_FOUND).json("Aucun cocktail avec cet id n'existe");
-      } else {
-        logger.info(`Trying to get quantity of ingredient`);
-        const quantite = await recupererQuantiteIngredient(cocktailId);
-
-        for (let i = 0; i < quantite.length; i++) {
-          quantiteIngredient.push(quantite[i].dataValues);
-        }
-
-        logger.info(`quantity of ingredient has been found`);
-
-        response.status(OK);
-        response.json(quantiteIngredient);
-      }
-    }
-  }
-});
-
-/**
- * @swagger
  * /api/v1/ingredients/{nomNouvelIngredient}:
  *   post:
  *     tags:
