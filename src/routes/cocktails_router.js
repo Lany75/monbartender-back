@@ -4,6 +4,7 @@ const logger = require("../helpers/logger");
 const { OK, NOT_FOUND, BAD_REQUEST } = require("../helpers/status_code");
 
 const {
+  estDansLaTableCocktail,
   recupererLesCocktails,
   recupererUnCocktail,
   rechercherUnCocktailParSonNom,
@@ -13,6 +14,9 @@ const {
 const {
   recupererIdCocktailsMoment
 } = require("../controllers/cocktailsMoment_controller");
+const {
+  recupererQuantiteIngredient
+} = require("../controllers/cocktailsIngredients_controller");
 
 const cocktailsRouter = express.Router();
 
@@ -295,18 +299,59 @@ cocktailsRouter.get(
   "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
   async (request, response) => {
     const { id } = request.params;
+    let resultatCocktail = {
+      id: "",
+      nom: "",
+      photo: "",
+      verre: { id: "", nom: "" },
+      ingredients: [],
+      etapesPreparation: []
+    };
 
-    logger.info(`Trying to get cocktail with id ${id}`);
-    const cocktail = await recupererUnCocktail(id);
+    logger.info(`Verifying cocktail with id ${id} exist`);
+    const exist = await estDansLaTableCocktail(id);
+    console.log(exist);
 
-    if (!cocktail) {
-      logger.info(`Cocktail not found`);
+    if (exist === false) {
+      logger.info(`Cocktail with id ${id} doesn't exist`);
       response.status(OK);
       response.json([]);
     } else {
+      logger.info(
+        `Trying to get cocktail with id ${id} and his ingredient's quantity`
+      );
+      const cocktail = await recupererUnCocktail(id);
+      const quantiteIngredient = await recupererQuantiteIngredient(id);
+
+      resultatCocktail.id = id;
+      resultatCocktail.nom = cocktail.dataValues.nom;
+      resultatCocktail.photo = cocktail.dataValues.photo;
+      resultatCocktail.verre = {
+        id: cocktail.dataValues.Verre.id,
+        nom: cocktail.dataValues.Verre.nom
+      };
+
+      cocktail.dataValues.Ingredients.map((i, index) => {
+        quantiteIngredient.map((qi, index) => {
+          if (i.dataValues.id === qi.dataValues.ingredientId)
+            resultatCocktail.ingredients.push({
+              id: i.dataValues.id,
+              nom: i.dataValues.nom,
+              quantite: qi.dataValues.quantite,
+              unite: qi.dataValues.unite
+            });
+        });
+      });
+      cocktail.dataValues.EtapesPreparations.map((ep, index) => {
+        resultatCocktail.etapesPreparation.push({
+          numEtape: ep.dataValues.numEtape,
+          texte: ep.dataValues.texte
+        });
+      });
+
       logger.info(`Cocktail found`);
       response.status(OK);
-      response.json(cocktail);
+      response.json(resultatCocktail);
     }
   }
 );

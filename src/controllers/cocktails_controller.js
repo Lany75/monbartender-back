@@ -9,6 +9,15 @@ const getRandomInteger = require("../utils/getRandomInteger");
 const cocktailsRouter = require("../routes/cocktails_router");
 
 const cocktailController = {
+  estDansLaTableCocktail: async idCocktail => {
+    const exist = await Cocktail.findOne({
+      attributes: ["nom"],
+      where: { id: idCocktail }
+    });
+    if (!exist) return false;
+    else return true;
+  },
+
   // fonction recupererLesCocktails = retourne un tableau de tous les cocktails de la table cocktails (modèle Cocktail)
   recupererLesCocktails: async alcool => {
     let cocktails;
