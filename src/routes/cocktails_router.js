@@ -1,9 +1,10 @@
 const express = require("express");
 
 const logger = require("../helpers/logger");
-const { OK, NOT_FOUND } = require("../helpers/status_code");
+const { OK, NOT_FOUND, BAD_REQUEST } = require("../helpers/status_code");
 
 const {
+  estDansLaTableCocktail,
   recupererLesCocktails,
   recupererUnCocktail,
   rechercherUnCocktailParSonNom,
@@ -13,6 +14,9 @@ const {
 const {
   recupererIdCocktailsMoment
 } = require("../controllers/cocktailsMoment_controller");
+const {
+  recupererQuantiteIngredient
+} = require("../controllers/cocktailsIngredients_controller");
 
 const cocktailsRouter = express.Router();
 
@@ -44,17 +48,24 @@ const cocktailsRouter = express.Router();
  */
 cocktailsRouter.get("/", async (request, response) => {
   const { alcool } = request.query;
-  logger.info(`Trying to get all cocktails`);
-  const cocktails = await recupererLesCocktails(alcool);
 
-  if (!cocktails) {
-    logger.info(`Cocktails list has not been found`);
-    response.statut(NOT_FOUND);
-    response.json("La liste de cocktails n'a pas été récupérée");
+  if (!alcool) {
+    logger.info(`Alcool variable is not defined`);
+    response.status(BAD_REQUEST);
+    response.json("La variable alcool n'est pas définie");
   } else {
-    logger.info(`Cocktails list has been found`);
-    response.status(OK);
-    response.json(cocktails);
+    if (alcool !== "true" && alcool !== "false" && alcool !== "indifferent") {
+      logger.info(`Alcool variable's value is not the good one`);
+      response.status(BAD_REQUEST);
+      response.json("La valeur de la variable alcool n'est pas celle attendue");
+    } else {
+      logger.info(`Trying to get all cocktails`);
+      const cocktails = await recupererLesCocktails(alcool);
+
+      logger.info(`Cocktails list has been found`);
+      response.status(OK);
+      response.json(cocktails);
+    }
   }
 });
 
@@ -80,27 +91,18 @@ cocktailsRouter.get("/", async (request, response) => {
 cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
   const cocktailsMoment = [];
 
-  logger.info(`Trying to get cocktails of the day`);
+  logger.info(`Trying to get id of cocktails of the day`);
   const idCocktailsMoment = await recupererIdCocktailsMoment();
 
-  if (!idCocktailsMoment) {
-    logger.info(`Cocktails of the day list has not been found`);
-    response
-      .status(NOT_FOUND)
-      .json("La liste de cocktail n'a pas été récupérée");
-  } else {
-    logger.info(`Cocktails of the day list has been found`);
-    for (let i = 0; i < idCocktailsMoment.length; i++) {
-      const cocktail = await recupererUnCocktail(
-        idCocktailsMoment[i].cocktailId
-      );
+  logger.info(`Cocktails of the day list has been found`);
+  for (let i = 0; i < idCocktailsMoment.length; i++) {
+    const cocktail = await recupererUnCocktail(idCocktailsMoment[i].cocktailId);
 
-      cocktailsMoment.push({
-        id: idCocktailsMoment[i].cocktailId,
-        nom: cocktail.dataValues.nom,
-        photo: cocktail.dataValues.photo
-      });
-    }
+    cocktailsMoment.push({
+      id: idCocktailsMoment[i].cocktailId,
+      nom: cocktail.dataValues.nom,
+      photo: cocktail.dataValues.photo
+    });
   }
 
   response.status(OK);
@@ -129,13 +131,6 @@ cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
 cocktailsRouter.get("/aleatoire", async (request, response) => {
   logger.info(`Trying to get a random cocktail`);
   const cocktailAleatoire = await recupererUnCocktailAleatoire();
-
-  if (!cocktailAleatoire) {
-    logger.info(`Random cocktail has not been found`);
-    response
-      .status(NOT_FOUND)
-      .json("Le cocktail aléatoire n'a pas été récupéré");
-  }
 
   logger.info(`Random cocktail has been found`);
   response.status(OK);
@@ -178,20 +173,18 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
     logger.info(`Cocktail's name is not given`);
     response.status(BAD_REQUEST);
     response.json("Un nom de cocktail est obligatoire");
+  } else {
+    logger.info(`Trying to get cocktails that match ${nom}`);
+    const cocktail = await rechercherUnCocktailParSonNom(nom);
+
+    if (cocktail.length === 0) {
+      logger.info("No cocktail with this name");
+    } else {
+      logger.info(`Cocktail has been found`);
+    }
+    response.status(OK);
+    response.json(cocktail);
   }
-
-  logger.info(`Trying to get cocktails that match ${nom}`);
-  const cocktail = await rechercherUnCocktailParSonNom(nom);
-
-  if (!cocktail) {
-    logger.info(`Cocktail has not been found`);
-    response.status(NOT_FOUND);
-    response.json("Le cocktail n'a pas été trouvé");
-  }
-
-  logger.info(`Cocktail has been found`);
-  response.status(OK);
-  response.json(cocktail);
 });
 
 /**
@@ -219,6 +212,11 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
  *         schema:
  *           type: string
  *         description: le nom d'un ingrédient
+ *       - in: query
+ *         name: alcool
+ *         schema:
+ *           type: string
+ *         description: alcool du cocktail (true, false, indifferent)
  *     responses:
  *       200:
  *         description: Un tableau de cocktail
@@ -235,31 +233,37 @@ cocktailsRouter.get("/rechercher-par-ingredient", async (request, response) => {
   const tableauIngredient = [ingredient1, ingredient2, ingredient3];
   const tableauCocktails = [];
 
-  logger.info(
-    `Trying to get cocktails with ingredients ${ingredient1}, ${ingredient2}, ${ingredient3}`
-  );
-  const cocktails = await rechercherCocktailsParIngredients(
-    tableauIngredient,
-    alcool
-  );
-
-  cocktails.map(cocktail => {
-    tableauCocktails.push({
-      id: cocktail.dataValues.id,
-      nom: cocktail.dataValues.nom,
-      photo: cocktail.dataValues.photo
-    });
-  });
-
-  if (tableauCocktails.length === 0) {
-    logger.info(`No cocktails found for this search`);
-    response.status(OK).json(tableauCocktails);
+  if (!alcool) {
+    logger.info(`Alcool variable is not defined`);
+    response.status(BAD_REQUEST);
+    response.json("La variable alcool n'est pas définie");
   } else {
-    logger.info(`Cocktails found, remove duplicate`);
-    const tableauCocktailsUnique = new Set(tableauCocktails);
-    const sortedCocktails = [...tableauCocktailsUnique];
+    logger.info(
+      `Trying to get cocktails with ingredients ${ingredient1}, ${ingredient2}, ${ingredient3}`
+    );
+    const cocktails = await rechercherCocktailsParIngredients(
+      tableauIngredient,
+      alcool
+    );
 
-    response.status(OK).json(sortedCocktails);
+    cocktails.map(cocktail => {
+      tableauCocktails.push({
+        id: cocktail.dataValues.id,
+        nom: cocktail.dataValues.nom,
+        photo: cocktail.dataValues.photo
+      });
+    });
+
+    if (tableauCocktails.length === 0) {
+      logger.info(`No cocktails found for this search`);
+      response.status(OK).json(tableauCocktails);
+    } else {
+      logger.info(`Cocktails found, remove duplicate`);
+      const tableauCocktailsUnique = new Set(tableauCocktails);
+      const sortedCocktails = [...tableauCocktailsUnique];
+
+      response.status(OK).json(sortedCocktails);
+    }
   }
 });
 
@@ -295,22 +299,59 @@ cocktailsRouter.get(
   "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
   async (request, response) => {
     const { id } = request.params;
-    if (!id) {
-      logger.info(`cocktail's id is not given`);
-      response.status(BAD_REQUEST);
-      response.json("Un identifiant de cocktail est obligatoire");
-    }
-    logger.info(`Trying to get cocktail with id ${id}`);
-    const cocktail = await recupererUnCocktail(id);
+    let resultatCocktail = {
+      id: "",
+      nom: "",
+      photo: "",
+      verre: { id: "", nom: "" },
+      ingredients: [],
+      etapesPreparation: []
+    };
 
-    if (!cocktail) {
-      logger.info(`Cocktail not found`);
-      response.status(NOT_FOUND);
-      response.json("Le cocktail n'a pas été trouvé");
+    logger.info(`Verifying cocktail with id ${id} exist`);
+    const exist = await estDansLaTableCocktail(id);
+    console.log(exist);
+
+    if (exist === false) {
+      logger.info(`Cocktail with id ${id} doesn't exist`);
+      response.status(OK);
+      response.json([]);
     } else {
+      logger.info(
+        `Trying to get cocktail with id ${id} and his ingredient's quantity`
+      );
+      const cocktail = await recupererUnCocktail(id);
+      const quantiteIngredient = await recupererQuantiteIngredient(id);
+
+      resultatCocktail.id = id;
+      resultatCocktail.nom = cocktail.dataValues.nom;
+      resultatCocktail.photo = cocktail.dataValues.photo;
+      resultatCocktail.verre = {
+        id: cocktail.dataValues.Verre.id,
+        nom: cocktail.dataValues.Verre.nom
+      };
+
+      cocktail.dataValues.Ingredients.map((i, index) => {
+        quantiteIngredient.map((qi, index) => {
+          if (i.dataValues.id === qi.dataValues.ingredientId)
+            resultatCocktail.ingredients.push({
+              id: i.dataValues.id,
+              nom: i.dataValues.nom,
+              quantite: qi.dataValues.quantite,
+              unite: qi.dataValues.unite
+            });
+        });
+      });
+      cocktail.dataValues.EtapesPreparations.map((ep, index) => {
+        resultatCocktail.etapesPreparation.push({
+          numEtape: ep.dataValues.numEtape,
+          texte: ep.dataValues.texte
+        });
+      });
+
       logger.info(`Cocktail found`);
       response.status(OK);
-      response.json(cocktail);
+      response.json(resultatCocktail);
     }
   }
 );

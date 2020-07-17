@@ -1,10 +1,6 @@
-let chai = require("chai"),
-  chaiHttp = require("chai-http");
-let expect = chai.expect;
+const chai = require("chai");
+const chaiHttp = require("chai-http");
 let should = chai.should();
-
-const existingUnitTestUser = "unit-testing@monbartender.com";
-const unknownUnitTestUser = "unit-testing-unknown@monbartender.com";
 
 const cocktailsList = [
   {
@@ -51,12 +47,12 @@ const ingredientsMojito = [
     nom: "rhum"
   },
   {
-    id: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
-    nom: "eau gazeuse"
-  },
-  {
     id: "38925fb2-2267-47c7-b62e-e134e41a51c7",
     nom: "jus de citron vert"
+  },
+  {
+    id: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
+    nom: "eau gazeuse"
   }
 ];
 
@@ -92,39 +88,54 @@ const etapesPreparationMojito = [
 process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
-describe("MonBartender cocktails_router", function() {
+describe("MonBartender cocktails_router", () => {
   let server;
 
   // START NEW SERVER FOR EACH TEST
   beforeEach(async function() {
     delete require.cache[require.resolve("../src/server")];
     server = require("../src/server");
-    //  await cleanDb();
   });
 
-  //async function cleanDb() {}
-
-  afterEach(async function() {
-    //    await cleanDb();
-  });
-
-  // COCKTAIL Unit Testing
-
-  describe("/GET /api/v1/cocktails succeed", function() {
-    it("it should return 200 with a list of cocktail", function() {
+  describe("Cocktails GET", () => {
+    it("it should return a list of cocktails with status code 200 if everything is OK", () => {
       return chai
         .request(server)
-        .get("/api/v1/cocktails")
+        .get("/api/v1/cocktails?alcool=indifferent")
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(200);
           res.body.should.be.eql(cocktailsList);
         });
     });
+
+    it("it should return an error message with status code 400 if alcool variable is not defined", () => {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(400);
+          res.text.should.be.contain("La variable alcool n'est pas définie");
+        });
+    });
+
+    it("it should return an error message with status code 400 if alcool variable is not true, false or indifferent", () => {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails?alcool=toto")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(400);
+          res.text.should.be.contain(
+            "La valeur de la variable alcool n'est pas celle attendue"
+          );
+        });
+    });
   });
 
-  describe("/GET /api/v1/cocktail-du-moment succeed", function() {
-    it("it should return 200 with the list of cocktail of the day", function() {
+  describe("Cocktails of the day GET", () => {
+    it("it should return a list of cocktails of the day with status code 200 if everything is OK", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/cocktail-du-moment")
@@ -142,8 +153,8 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("/GET /api/v1/cocktails/aleatoire succeed", function() {
-    it("it should return 200 with a random list of cocktail", function() {
+  describe("Random Cocktail GET", () => {
+    it("it should return a random cocktail with status code 200 if everything is OK", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/aleatoire")
@@ -157,8 +168,8 @@ describe("MonBartender cocktails_router", function() {
     });
   });
 
-  describe("/GET /api/v1/cocktails/rechercher-par-nom succeed", function() {
-    it("it should return 200 with a list of cocktail where the name match the one provided", function() {
+  describe("Recherche par nom GET", () => {
+    it("it should return a list of cocktails whith status code 200 if the name match with the one provided", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/rechercher-par-nom?nom=mojito")
@@ -174,10 +185,8 @@ describe("MonBartender cocktails_router", function() {
           });
         });
     });
-  });
 
-  describe("/GET /api/v1/cocktails/rechercher-par-nom with unknown cocktail should return an empty array", function() {
-    it("it should return 200 with an empty array", function() {
+    it("it should return an empty array with status code 200 if no cocktails match with the one provided", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/rechercher-par-nom?nom=unknown")
@@ -187,10 +196,78 @@ describe("MonBartender cocktails_router", function() {
           res.body.should.be.an("array").that.is.empty;
         });
     });
+
+    it("it should return an error message with status code 400 if the name is not defined", () => {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-nom")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(400);
+          res.text.should.be.contain("Un nom de cocktail est obligatoire");
+        });
+    });
   });
 
-  describe("/GET /api/v1/cocktails/:id succeed", function() {
-    it("it should return 200 with a cocktail with id equal to the one provided", function() {
+  describe("Recherche par ingredients GET", () => {
+    it("it should return a list of cocktails with status code 200 if one of ingredients provided is include", () => {
+      return chai
+        .request(server)
+        .get(
+          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco&alcool=indifferent"
+        )
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          res.body.should.be.eql([
+            {
+              id: "b258592b-57ac-4bda-8e07-1d2697f20770",
+              nom: "Bloody Mary",
+              photo: "img_cocktail/bloodyMary.jpg"
+            }
+          ]);
+        });
+    });
+
+    it("it should return an empty array with status code 200 if all ingredients are undefined", () => {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-ingredient?alcool=true")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.an("array").that.is.empty;
+        });
+    });
+
+    it("it should return an error message with status code 400 if alcool variable is not defined", () => {
+      return chai
+        .request(server)
+        .get("/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(400);
+          res.text.should.be.contain("La variable alcool n'est pas définie");
+        });
+    });
+
+    it("it should return an empty array with status code 200 if ingredients doesn't exist in the database", () => {
+      return chai
+        .request(server)
+        .get(
+          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tomate&alcool=false"
+        )
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(200);
+          res.body.should.be.an("array").that.is.empty;
+        });
+    });
+  });
+
+  describe("Specified cocktail recipe GET", () => {
+    it("it should return a cocktail recipe with status code 200 if the id match with the one provided", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/7f73cf2f-7ed7-4be4-8640-69dbbc1b2927")
@@ -212,83 +289,25 @@ describe("MonBartender cocktails_router", function() {
             .eql(etapesPreparationMojito);
         });
     });
-  });
 
-  describe("/GET /api/v1/cocktails/:id return NOT_FOUND when no id has been found in db", function() {
-    it("it should return 404 stating that no cocktail has been found", function() {
+    it("it should return an empty array with status code 200 if no cocktails match with the id provided", () => {
       return chai
         .request(server)
-        .get("/api/v1/cocktails/566afb23-21f8-40d9-892d-14efce755652")
+        .get("/api/v1/cocktails/1f23cf4f-1ed2-1be2-1234-12dbbc3b4567")
         .set("Content-Type", "application/json")
         .then(res => {
-          res.should.have.status(404);
-          res.text.should.be.contain("Le cocktail n'a pas été trouvé");
+          res.should.have.status(200);
+          res.body.should.be.an("array").that.is.empty;
         });
     });
-  });
 
-  describe("/GET /api/v1/cocktails/:id return NOT_FOUND id does not match uuid definition", function() {
-    it("it should return 404 stating that no resources has been found", function() {
+    it("it should return a message with status code 404 if the id does not match uuid definition", () => {
       return chai
         .request(server)
         .get("/api/v1/cocktails/test")
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(404);
-        });
-    });
-  });
-
-  describe("/GET /api/v1/cocktails/rechercher-par-ingredient succeed", function() {
-    it("it should return status code 200 with a list of cocktail where one of ingredient is include", function() {
-      return chai
-        .request(server)
-        .get(
-          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco&ingredient2=vodka&ingredient3=jus%20de%20tomate"
-        )
-        .set("Content-Type", "application/json")
-        .then(res => {
-          res.should.have.status(200);
-          res.body.should.be.a("array");
-          var array = Array.from(res.body);
-          array.forEach(element => {
-            element.should.have.property("id");
-            element.should.have.property("nom");
-            element.should.have.property("photo");
-          });
-          res.body.should.be.eql([
-            {
-              id: "b258592b-57ac-4bda-8e07-1d2697f20770",
-              nom: "Bloody Mary",
-              photo: "img_cocktail/bloodyMary.jpg"
-            }
-          ]);
-        });
-    });
-  });
-
-  describe("/GET /api/v1/cocktails/rechercher-par-ingredient ingredients undefined", function() {
-    it("it should return status code 404 with the message Aucun cocktail trouvé", function() {
-      return chai
-        .request(server)
-        .get("/api/v1/cocktails/rechercher-par-ingredient")
-        .set("Content-Type", "application/json")
-        .then(res => {
-          res.should.have.status(404);
-          res.text.should.be.contain("Aucun cocktail trouvé");
-        });
-    });
-  });
-
-  describe("/GET /api/v1/cocktails/rechercher-par-ingredient one of ingredients doesn't exist in the db", function() {
-    it("it should return status code 404 with the message Aucun cocktail trouvé", function() {
-      return chai
-        .request(server)
-        .get("/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tomate")
-        .set("Content-Type", "application/json")
-        .then(res => {
-          res.should.have.status(404);
-          res.text.should.be.contain("Aucun cocktail trouvé");
         });
     });
   });

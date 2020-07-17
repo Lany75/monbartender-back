@@ -1,6 +1,5 @@
-let chai = require("chai"),
-  chaiHttp = require("chai-http");
-let expect = chai.expect;
+const chai = require("chai");
+const chaiHttp = require("chai-http");
 let should = chai.should();
 
 const GlassesList = [
@@ -49,19 +48,17 @@ const GlassesList = [
 process.env.NODE_ENV = "test";
 chai.use(chaiHttp);
 
-describe("MonBarTender verres_router", function() {
+describe("MonBarTender verres_router", () => {
   let server;
 
   // START NEW SERVER FOR EACH TEST
-  beforeEach(async function() {
+  beforeEach(async () => {
     delete require.cache[require.resolve("../src/server")];
     server = require("../src/server");
   });
 
-  // VERRE Unit Testing
-
-  describe("/GET /api/v1/verres succeed", function() {
-    it("it should return status code 200 with a list of glasses", function() {
+  describe("Verres GET", () => {
+    it("it should return a list of glasses with status code 200 if everything is ok", () => {
       return chai
         .request(server)
         .get("/api/v1/verres")
