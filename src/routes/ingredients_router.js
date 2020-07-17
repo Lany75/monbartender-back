@@ -13,7 +13,8 @@ const {
 
 const {
   recupererIdBar,
-  recupererUnBar
+  recupererUnBar,
+  creerUnBar
 } = require("../controllers/bars_controller");
 
 const {
@@ -60,15 +61,9 @@ ingredientRouter.get("/", async (request, response) => {
   logger.info(`Trying to get all ingredients`);
   const ingredients = await recupererLesIngredients();
 
-  if (!ingredients) {
-    logger.info(`Ingredients not found`);
-    response.statut(NOT_FOUND);
-    response.json("La liste des ingrédients n'a pas été récupérée");
-  } else {
-    logger.info(`Ingredients found`);
-    response.status(OK);
-    response.json(ingredients);
-  }
+  logger.info(`Ingredients found`);
+  response.status(OK);
+  response.json(ingredients);
 });
 
 /**
@@ -100,29 +95,34 @@ ingredientRouter.get("/quantite", async (request, response) => {
   const { cocktailId } = request.query;
   const quantiteIngredient = [];
 
-  logger.info("Verifying cocktailId match with a uuid definition");
-  if (!regex.test(cocktailId)) {
-    logger.info("cocktailId is not an uuid");
-    response.status(NOT_FOUND).json(`${cocktailId} is not an uuid`);
+  if (!cocktailId) {
+    logger.info("cocktail id is not defined");
+    response.status(BAD_REQUEST).json("L'id du cocktail n'est pas définie");
   } else {
-    logger.info(`Verifying cocktail with id ${cocktailId} exist`);
-    const cocktail = await recupererUnCocktail(cocktailId);
-
-    if (!cocktail) {
-      logger.info(`cocktail with id ${cocktailId} doesn't exist`);
-      response.status(NOT_FOUND).json("Aucun cocktail avec cet id n'existe");
+    logger.info("Verifying cocktailId match with a uuid definition");
+    if (!regex.test(cocktailId)) {
+      logger.info(`${cocktailId} is not an uuid`);
+      response.status(NOT_FOUND).json(`${cocktailId} n'est pas un uuid`);
     } else {
-      logger.info(`Trying to get quantity of ingredient`);
-      const quantite = await recupererQuantiteIngredient(cocktailId);
+      logger.info(`Verifying cocktail with id ${cocktailId} exist`);
+      const cocktail = await recupererUnCocktail(cocktailId);
 
-      for (let i = 0; i < quantite.length; i++) {
-        quantiteIngredient.push(quantite[i].dataValues);
+      if (!cocktail) {
+        logger.info(`cocktail with id ${cocktailId} doesn't exist`);
+        response.status(NOT_FOUND).json("Aucun cocktail avec cet id n'existe");
+      } else {
+        logger.info(`Trying to get quantity of ingredient`);
+        const quantite = await recupererQuantiteIngredient(cocktailId);
+
+        for (let i = 0; i < quantite.length; i++) {
+          quantiteIngredient.push(quantite[i].dataValues);
+        }
+
+        logger.info(`quantity of ingredient has been found`);
+
+        response.status(OK);
+        response.json(quantiteIngredient);
       }
-
-      logger.info(`quantity of ingredient has been found`);
-
-      response.status(OK);
-      response.json(quantiteIngredient);
     }
   }
 });
@@ -171,23 +171,20 @@ ingredientRouter.post(
     logger.info(
       `Trying to add the ingredient:${nomNouvelIngredient} to ${mail}'s bar`
     );
-
     const idIngredient = await recupererIdIngredient(nomNouvelIngredient);
-
-    const idBar = await recupererIdBar(mail);
+    let idBar = await recupererIdBar(mail);
 
     if (!idBar) {
-      logger.info(`${mail}'s bar does not exist`);
-      response
-        .status(BAD_REQUEST)
-        .json(`Aucun bar n'a été trouvé pour l'utilisateur:${mail}`);
+      logger.info(`${mail}'s bar does not exist, creating it`);
+      bar = await creerUnBar(mail);
+      idBar = bar.id;
     }
     if (!idIngredient) {
       logger.info(`The given ingredient ${nomNouvelIngredient} does not exist`);
       response
-        .status(BAD_REQUEST)
+        .status(NOT_FOUND)
         .json(
-          `Aucun ingrédient n'a été trouvé avec le nom:${nomNouvelIngredient}`
+          `Aucun ingrédient n'a été trouvé avec le nom : ${nomNouvelIngredient}`
         );
     }
 
@@ -263,24 +260,23 @@ ingredientRouter.delete(
     logger.info(
       `Trying to remove the ingredient:${nomIngredientSupprime} from ${mail}'s bar`
     );
-
     const idIngredient = await recupererIdIngredient(nomIngredientSupprime);
     const idBar = await recupererIdBar(mail);
 
     if (!idBar) {
       logger.info(`${mail}'s bar does not exist`);
       response
-        .status(BAD_REQUEST)
-        .json(`Aucun bar n'a été trouvé pour l'utilisateur:${mail}`);
+        .status(NOT_FOUND)
+        .json(`Aucun bar n'a été trouvé pour l'utilisateur : ${mail}`);
     }
     if (!idIngredient) {
       logger.info(
         `The given ingredient ${nomIngredientSupprime} does not exist`
       );
       response
-        .status(BAD_REQUEST)
+        .status(NOT_FOUND)
         .json(
-          `Aucun ingrédient n'a été trouvé avec le nom:${nomIngredientSupprime}`
+          `ingredient ${nomIngredientSupprime} inexistant dans la base de données`
         );
     }
 
