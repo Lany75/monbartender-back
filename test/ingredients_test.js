@@ -4,6 +4,10 @@ const chaiHttp = require("chai-http");
 const cleanDb = require("../src/utils/test/cleanDb");
 const createBarBefore = require("../src/utils/test/createBarBefore");
 
+const existingUnitTestUserBarId = "38925fb2-2267-47c7-b62e-e134e41a51c7";
+const existingUnitTestUser = "unit-testing@monbartender.com";
+const unknownUnitTestUser = "unit-testing-unknown@monbartender.com";
+
 const quantiteIngredient = [
   {
     ingredientId: "740367a4-dedf-4093-86d1-50eac62b2521",
@@ -121,6 +125,49 @@ describe("MonBartender ingredient_router", () => {
         .then(res => {
           res.should.have.status(404);
           res.text.should.be.contain("Aucun cocktail avec cet id n'existe");
+        });
+    });
+  });
+
+  describe("ingredient in bar POST", () => {
+    it("it should return user's bar after adding ingredient provided with status code 201 if everything is ok", () => {
+      return chai
+        .request(server)
+        .post("/api/v1/ingredients/vodka")
+        .set("Content-Type", "application/json")
+        .set("Authorization", existingUnitTestUser)
+        .then(res => {
+          res.should.have.status(201);
+          res.body.should.be.a("object");
+          res.body.should.have.property("id");
+          res.body.should.have.property("personneId").eql(existingUnitTestUser);
+          res.body.should.have.property("droits");
+          res.body.should.have.property("Ingredients");
+        });
+    });
+
+    it("it should return a message with status code 401 if unauthorized access", () => {
+      return chai
+        .request(server)
+        .post("/api/v1/ingredients/vodka")
+        .set("Content-Type", "application/json")
+        .then(res => {
+          res.should.have.status(401);
+          res.text.should.be.contain("Non autorisé");
+        });
+    });
+
+    it("it should return a message with status code 404 if ingredient doesn't exist in database", () => {
+      return chai
+        .request(server)
+        .post("/api/v1/ingredients/unknownIngredient")
+        .set("Content-Type", "application/json")
+        .set("Authorization", existingUnitTestUser)
+        .then(res => {
+          res.should.have.status(404);
+          res.text.should.contain(
+            "Aucun ingrédient n'a été trouvé avec le nom : unknownIngredient"
+          );
         });
     });
   });

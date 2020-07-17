@@ -132,7 +132,7 @@ describe("MonBartender ingredient_router", function() {
     });
   }); */
 
-  describe("/POST /api/v1/ingredients/:nomNouvelIngredient authorized existing user", function() {
+  /* describe("/POST /api/v1/ingredients/:nomNouvelIngredient authorized existing user", function() {
     it("it should add an ingredient to an existing user's bar", function() {
       return chai
         .request(server)
@@ -148,9 +148,9 @@ describe("MonBartender ingredient_router", function() {
           res.body.should.have.property("Ingredients");
         });
     });
-  });
+  }); */
 
-  describe("/POST /api/v1/ingredients/:nomNouvelIngredient authorized unexisting user", function() {
+  /* describe("/POST /api/v1/ingredients/:nomNouvelIngredient authorized unexisting user", function() {
     it("it should return 400 and Aucun bar n'a été trouvé pour l'utilisateur:unit-testing-unknown@monbartender.com", function() {
       return chai
         .request(server)
@@ -164,9 +164,9 @@ describe("MonBartender ingredient_router", function() {
           );
         });
     });
-  });
+  }); */
 
-  describe("/POST /api/v1/ingredients/:nomNouvelIngredient authorized existing user but ingredient does not exist", function() {
+  /*   describe("/POST /api/v1/ingredients/:nomNouvelIngredient authorized existing user but ingredient does not exist", function() {
     it("it should return 400 and Aucun ingrédient n'a été trouvé avec le nom:unknownIngredient", function() {
       return chai
         .request(server)
@@ -180,9 +180,9 @@ describe("MonBartender ingredient_router", function() {
           );
         });
     });
-  });
+  }); */
 
-  describe("/POST /api/v1/ingredients/:nomNouvelIngredient user is unauthorized", function() {
+  /* describe("/POST /api/v1/ingredients/:nomNouvelIngredient user is unauthorized", function() {
     it("it should return 401 Non autorisé", function() {
       return chai
         .request(server)
@@ -193,7 +193,7 @@ describe("MonBartender ingredient_router", function() {
           res.text.should.be.contain("Non autorisé");
         });
     });
-  });
+  }); */
 
   describe("/DELETE /api/v1/ingredients/:nomIngredientSupprime authorized existing user", function() {
     it("it should delete an ingredient from an existing user's bar", function() {

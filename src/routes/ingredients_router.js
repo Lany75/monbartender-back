@@ -13,7 +13,8 @@ const {
 
 const {
   recupererIdBar,
-  recupererUnBar
+  recupererUnBar,
+  creerUnBar
 } = require("../controllers/bars_controller");
 
 const {
@@ -170,23 +171,20 @@ ingredientRouter.post(
     logger.info(
       `Trying to add the ingredient:${nomNouvelIngredient} to ${mail}'s bar`
     );
-
     const idIngredient = await recupererIdIngredient(nomNouvelIngredient);
-
-    const idBar = await recupererIdBar(mail);
+    let idBar = await recupererIdBar(mail);
 
     if (!idBar) {
-      logger.info(`${mail}'s bar does not exist`);
-      response
-        .status(BAD_REQUEST)
-        .json(`Aucun bar n'a été trouvé pour l'utilisateur:${mail}`);
+      logger.info(`${mail}'s bar does not exist, creating it`);
+      bar = await creerUnBar(mail);
+      idBar = bar.id;
     }
     if (!idIngredient) {
       logger.info(`The given ingredient ${nomNouvelIngredient} does not exist`);
       response
-        .status(BAD_REQUEST)
+        .status(NOT_FOUND)
         .json(
-          `Aucun ingrédient n'a été trouvé avec le nom:${nomNouvelIngredient}`
+          `Aucun ingrédient n'a été trouvé avec le nom : ${nomNouvelIngredient}`
         );
     }
 
