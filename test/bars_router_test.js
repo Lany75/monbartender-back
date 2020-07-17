@@ -1,5 +1,6 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
+let should = chai.should();
 
 const { Bar, BarIngredient } = require("../src/models");
 const cleanDb = require("../src/utils/test/cleanDb");

@@ -260,24 +260,23 @@ ingredientRouter.delete(
     logger.info(
       `Trying to remove the ingredient:${nomIngredientSupprime} from ${mail}'s bar`
     );
-
     const idIngredient = await recupererIdIngredient(nomIngredientSupprime);
     const idBar = await recupererIdBar(mail);
 
     if (!idBar) {
       logger.info(`${mail}'s bar does not exist`);
       response
-        .status(BAD_REQUEST)
-        .json(`Aucun bar n'a été trouvé pour l'utilisateur:${mail}`);
+        .status(NOT_FOUND)
+        .json(`Aucun bar n'a été trouvé pour l'utilisateur : ${mail}`);
     }
     if (!idIngredient) {
       logger.info(
         `The given ingredient ${nomIngredientSupprime} does not exist`
       );
       response
-        .status(BAD_REQUEST)
+        .status(NOT_FOUND)
         .json(
-          `Aucun ingrédient n'a été trouvé avec le nom:${nomIngredientSupprime}`
+          `ingredient ${nomIngredientSupprime} inexistant dans la base de données`
         );
     }
 
