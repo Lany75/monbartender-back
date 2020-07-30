@@ -89,7 +89,6 @@ module.exports = (sequelize, DataTypes) => {
 
   Cocktail.associate = models => {
     Cocktail.belongsTo(models.Verre, {
-      onDelete: "CASCADE",
       foreignKey: {
         name: "verreId",
         allowNull: false
