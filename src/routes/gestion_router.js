@@ -35,9 +35,11 @@ const {
 
 const {
   recupererIdVerre,
-  isVerre,
+  verreExistant,
   ajouterVerresDB,
-  recupererLesVerres
+  recupererLesVerres,
+  supprimerUnVerre,
+  verificationVerreUtil
 } = require("../controllers/verres_controller");
 
 const {
@@ -55,6 +57,7 @@ const {
   FORBIDDEN
 } = require("../helpers/status_code");
 const removeDuplicate = require("../utils/removeDuplicate");
+const { request, response } = require("express");
 
 const gestionRouter = express.Router();
 
@@ -307,11 +310,11 @@ gestionRouter.delete(
   haveRight,
   async (request, response) => {
     const idCocktail = request.params.id;
-    if (!idCocktail) {
+    /* if (!idCocktail) {
       logger.info(`cocktail's id is not given`);
       response.status(BAD_REQUEST);
       response.json("Un identifiant de cocktail est obligatoire");
-    }
+    } */
 
     const idCocktailsMoment = await recupererIdCocktailsMoment();
 
@@ -404,7 +407,7 @@ gestionRouter.post(
 
     //vérification de l'inexistance du verre dans la liste
     for (let i = 0; i < uniqueVerres.length; i++) {
-      exist = await isVerre(uniqueVerres[i].nom);
+      exist = await verreExistant(uniqueVerres[i].nom);
       if (exist === true) {
         uniqueVerres.splice(i, 1);
       } else i++;
@@ -418,6 +421,59 @@ gestionRouter.post(
 
     response.status(CREATED);
     response.json(listeVerres);
+  }
+);
+
+gestionRouter.delete(
+  "/verre/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const idVerre = request.params.id;
+
+    // vérification de l'inutilité du verre avant sa suppression
+    const verreUtil = await verificationVerreUtil(idVerre);
+    //console.log(verreUtil);
+
+    if (!verreUtil) {
+      logger.info(
+        `Trying to remove the glass with id ${idVerre} from database`
+      );
+      await supprimerUnVerre(idVerre);
+
+      logger.info(`Trying to get list of glasses`);
+      const listeVerres = await recupererLesVerres();
+
+      response.status(OK);
+      response.json(listeVerres);
+    } else {
+      logger.info(
+        `delete forbidden, glass with id ${idVerre} is used in a cocktail`
+      );
+      response.status(FORBIDDEN);
+      response.json(
+        "suppression impossible, le verre est utilisé pour un cocktail"
+      );
+    }
+
+    //if (verreUtil === false) {
+    /* logger.info(`Trying to remove the glass with id ${idVerre} from database`);
+    await supprimerUnVerre(idVerre);
+
+    logger.info(`Trying to get list of glasses`);
+    const listeVerres = await recupererLesVerres();
+
+    response.status(OK);
+    response.json(listeVerres); */
+    /* } else {
+      logger.info(
+        `delete forbidden, glass with id ${idVerre} is used in a cocktail`
+      );
+      response.status(FORBIDDEN);
+      response.json(
+        "suppression impossible, le verre est utilisé pour un cocktail"
+      );
+    } */
   }
 );
 

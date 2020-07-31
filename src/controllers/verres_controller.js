@@ -1,4 +1,5 @@
-const { Verre } = require("../models");
+const { Verre, Cocktail } = require("../models");
+const cocktailMomentController = require("./cocktailsMoment_controller");
 
 const verreController = {
   recupererLesVerres: async () => {
@@ -20,7 +21,7 @@ const verreController = {
     else return idVerre.dataValues.id;
   },
 
-  isVerre: async nomVerre => {
+  verreExistant: async nomVerre => {
     const exist = await Verre.findOne({
       where: { nom: nomVerre }
     });
@@ -31,6 +32,24 @@ const verreController = {
 
   ajouterVerresDB: async verres => {
     await Verre.bulkCreate(verres);
+  },
+
+  supprimerUnVerre: async verreId => {
+    await Verre.destroy({
+      where: {
+        id: verreId
+      }
+    });
+  },
+
+  verificationVerreUtil: async verreId => {
+    const cocktail = await Cocktail.findOne({
+      where: { verreId: verreId },
+      attributes: ["nom"]
+    });
+
+    if (cocktail) return true;
+    else return false;
   }
 };
 
