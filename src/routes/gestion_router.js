@@ -392,28 +392,33 @@ gestionRouter.post(
   }
 );
 
-gestionRouter.post("/verre", async (request, response) => {
-  const verres = request.bady;
+gestionRouter.post(
+  "/verre",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const verres = request.body;
 
-  //suppression des doublons
-  const uniqueVerres = removeDuplicate(verres);
+    //suppression des doublons
+    const uniqueVerres = removeDuplicate(verres);
 
-  //vérification de l'inexistance du verre dans la liste
-  for (let i = 0; i < uniqueVerres.length; i++) {
-    exist = await isVerre(uniqueVerres[i].nom);
-    if (exist === true) {
-      uniqueVerres.splice(i, 1);
-    } else i++;
+    //vérification de l'inexistance du verre dans la liste
+    for (let i = 0; i < uniqueVerres.length; i++) {
+      exist = await isVerre(uniqueVerres[i].nom);
+      if (exist === true) {
+        uniqueVerres.splice(i, 1);
+      } else i++;
+    }
+
+    logger.info(`Adding glasses in database`);
+    await ajouterVerresDB(uniqueVerres);
+
+    logger.info(`Trying to get list of glasses`);
+    const listeVerres = await recupererLesVerres();
+
+    response.status(CREATED);
+    response.json(listeVerres);
   }
-
-  logger.info(`Adding glasses in database`);
-  await ajouterVerresDB(uniqueVerres);
-
-  logger.info(`Trying to get list of glasses`);
-  const listeVerres = await recupererLesVerres();
-
-  response.status(CREATED);
-  response.json(listeVerres);
-});
+);
 
 module.exports = gestionRouter;
