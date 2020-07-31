@@ -31,6 +31,14 @@ const verreController = {
 
   ajouterVerresDB: async verres => {
     await Verre.bulkCreate(verres);
+  },
+
+  supprimerUnVerre: async verreId => {
+    await Verre.destroy({
+      where: {
+        id: verreId
+      }
+    });
   }
 };
 
