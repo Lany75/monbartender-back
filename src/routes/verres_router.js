@@ -32,11 +32,11 @@ verresRouter.get("/", async (request, response) => {
   logger.info(`Trying to get all glasses`);
   const verres = await recupererLesVerres();
 
-  if (!verres) {
+  /* if (!verres) {
     logger.info(`Glasses not found`);
     response.statut(NOT_FOUND);
     response.json("La liste des verres n'a pas été récupérée");
-  }
+  } */
   logger.info(`Glasses found`);
   response.status(OK).json(verres);
 });

@@ -33,13 +33,18 @@ const {
   supprimerCocktailEtape
 } = require("../controllers/cocktailsEtapes_controller");
 
-const { recupererIdVerre } = require("../controllers/verres_controller");
+const {
+  recupererIdVerre,
+  isVerre,
+  ajouterVerresDB,
+  recupererLesVerres
+} = require("../controllers/verres_controller");
 
 const {
   recupererIdIngredient,
   recupererLesIngredients,
   ajouterIngredientsDB,
-  estDansLaListe
+  isIngredient
 } = require("../controllers/ingredients_controller");
 
 const {
@@ -370,7 +375,7 @@ gestionRouter.post(
 
     //vérification de l'inexistance de l'ingrédient dans la liste
     for (let i = 0; i < uniqueIngredients.length; i++) {
-      exist = await estDansLaListe(uniqueIngredients[i].nom);
+      exist = await isIngredient(uniqueIngredients[i].nom);
       if (exist === true) {
         uniqueIngredients.splice(i, 1);
       } else i++;
@@ -384,6 +389,35 @@ gestionRouter.post(
 
     response.status(CREATED);
     response.json(listeIngredients);
+  }
+);
+
+gestionRouter.post(
+  "/verre",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const verres = request.body;
+
+    //suppression des doublons
+    const uniqueVerres = removeDuplicate(verres);
+
+    //vérification de l'inexistance du verre dans la liste
+    for (let i = 0; i < uniqueVerres.length; i++) {
+      exist = await isVerre(uniqueVerres[i].nom);
+      if (exist === true) {
+        uniqueVerres.splice(i, 1);
+      } else i++;
+    }
+
+    logger.info(`Adding glasses in database`);
+    await ajouterVerresDB(uniqueVerres);
+
+    logger.info(`Trying to get list of glasses`);
+    const listeVerres = await recupererLesVerres();
+
+    response.status(CREATED);
+    response.json(listeVerres);
   }
 );
 
