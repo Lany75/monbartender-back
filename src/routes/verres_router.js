@@ -5,9 +5,13 @@ const logger = require("../helpers/logger");
 
 const {
   recupererLesVerres,
-  recupererUnVerre
+  recupererUnVerre,
+  modifierUnVerre
 } = require("../controllers/verres_controller");
 const { OK, NOT_FOUND } = require("../helpers/status_code");
+const { request, response } = require("express");
+const isAuthenticated = require("../middlewares/is_authenticated");
+const haveRight = require("../middlewares/haveRight");
 
 const verresRouter = express.Router();
 
@@ -84,6 +88,21 @@ verresRouter.get(
       logger.info("Glass not found");
       response.status(OK).json([]);
     }
+  }
+);
+
+verresRouter.put(
+  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { id } = request.params;
+    const { nom } = request.body;
+
+    if (nom !== "") await modifierUnVerre(id, nom);
+
+    const verres = await recupererLesVerres();
+    response.status(OK).json(verres);
   }
 );
 

@@ -51,6 +51,11 @@ const verreController = {
     });
   },
 
+  modifierUnVerre: async (verreId, nvNomVerre) => {
+    await Verre.update({ nom: nvNomVerre }, { where: { id: verreId } });
+    return true;
+  },
+
   verificationVerreUtil: async verreId => {
     const cocktail = await Cocktail.findOne({
       where: { verreId: verreId },
