@@ -39,7 +39,7 @@ const ingredientController = {
     await Ingredient.bulkCreate(ingredients);
   },
 
-  estDansLaListe: async nomIngredient => {
+  isIngredient: async nomIngredient => {
     const exist = await Ingredient.findOne({
       where: { nom: nomIngredient }
     });
