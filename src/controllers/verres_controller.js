@@ -11,6 +11,15 @@ const verreController = {
     return verres;
   },
 
+  recupererUnVerre: async idVerre => {
+    const verre = await Verre.findOne({
+      where: { id: idVerre },
+      attributes: ["id", "nom"]
+    });
+
+    return verre;
+  },
+
   recupererIdVerre: async nomVerre => {
     if (nomVerre === "") return null;
     const idVerre = await Verre.findOne({
