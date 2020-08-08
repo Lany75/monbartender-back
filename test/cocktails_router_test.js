@@ -36,50 +36,55 @@ const cocktailsList = [
 const ingredientsMojito = [
   {
     id: "740367a4-dedf-4093-86d1-50eac62b2521",
-    nom: "menthe"
+    nom: "menthe",
+    quantite: "8",
+    unite: "feuilles"
   },
   {
     id: "c3fd98ec-cad4-49c9-9a74-63ca90489a0a",
-    nom: "sucre"
+    nom: "sucre",
+    quantite: "5",
+    unite: "gr"
   },
   {
     id: "bd799ef3-d7ae-4975-8be0-8f2397fa2b18",
-    nom: "rhum"
+    nom: "rhum",
+    quantite: "6",
+    unite: "cl"
   },
   {
     id: "38925fb2-2267-47c7-b62e-e134e41a51c7",
-    nom: "jus de citron vert"
+    nom: "jus de citron vert",
+    quantite: "3",
+    unite: "cl"
   },
   {
     id: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
-    nom: "eau gazeuse"
+    nom: "eau gazeuse",
+    quantite: null,
+    unite: null
   }
 ];
 
 const etapesPreparationMojito = [
   {
-    id: "e132fd2a-56b7-4a13-91ad-d4883a970baf",
     numEtape: 1,
     texte: 'Recette réalisée directement dans un verre de type "Tumbler".'
   },
   {
-    id: "aa00ab00-02de-44af-b5ab-cf808d18e82f",
     numEtape: 2,
     texte:
       "Placer les feuilles de menthe dans le verre, ajouter le sucre et le citron coupé en morceau. Piler l'ensemble."
   },
   {
-    id: "ec0cfbb1-5911-46c1-a479-84fce3c62ddc",
     numEtape: 3,
     texte: "Ajouter les glacons pilés, puis le rhum à hauteur des glacons."
   },
   {
-    id: "4528e3ec-be76-4202-ac1e-585a08f67dad",
     numEtape: 4,
     texte: "Compléter avec de l'eau gazeuse."
   },
   {
-    id: "9bec4f6b-3516-4991-a888-540f3272694f",
     numEtape: 5,
     texte: "Décorer d'une feuille de menthe et servir avec une paille."
   }
@@ -279,13 +284,13 @@ describe("MonBartender cocktails_router", () => {
             .eql("7f73cf2f-7ed7-4be4-8640-69dbbc1b2927");
           res.body.should.have.property("nom").eql("Mojito");
           res.body.should.have.property("photo").eql("img_cocktail/mojito.jpg");
-          res.body.should.have.property("Verre").eql({
+          res.body.should.have.property("verre").eql({
             id: "0ec43307-8523-48c6-8fd9-06be72e484bd",
             nom: "Tumbler"
           });
-          res.body.should.have.property("Ingredients").eql(ingredientsMojito);
+          res.body.should.have.property("ingredients").eql(ingredientsMojito);
           res.body.should.have
-            .property("EtapesPreparations")
+            .property("etapesPreparation")
             .eql(etapesPreparationMojito);
         });
     });
