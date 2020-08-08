@@ -432,10 +432,11 @@ gestionRouter.delete(
     const idVerre = request.params.id;
 
     // vérification de l'inutilité du verre avant sa suppression
+    logger.info("Verify utility of glass");
     const verreUtil = await verificationVerreUtil(idVerre);
-    //console.log(verreUtil);
+    console.log(verreUtil);
 
-    if (!verreUtil) {
+    if (verreUtil === false) {
       logger.info(
         `Trying to remove the glass with id ${idVerre} from database`
       );
@@ -455,25 +456,6 @@ gestionRouter.delete(
         "suppression impossible, le verre est utilisé pour un cocktail"
       );
     }
-
-    //if (verreUtil === false) {
-    /* logger.info(`Trying to remove the glass with id ${idVerre} from database`);
-    await supprimerUnVerre(idVerre);
-
-    logger.info(`Trying to get list of glasses`);
-    const listeVerres = await recupererLesVerres();
-
-    response.status(OK);
-    response.json(listeVerres); */
-    /* } else {
-      logger.info(
-        `delete forbidden, glass with id ${idVerre} is used in a cocktail`
-      );
-      response.status(FORBIDDEN);
-      response.json(
-        "suppression impossible, le verre est utilisé pour un cocktail"
-      );
-    } */
   }
 );
 
