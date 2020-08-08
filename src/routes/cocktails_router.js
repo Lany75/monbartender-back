@@ -310,7 +310,6 @@ cocktailsRouter.get(
 
     logger.info(`Verifying cocktail with id ${id} exist`);
     const exist = await estDansLaTableCocktail(id);
-    console.log(exist);
 
     if (exist === false) {
       logger.info(`Cocktail with id ${id} doesn't exist`);

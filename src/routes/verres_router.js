@@ -43,6 +43,7 @@ verresRouter.get("/", async (request, response) => {
     response.statut(NOT_FOUND);
     response.json("La liste des verres n'a pas été récupérée");
   } */
+
   logger.info(`Glasses found`);
   response.status(OK).json(verres);
 });

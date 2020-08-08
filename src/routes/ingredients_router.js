@@ -8,10 +8,6 @@ const {
 } = require("../controllers/ingredients_controller");
 
 const {
-  recupererQuantiteIngredient
-} = require("../controllers/cocktailsIngredients_controller");
-
-const {
   recupererIdBar,
   recupererUnBar,
   creerUnBar
@@ -22,8 +18,6 @@ const {
   supprimerUnIngredientDuBar,
   estDansLeBar
 } = require("../controllers/barsIngredients_controller");
-
-const { recupererUnCocktail } = require("../controllers/cocktails_controller");
 
 const {
   OK,
