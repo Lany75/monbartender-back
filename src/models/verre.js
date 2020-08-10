@@ -8,16 +8,10 @@ module.exports = (sequelize, DataTypes) => {
    *       required:
    *       - id
    *       - nom
-   *       - createdAt
-   *       - updatedAt
    *       properties:
    *         id:
    *           type: string
    *         nom:
-   *           type: string
-   *         createdAt:
-   *           type: string
-   *         updatedAt:
    *           type: string
    */
 

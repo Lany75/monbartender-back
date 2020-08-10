@@ -66,7 +66,7 @@ const gestionRouter = express.Router();
  * /api/v1/gestion/cocktails-du-moment:
  *   put:
  *     tags:
- *       - Gestion
+ *       - Cocktail du moment
  *     description: modifie la liste des cocktails du moment
  *     produces:
  *       - application/json
@@ -145,7 +145,7 @@ gestionRouter.put(
  * /api/v1/gestion/cocktails:
  *   post:
  *     tags:
- *       - Gestion
+ *       - Cocktails
  *     description: Ajoute un nouveau cocktail
  *     produces:
  *       - application/json
@@ -278,7 +278,7 @@ gestionRouter.put(
  * /api/v1/gestion/cocktail/{id}:
  *   delete:
  *     tags:
- *       - Gestion
+ *       - Cocktails
  *     description: Supprime un cocktail à partir de son id
  *     produces:
  *       - application/json
@@ -292,8 +292,6 @@ gestionRouter.put(
  *     responses:
  *       200:
  *         description: Suppression du cocktail réussi, retourne la nouvelle liste de cocktail
- *       400:
- *         description: Impossible de supprimer le cocktail
  *       401:
  *         description: Non autorisé
  *       403:
@@ -310,11 +308,6 @@ gestionRouter.delete(
   haveRight,
   async (request, response) => {
     const idCocktail = request.params.id;
-    /* if (!idCocktail) {
-      logger.info(`cocktail's id is not given`);
-      response.status(BAD_REQUEST);
-      response.json("Un identifiant de cocktail est obligatoire");
-    } */
 
     const idCocktailsMoment = await recupererIdCocktailsMoment();
 
@@ -424,6 +417,35 @@ gestionRouter.post(
   }
 );
 
+/**
+ * @swagger
+ * /api/v1/gestion/verre/{id}:
+ *   delete:
+ *     tags:
+ *       - Verres
+ *     description: Supprime un verre à partir de son id
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: identifiant du verre
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Suppression du verre réussi, retourne la nouvelle liste de verre
+ *       401:
+ *         description: Non autorisé
+ *       403:
+ *         description: Suppression impossible à réaliser
+ *     security:
+ *         - googleAuth:
+ *            - email
+ *            - openid
+ *            - profile
+ */
 gestionRouter.delete(
   "/verre/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
   isAuthenticated,
