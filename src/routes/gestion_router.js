@@ -394,6 +394,7 @@ gestionRouter.post(
   haveRight,
   async (request, response) => {
     const verres = request.body;
+    console.log(verres);
 
     //suppression des doublons
     const uniqueVerres = removeDuplicate(verres);
@@ -403,7 +404,8 @@ gestionRouter.post(
       exist = await verreExistant(uniqueVerres[i].nom);
       if (exist === true) {
         uniqueVerres.splice(i, 1);
-      } else i++;
+        i--;
+      }
     }
 
     logger.info(`Adding glasses in database`);
