@@ -9,7 +9,6 @@ const {
   modifierUnVerre
 } = require("../controllers/verres_controller");
 const { OK, NOT_FOUND } = require("../helpers/status_code");
-const { request, response } = require("express");
 const isAuthenticated = require("../middlewares/is_authenticated");
 const haveRight = require("../middlewares/haveRight");
 
@@ -21,7 +20,7 @@ const verresRouter = express.Router();
  *   get:
  *     tags:
  *       - Verres
- *     description: Retourne la liste de tous les verres
+ *     description: Retourne la liste de tous les verres enregistrés dans la base de données
  *     produces:
  *       - application/json
  *     responses:
@@ -31,18 +30,10 @@ const verresRouter = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Verre'
- *       404:
- *         description: Aucun verres n'existe
  */
 verresRouter.get("/", async (request, response) => {
   logger.info(`Trying to get all glasses`);
   const verres = await recupererLesVerres();
-
-  /* if (!verres) {
-    logger.info(`Glasses not found`);
-    response.statut(NOT_FOUND);
-    response.json("La liste des verres n'a pas été récupérée");
-  } */
 
   logger.info(`Glasses found`);
   response.status(OK).json(verres);
@@ -72,7 +63,7 @@ verresRouter.get("/", async (request, response) => {
  *             schema:
  *               $ref: '#/components/schemas/Verre'
  *       404:
- *         description: Aucun verre n'existe avec cet id
+ *         description: Aucun verre avec cet id
  */
 verresRouter.get(
   "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
@@ -87,7 +78,7 @@ verresRouter.get(
       response.status(OK).json(verre);
     } else {
       logger.info("Glass not found");
-      response.status(OK).json([]);
+      response.status(NOT_FOUND).json([]);
     }
   }
 );

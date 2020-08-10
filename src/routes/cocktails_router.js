@@ -74,7 +74,7 @@ cocktailsRouter.get("/", async (request, response) => {
  * /api/v1/cocktails/cocktail-du-moment:
  *   get:
  *     tags:
- *       - Cocktails
+ *       - Cocktail du moment
  *     description: Retourne la liste des cocktails du moment
  *     produces:
  *       - application/json
@@ -142,7 +142,7 @@ cocktailsRouter.get("/aleatoire", async (request, response) => {
  * /api/v1/cocktails/rechercher-par-nom:
  *   get:
  *     tags:
- *       - Cocktails
+ *       - Recherche cocktail
  *     description: Recherche une liste de cocktails à partir d'un nom
  *     produces:
  *       - application/json
@@ -192,7 +192,7 @@ cocktailsRouter.get("/rechercher-par-nom", async (request, response) => {
  * /api/v1/cocktails/rechercher-par-ingredient:
  *   get:
  *     tags:
- *       - Cocktails
+ *       - Recherche cocktail
  *     description: Recherche une liste de cocktails à partir d'ingrédients
  *     produces:
  *       - application/json
