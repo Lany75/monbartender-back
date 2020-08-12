@@ -33,14 +33,7 @@ const {
   supprimerCocktailEtape
 } = require("../controllers/cocktailsEtapes_controller");
 
-const {
-  recupererIdVerre,
-  verreExistant,
-  ajouterVerresDB,
-  recupererLesVerres,
-  supprimerUnVerre,
-  verificationVerreUtil
-} = require("../controllers/verres_controller");
+const { recupererIdVerre } = require("../controllers/verres_controller");
 
 const {
   recupererIdIngredient,
@@ -66,7 +59,7 @@ const gestionRouter = express.Router();
  * /api/v1/gestion/cocktails-du-moment:
  *   put:
  *     tags:
- *       - Gestion
+ *       - Cocktail du moment
  *     description: modifie la liste des cocktails du moment
  *     produces:
  *       - application/json
@@ -145,7 +138,7 @@ gestionRouter.put(
  * /api/v1/gestion/cocktails:
  *   post:
  *     tags:
- *       - Gestion
+ *       - Cocktails
  *     description: Ajoute un nouveau cocktail
  *     produces:
  *       - application/json
@@ -278,7 +271,7 @@ gestionRouter.put(
  * /api/v1/gestion/cocktail/{id}:
  *   delete:
  *     tags:
- *       - Gestion
+ *       - Cocktails
  *     description: Supprime un cocktail à partir de son id
  *     produces:
  *       - application/json
@@ -292,8 +285,6 @@ gestionRouter.put(
  *     responses:
  *       200:
  *         description: Suppression du cocktail réussi, retourne la nouvelle liste de cocktail
- *       400:
- *         description: Impossible de supprimer le cocktail
  *       401:
  *         description: Non autorisé
  *       403:
@@ -310,11 +301,6 @@ gestionRouter.delete(
   haveRight,
   async (request, response) => {
     const idCocktail = request.params.id;
-    /* if (!idCocktail) {
-      logger.info(`cocktail's id is not given`);
-      response.status(BAD_REQUEST);
-      response.json("Un identifiant de cocktail est obligatoire");
-    } */
 
     const idCocktailsMoment = await recupererIdCocktailsMoment();
 
@@ -392,70 +378,6 @@ gestionRouter.post(
 
     response.status(CREATED);
     response.json(listeIngredients);
-  }
-);
-
-gestionRouter.post(
-  "/verre",
-  isAuthenticated,
-  haveRight,
-  async (request, response) => {
-    const verres = request.body;
-
-    //suppression des doublons
-    const uniqueVerres = removeDuplicate(verres);
-
-    //vérification de l'inexistance du verre dans la liste
-    for (let i = 0; i < uniqueVerres.length; i++) {
-      exist = await verreExistant(uniqueVerres[i].nom);
-      if (exist === true) {
-        uniqueVerres.splice(i, 1);
-      } else i++;
-    }
-
-    logger.info(`Adding glasses in database`);
-    await ajouterVerresDB(uniqueVerres);
-
-    logger.info(`Trying to get list of glasses`);
-    const listeVerres = await recupererLesVerres();
-
-    response.status(CREATED);
-    response.json(listeVerres);
-  }
-);
-
-gestionRouter.delete(
-  "/verre/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
-  isAuthenticated,
-  haveRight,
-  async (request, response) => {
-    const idVerre = request.params.id;
-
-    // vérification de l'inutilité du verre avant sa suppression
-    logger.info("Verify utility of glass");
-    const verreUtil = await verificationVerreUtil(idVerre);
-    console.log(verreUtil);
-
-    if (verreUtil === false) {
-      logger.info(
-        `Trying to remove the glass with id ${idVerre} from database`
-      );
-      await supprimerUnVerre(idVerre);
-
-      logger.info(`Trying to get list of glasses`);
-      const listeVerres = await recupererLesVerres();
-
-      response.status(OK);
-      response.json(listeVerres);
-    } else {
-      logger.info(
-        `delete forbidden, glass with id ${idVerre} is used in a cocktail`
-      );
-      response.status(FORBIDDEN);
-      response.json(
-        "suppression impossible, le verre est utilisé pour un cocktail"
-      );
-    }
   }
 );
 
