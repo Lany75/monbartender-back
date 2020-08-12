@@ -90,10 +90,24 @@ verresRouter.put(
   async (request, response) => {
     const { id } = request.params;
     const { nom } = request.body;
+    let verreExistant = false;
 
-    if (nom !== "") await modifierUnVerre(id, nom);
+    // Vérification de l'inexistance du verre
+    let verres = await recupererLesVerres();
+    for (let i = 0; i < verres.length; i++) {
+      if (verres[i].nom === nom && verres[i].id !== id) {
+        verreExistant = true;
+      }
+    }
 
-    const verres = await recupererLesVerres();
+    if (nom !== "" && verreExistant === false) {
+      logger.info("Trying to modify glass");
+      await modifierUnVerre(id, nom);
+    } else {
+      logger.info("Modification not possible, the glass already exists");
+    }
+
+    verres = await recupererLesVerres();
     response.status(OK).json(verres);
   }
 );

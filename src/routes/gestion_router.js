@@ -394,7 +394,6 @@ gestionRouter.post(
   haveRight,
   async (request, response) => {
     const verres = request.body;
-    console.log(verres);
 
     //suppression des doublons
     const uniqueVerres = removeDuplicate(verres);
