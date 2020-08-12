@@ -123,6 +123,7 @@ verresRouter.post(
   haveRight,
   async (request, response) => {
     const verres = request.body;
+    let exist = false;
 
     //suppression des doublons
     const uniqueVerres = removeDuplicate(verres);
