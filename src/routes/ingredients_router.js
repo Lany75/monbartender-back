@@ -62,7 +62,8 @@ ingredientRouter.post(
       exist = await isIngredient(uniqueIngredients[i].nom);
       if (exist === true) {
         uniqueIngredients.splice(i, 1);
-      } else i++;
+        i--;
+      }
     }
 
     logger.info(`Adding ingredients in database`);
