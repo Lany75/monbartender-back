@@ -1,5 +1,5 @@
 const { Verre, Cocktail } = require("../models");
-const cocktailMomentController = require("./cocktailsMoment_controller");
+const uuid = require("uuid");
 
 const verreController = {
   recupererLesVerres: async () => {
@@ -39,8 +39,11 @@ const verreController = {
     else return true;
   },
 
-  ajouterVerresDB: async verres => {
-    await Verre.bulkCreate(verres);
+  ajouterVerresDB: async nomVerre => {
+    await Verre.create({
+      id: uuid(),
+      nom: nomVerre
+    });
   },
 
   supprimerUnVerre: async verreId => {
