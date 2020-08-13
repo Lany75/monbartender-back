@@ -15,8 +15,12 @@ const {
   recupererIdCocktailsMoment
 } = require("../controllers/cocktailsMoment_controller");
 const {
-  recupererQuantiteIngredient
+  recupererQuantiteIngredient,
+  recupererIngredientsCocktails
 } = require("../controllers/cocktailsIngredients_controller");
+const {
+  recupererNomIngredient
+} = require("../controllers/ingredients_controller");
 
 const cocktailsRouter = express.Router();
 
@@ -48,6 +52,7 @@ const cocktailsRouter = express.Router();
  */
 cocktailsRouter.get("/", async (request, response) => {
   const { alcool } = request.query;
+  const resultatCocktail = [];
 
   if (!alcool) {
     logger.info(`Alcool variable is not defined`);
@@ -61,10 +66,38 @@ cocktailsRouter.get("/", async (request, response) => {
     } else {
       logger.info(`Trying to get all cocktails`);
       const cocktails = await recupererLesCocktails(alcool);
+      logger.info(`Trying to get all cocktails ingredients`);
+      const cocktailsIngredients = await recupererIngredientsCocktails();
+
+      for (let i = 0; i < cocktails.length; i++) {
+        const ingredientCocktail = [];
+        for (let j = 0; j < cocktailsIngredients.length; j++) {
+          if (cocktails[i].id === cocktailsIngredients[j].cocktailId) {
+            ingredientCocktail.push({
+              id: cocktailsIngredients[j].ingredientId,
+              nom: await recupererNomIngredient(
+                cocktailsIngredients[j].ingredientId
+              ),
+              quantite: cocktailsIngredients[j].quantite,
+              unite: cocktailsIngredients[j].unite
+            });
+          }
+        }
+
+        resultatCocktail.push({
+          id: cocktails[i].id,
+          nom: cocktails[i].nom,
+          photo: cocktails[i].photo,
+          verre: cocktails[i].verreId,
+          alcool: cocktails[i].alcool,
+          ingredient: ingredientCocktail
+        });
+      }
+      console.log(resultatCocktail);
 
       logger.info(`Cocktails list has been found`);
       response.status(OK);
-      response.json(cocktails);
+      response.json(resultatCocktail);
     }
   }
 });

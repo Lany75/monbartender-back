@@ -120,7 +120,6 @@ ingredientRouter.delete(
     // vérification de l'inutilité de l'ingredient avant sa suppression
     logger.info("Verify utility of ingredient");
     const ingredientUtil = await verificationIngredientUtil(idIngredient);
-    console.log(ingredientUtil);
 
     if (ingredientUtil === false) {
       logger.info(

@@ -40,6 +40,15 @@ const cocktailIngredientController = {
 
     if (cocktail) return true;
     else return false;
+  },
+
+  recupererIngredientsCocktails: async () => {
+    const ingredientsCocktails = await CocktailIngredient.findAll({
+      attributes: ["cocktailId", "ingredientId", "quantite", "unite"],
+      raw: true
+    });
+
+    return ingredientsCocktails;
   }
 };
 
