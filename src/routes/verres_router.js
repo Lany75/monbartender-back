@@ -3,7 +3,6 @@ const logger = require("../helpers/logger");
 
 const isAuthenticated = require("../middlewares/is_authenticated");
 const haveRight = require("../middlewares/haveRight");
-const removeDuplicate = require("../utils/removeDuplicate");
 
 const {
   recupererLesVerres,
@@ -117,34 +116,65 @@ verresRouter.put(
   }
 );
 
+/**
+ * @swagger
+ * /api/v1/verres:
+ *   post:
+ *     tags:
+ *       - Verres
+ *     description: Ajoute un nouveau verre à la base de données
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: nom
+ *         description: nom du verre ajouté
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Suppression du verre réussi, retourne la nouvelle liste de verre
+ *     security:
+ *         - googleAuth:
+ *            - email
+ *            - openid
+ *            - profile
+ */
 verresRouter.post(
   "/",
   isAuthenticated,
   haveRight,
   async (request, response) => {
-    const verres = request.body;
+    let nomVerre = request.query.nom;
     let exist = false;
 
-    //suppression des doublons
-    const uniqueVerres = removeDuplicate(verres);
+    // Mise en majuscule de la 1ere lettre du nom
+    nomVerre = nomVerre.replace(
+      /(^\w|\s\w)(\S*)/g,
+      (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
+    );
 
     //vérification de l'inexistance du verre dans la liste
-    for (let i = 0; i < uniqueVerres.length; i++) {
-      exist = await verreExistant(uniqueVerres[i].nom);
-      if (exist === true) {
-        uniqueVerres.splice(i, 1);
-        i--;
-      }
+    exist = await verreExistant(nomVerre);
+
+    if (exist === false) {
+      logger.info(`Adding glasses in database`);
+      await ajouterVerresDB(nomVerre);
+
+      logger.info(`Trying to get list of glasses`);
+      const listeVerres = await recupererLesVerres();
+
+      response.status(CREATED);
+      response.json(listeVerres);
+    } else {
+      logger.info("The glass already exist in database");
+      logger.info(`Trying to get list of glasses`);
+      const listeVerres = await recupererLesVerres();
+
+      response.status(OK);
+      response.json(listeVerres);
     }
-
-    logger.info(`Adding glasses in database`);
-    await ajouterVerresDB(uniqueVerres);
-
-    logger.info(`Trying to get list of glasses`);
-    const listeVerres = await recupererLesVerres();
-
-    response.status(CREATED);
-    response.json(listeVerres);
   }
 );
 
