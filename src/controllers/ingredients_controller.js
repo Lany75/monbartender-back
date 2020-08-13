@@ -1,5 +1,4 @@
-const { Ingredient, CocktailIngredient } = require("../models");
-const uuid = require("uuid");
+const { Ingredient } = require("../models");
 
 const ingredientController = {
   //fonction recupererLesIngredients = retourne un tableau de tous les ingrédients de la table ingredients (modele Ingredient)
@@ -39,13 +38,21 @@ const ingredientController = {
     await Ingredient.bulkCreate(ingredients);
   },
 
-  isIngredient: async nomIngredient => {
+  ingredientExistant: async nomIngredient => {
     const exist = await Ingredient.findOne({
       where: { nom: nomIngredient }
     });
 
     if (!exist) return false;
     else return true;
+  },
+
+  supprimerUnIngredient: async ingredientId => {
+    await Ingredient.destroy({
+      where: {
+        id: ingredientId
+      }
+    });
   }
 };
 
