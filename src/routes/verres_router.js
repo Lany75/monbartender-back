@@ -264,21 +264,17 @@ verresRouter.delete(
         `Trying to remove the glass with id ${idVerre} from database`
       );
       await supprimerUnVerre(idVerre);
-
-      logger.info(`Trying to get list of glasses`);
-      const listeVerres = await recupererLesVerres();
-
-      response.status(OK);
-      response.json(listeVerres);
     } else {
       logger.info(
         `delete forbidden, glass with id ${idVerre} is used in a cocktail`
       );
-      response.status(FORBIDDEN);
-      response.json(
-        "suppression impossible, le verre est utilisé pour un cocktail"
-      );
     }
+
+    logger.info(`Trying to get list of glasses`);
+    const listeVerres = await recupererLesVerres();
+
+    response.status(OK);
+    response.json(listeVerres);
   }
 );
 
