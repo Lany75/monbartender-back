@@ -87,6 +87,47 @@ verresRouter.get(
   }
 );
 
+/**
+ * @swagger
+ * /api/v1/verres/{id}:
+ *   put:
+ *     tags:
+ *       - Verres
+ *     description: modifie le nom du verre
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: identifiant du verre à modifier
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *         description: nouveau nom du verre
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 nom:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Un verre
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Verre'
+ *       404:
+ *         description: Aucun verre avec cet id
+ *     security:
+ *         - googleAuth:
+ *            - email
+ *            - openid
+ *            - profile
+ */
 verresRouter.put(
   "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
   isAuthenticated,
