@@ -36,10 +36,7 @@ const {
 const { recupererIdVerre } = require("../controllers/verres_controller");
 
 const {
-  recupererIdIngredient,
-  recupererLesIngredients,
-  ajouterIngredientsDB,
-  isIngredient
+  recupererIdIngredient
 } = require("../controllers/ingredients_controller");
 
 const {
@@ -49,8 +46,6 @@ const {
   BAD_REQUEST,
   FORBIDDEN
 } = require("../helpers/status_code");
-const removeDuplicate = require("../utils/removeDuplicate");
-const { request, response } = require("express");
 
 const gestionRouter = express.Router();
 
@@ -255,7 +250,6 @@ gestionRouter.put(
   haveRight,
   async (request, response) => {
     const { id, nom, photo } = request.body;
-    console.log(id, photo);
 
     if (nom !== "") await modifierNomCocktail(id, nom);
     if (photo !== "") await modifierPhotoCocktail(id, photo);

@@ -30,6 +30,25 @@ const cocktailIngredientController = {
     await CocktailIngredient.destroy({
       where: { cocktailId: idCocktail }
     });
+  },
+
+  verificationIngredientUtil: async ingredientId => {
+    const cocktail = await CocktailIngredient.findOne({
+      where: { ingredientId: ingredientId },
+      attributes: ["cocktailId"]
+    });
+
+    if (cocktail) return true;
+    else return false;
+  },
+
+  recupererIngredientsCocktails: async () => {
+    const ingredientsCocktails = await CocktailIngredient.findAll({
+      attributes: ["cocktailId", "ingredientId", "quantite", "unite"],
+      raw: true
+    });
+
+    return ingredientsCocktails;
   }
 };
 

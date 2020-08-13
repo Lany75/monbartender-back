@@ -187,7 +187,6 @@ verresRouter.delete(
     // vérification de l'inutilité du verre avant sa suppression
     logger.info("Verify utility of glass");
     const verreUtil = await verificationVerreUtil(idVerre);
-    console.log(verreUtil);
 
     if (verreUtil === false) {
       logger.info(
