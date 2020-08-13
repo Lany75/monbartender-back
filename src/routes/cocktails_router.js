@@ -93,7 +93,6 @@ cocktailsRouter.get("/", async (request, response) => {
           ingredient: ingredientCocktail
         });
       }
-      console.log(resultatCocktail);
 
       logger.info(`Cocktails list has been found`);
       response.status(OK);

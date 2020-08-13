@@ -17,6 +17,9 @@ const removeDuplicate = require("../utils/removeDuplicate");
 const {
   verificationIngredientUtil
 } = require("../controllers/cocktailsIngredients_controller");
+const {
+  supprimerUnIngredientDeTousLesBars
+} = require("../controllers/barsIngredients_controller");
 
 const ingredientRouter = express.Router();
 
@@ -122,6 +125,9 @@ ingredientRouter.delete(
     const ingredientUtil = await verificationIngredientUtil(idIngredient);
 
     if (ingredientUtil === false) {
+      logger.info("Deleting ingredient in bars_ingredients table");
+      await supprimerUnIngredientDeTousLesBars(idIngredient);
+
       logger.info(
         `Trying to remove the ingredient with id ${idIngredient} from database`
       );

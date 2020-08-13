@@ -250,7 +250,6 @@ gestionRouter.put(
   haveRight,
   async (request, response) => {
     const { id, nom, photo } = request.body;
-    console.log(id, photo);
 
     if (nom !== "") await modifierNomCocktail(id, nom);
     if (photo !== "") await modifierPhotoCocktail(id, photo);

@@ -33,6 +33,14 @@ const barIngredientController = {
 
     if (!exist) return false;
     else return true;
+  },
+
+  supprimerUnIngredientDeTousLesBars: async ingredientId => {
+    await BarIngredient.destroy({
+      where: {
+        ingredientId: ingredientId
+      }
+    });
   }
 };
 
