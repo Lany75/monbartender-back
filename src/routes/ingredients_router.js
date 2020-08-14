@@ -13,7 +13,6 @@ const {
 const { OK, CREATED, FORBIDDEN } = require("../helpers/status_code");
 
 const logger = require("../helpers/logger");
-const removeDuplicate = require("../utils/removeDuplicate");
 const {
   verificationIngredientUtil
 } = require("../controllers/cocktailsIngredients_controller");
@@ -58,29 +57,35 @@ ingredientRouter.post(
   isAuthenticated,
   haveRight,
   async (request, response) => {
-    const ingredients = request.body;
-    //let exist = false;
+    let nomIngredient = request.query.nom;
+    let exist = false;
 
-    //suppression des doublons
-    const uniqueIngredients = removeDuplicate(ingredients);
+    // Mise en majuscule de la 1ere lettre du nom
+    nomIngredient = nomIngredient.replace(
+      /(^\w|\s\w)(\S*)/g,
+      (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
+    );
 
     //vérification de l'inexistance de l'ingrédient dans la liste
-    for (let i = 0; i < uniqueIngredients.length; i++) {
-      const exist = await ingredientExistant(uniqueIngredients[i].nom);
-      if (exist === true) {
-        uniqueIngredients.splice(i, 1);
-        i--;
-      }
+    exist = await ingredientExistant(nomIngredient);
+
+    if (exist === false) {
+      logger.info(`Adding ingredients in database`);
+      await ajouterIngredientsDB(nomIngredient);
+
+      logger.info(`Trying to get list of ingredients`);
+      const listeIngredients = await recupererLesIngredients();
+
+      response.status(CREATED);
+      response.json(listeIngredients);
+    } else {
+      logger.info("The ingredient already exist in database");
+      logger.info(`Trying to get list of ingredients`);
+      const listeIngredients = await recupererLesIngredients();
+
+      response.status(OK);
+      response.json(listeIngredients);
     }
-
-    logger.info(`Adding ingredients in database`);
-    await ajouterIngredientsDB(uniqueIngredients);
-
-    logger.info(`Trying to get list of ingredients`);
-    const listeIngredients = await recupererLesIngredients();
-
-    response.status(CREATED);
-    response.json(listeIngredients);
   }
 );
 
