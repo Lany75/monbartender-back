@@ -13,7 +13,6 @@ const {
 const { OK, CREATED, FORBIDDEN } = require("../helpers/status_code");
 
 const logger = require("../helpers/logger");
-const removeDuplicate = require("../utils/removeDuplicate");
 const {
   verificationIngredientUtil
 } = require("../controllers/cocktailsIngredients_controller");
