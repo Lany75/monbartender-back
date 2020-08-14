@@ -1,4 +1,5 @@
 const { Ingredient } = require("../models");
+const uuid = require("uuid");
 
 const ingredientController = {
   //fonction recupererLesIngredients = retourne un tableau de tous les ingrédients de la table ingredients (modele Ingredient)
@@ -34,8 +35,11 @@ const ingredientController = {
     return nomIngredient.dataValues.nom;
   },
 
-  ajouterIngredientsDB: async ingredients => {
-    await Ingredient.bulkCreate(ingredients);
+  ajouterIngredientsDB: async nomIngredient => {
+    await Ingredient.create({
+      id: uuid(),
+      nom: nomIngredient
+    });
   },
 
   ingredientExistant: async nomIngredient => {
