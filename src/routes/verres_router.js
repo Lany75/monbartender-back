@@ -82,7 +82,7 @@ verresRouter.get(
       response.status(OK).json(verre);
     } else {
       logger.info("Glass not found");
-      response.status(NOT_FOUND).json([]);
+      response.status(OK).json([]);
     }
   }
 );
@@ -175,7 +175,7 @@ verresRouter.put(
  *           type: string
  *     responses:
  *       200:
- *         description: Suppression du verre réussi, retourne la nouvelle liste de verre
+ *         description: Création du verre réussi, retourne la nouvelle liste de verre
  *     security:
  *         - googleAuth:
  *            - email

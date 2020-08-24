@@ -7,13 +7,14 @@ const {
   recupererLesIngredients,
   ingredientExistant,
   ajouterIngredientsDB,
-  supprimerUnIngredient
+  supprimerUnIngredient,
+  recupererUnIngredient,
+  modifierUnIngredient
 } = require("../controllers/ingredients_controller");
 
-const { OK, CREATED, FORBIDDEN } = require("../helpers/status_code");
+const { OK, CREATED, FORBIDDEN, NOT_FOUND } = require("../helpers/status_code");
 
 const logger = require("../helpers/logger");
-const removeDuplicate = require("../utils/removeDuplicate");
 const {
   verificationIngredientUtil
 } = require("../controllers/cocktailsIngredients_controller");
@@ -53,34 +54,179 @@ ingredientRouter.get("/", async (request, response) => {
   response.json(ingredients);
 });
 
+/**
+ * @swagger
+ * /api/v1/ingredients:
+ *   post:
+ *     tags:
+ *       - Ingredients
+ *     description: Ajoute un nouvel ingrédient à la base de données
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: nom
+ *         description: nom de l'ingrédient ajouté
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Création de l'ingrédient réussi, retourne la nouvelle liste d'ingrédient
+ *     security:
+ *         - googleAuth:
+ *            - email
+ *            - openid
+ *            - profile
+ */
 ingredientRouter.post(
   "/",
   isAuthenticated,
   haveRight,
   async (request, response) => {
-    const ingredients = request.body;
-    //let exist = false;
+    let nomIngredient = request.query.nom;
+    let exist = false;
 
-    //suppression des doublons
-    const uniqueIngredients = removeDuplicate(ingredients);
+    // Mise en majuscule de la 1ere lettre du nom
+    nomIngredient = nomIngredient.replace(
+      /(^\w|\s\w)(\S*)/g,
+      (_, m1, m2) => m1.toUpperCase() + m2.toLowerCase()
+    );
 
     //vérification de l'inexistance de l'ingrédient dans la liste
-    for (let i = 0; i < uniqueIngredients.length; i++) {
-      const exist = await ingredientExistant(uniqueIngredients[i].nom);
-      if (exist === true) {
-        uniqueIngredients.splice(i, 1);
-        i--;
+    exist = await ingredientExistant(nomIngredient);
+
+    if (exist === false) {
+      logger.info(`Adding ingredients in database`);
+      await ajouterIngredientsDB(nomIngredient);
+
+      logger.info(`Trying to get list of ingredients`);
+      const listeIngredients = await recupererLesIngredients();
+
+      response.status(CREATED);
+      response.json(listeIngredients);
+    } else {
+      logger.info("The ingredient already exist in database");
+      logger.info(`Trying to get list of ingredients`);
+      const listeIngredients = await recupererLesIngredients();
+
+      response.status(OK);
+      response.json(listeIngredients);
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/v1/ingredients/{id}:
+ *   get:
+ *     tags:
+ *       - Ingredients
+ *     description: Retourne l'ingrédient dont l'id est spécifié
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: identifiant de l'ingrédient
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Un ingrédient
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Ingredient'
+ *       404:
+ *         description: Aucun ingrédient avec cet id
+ */
+ingredientRouter.get(
+  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  async (request, response) => {
+    const { id } = request.params;
+
+    logger.info(`Trying to get ingredient with id ${id}`);
+    const ingredient = await recupererUnIngredient(id);
+
+    if (ingredient) {
+      logger.info("Ingredient found");
+      response.status(OK).json(ingredient);
+    } else {
+      logger.info("Ingredient not found");
+      response.status(OK).json([]);
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/v1/ingredients/{id}:
+ *   put:
+ *     tags:
+ *       - Ingredients
+ *     description: modifie le nom de l'ingrédient
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: identifiant de l'ingrédient à modifier
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *         description: nouveau nom de l'ingrédient
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 nom:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Un ingrédient
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Ingredient'
+ *       404:
+ *         description: Aucun ingrédient avec cet id
+ *     security:
+ *         - googleAuth:
+ *            - email
+ *            - openid
+ *            - profile
+ */
+ingredientRouter.put(
+  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { id } = request.params;
+    const { nom } = request.body;
+    let ingredientExistant = false;
+
+    // Vérification de l'inexistance de l'ingrédient
+    let ingredients = await recupererLesIngredients();
+    for (let i = 0; i < ingredients.length; i++) {
+      if (ingredients[i].nom === nom && ingredients[i].id !== id) {
+        ingredientExistant = true;
       }
     }
 
-    logger.info(`Adding ingredients in database`);
-    await ajouterIngredientsDB(uniqueIngredients);
+    if (nom !== "" && ingredientExistant === false) {
+      logger.info("Trying to modify ingredient");
+      await modifierUnIngredient(id, nom);
+    } else {
+      logger.info("Modification not possible, the ingredient already exists");
+    }
 
-    logger.info(`Trying to get list of ingredients`);
-    const listeIngredients = await recupererLesIngredients();
-
-    response.status(CREATED);
-    response.json(listeIngredients);
+    ingredients = await recupererLesIngredients();
+    response.status(OK).json(ingredients);
   }
 );
 
