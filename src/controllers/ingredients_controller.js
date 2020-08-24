@@ -66,6 +66,14 @@ const ingredientController = {
         id: ingredientId
       }
     });
+  },
+
+  modifierUnIngredient: async (ingredientId, nvNomIngredient) => {
+    await Ingredient.update(
+      { nom: nvNomIngredient },
+      { where: { id: ingredientId } }
+    );
+    return true;
   }
 };
 
