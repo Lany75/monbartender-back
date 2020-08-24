@@ -7,10 +7,11 @@ const {
   recupererLesIngredients,
   ingredientExistant,
   ajouterIngredientsDB,
-  supprimerUnIngredient
+  supprimerUnIngredient,
+  recupererUnIngredient
 } = require("../controllers/ingredients_controller");
 
-const { OK, CREATED, FORBIDDEN } = require("../helpers/status_code");
+const { OK, CREATED, FORBIDDEN, NOT_FOUND } = require("../helpers/status_code");
 
 const logger = require("../helpers/logger");
 const {
@@ -52,6 +53,31 @@ ingredientRouter.get("/", async (request, response) => {
   response.json(ingredients);
 });
 
+/**
+ * @swagger
+ * /api/v1/ingredients:
+ *   post:
+ *     tags:
+ *       - Ingredients
+ *     description: Ajoute un nouvel ingrédient à la base de données
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: nom
+ *         description: nom de l'ingrédient ajouté
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Création de l'ingrédient réussi, retourne la nouvelle liste d'ingrédient
+ *     security:
+ *         - googleAuth:
+ *            - email
+ *            - openid
+ *            - profile
+ */
 ingredientRouter.post(
   "/",
   isAuthenticated,
@@ -85,6 +111,50 @@ ingredientRouter.post(
 
       response.status(OK);
       response.json(listeIngredients);
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/v1/ingredients/{id}:
+ *   get:
+ *     tags:
+ *       - Ingredients
+ *     description: Retourne l'ingrédient dont l'id est spécifié
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         description: identifiant de l'ingrédient
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Un ingrédient
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Ingredient'
+ *       404:
+ *         description: Aucun ingrédient avec cet id
+ */
+ingredientRouter.get(
+  "/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})",
+  async (request, response) => {
+    const { id } = request.params;
+
+    logger.info(`Trying to get ingredient with id ${id}`);
+    const ingredient = await recupererUnIngredient(id);
+
+    if (ingredient) {
+      logger.info("Ingredient found");
+      response.status(OK).json(ingredient);
+    } else {
+      logger.info("Ingredient not found");
+      response.status(OK).json([]);
     }
   }
 );
