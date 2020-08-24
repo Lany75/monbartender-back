@@ -13,6 +13,15 @@ const ingredientController = {
     return ingredients;
   },
 
+  recupererUnIngredient: async idIngredient => {
+    const ingredient = await Ingredient.findOne({
+      where: { id: idIngredient },
+      attributes: ["id", "nom"]
+    });
+
+    return ingredient;
+  },
+
   //fonction recupererIdIngredient = retourne l'id de l'ingrédient trouvé dans la table ingredients (modèle Ingredient)
   // à partir de son nom
   recupererIdIngredient: async nomIngredient => {
@@ -57,6 +66,14 @@ const ingredientController = {
         id: ingredientId
       }
     });
+  },
+
+  modifierUnIngredient: async (ingredientId, nvNomIngredient) => {
+    await Ingredient.update(
+      { nom: nvNomIngredient },
+      { where: { id: ingredientId } }
+    );
+    return true;
   }
 };
 
