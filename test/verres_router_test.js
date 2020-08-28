@@ -21,11 +21,11 @@ const GlassesList = [
   },
   {
     id: "06dcf3b1-6978-4575-8fe7-e2a35478ce24",
-    nom: "Verre à bière"
+    nom: "Verre à Bière"
   },
   {
     id: "c69758d1-b4ad-4038-b157-205fd12d9ace",
-    nom: "Verre à cocktail"
+    nom: "Verre à Cocktail"
   },
   {
     id: "59a64053-f074-4068-a68a-b6ca1bcc34a0",
@@ -33,15 +33,15 @@ const GlassesList = [
   },
   {
     id: "e375c137-77e9-4682-9d9d-f8b46a7147a6",
-    nom: "Verre à shot"
+    nom: "Verre à Shot"
   },
   {
     id: "2763d10c-50d3-4029-a3ea-b6c76a1ab9bf",
-    nom: "Verre à whisky"
+    nom: "Verre à Whisky"
   },
   {
     id: "4caf20ea-b7d4-468d-bdd8-cde6cb8e0623",
-    nom: "Verre ballon"
+    nom: "Verre Ballon"
   }
 ];
 
