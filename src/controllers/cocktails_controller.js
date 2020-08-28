@@ -4,10 +4,6 @@ const Op = Sequelize.Op;
 require("express-async-errors");
 const uuid = require("uuid");
 
-const getRandomInteger = require("../utils/getRandomInteger");
-
-const cocktailsRouter = require("../routes/cocktails_router");
-
 const cocktailController = {
   estDansLaTableCocktail: async idCocktail => {
     const exist = await Cocktail.findOne({
@@ -72,19 +68,6 @@ const cocktailController = {
     });
 
     return idCocktail.dataValues.id;
-  },
-
-  //fonction recupererUnCocktailAleatoire = retourne un cocktail aléatoire à partir de tous les cocktails inclus dans la table cocktails
-  recupererUnCocktailAleatoire: async () => {
-    const cocktails = await Cocktail.findAll({
-      order: [["nom", "ASC"]],
-      attributes: ["id", "nom", "photo"],
-      raw: true
-    });
-
-    const randomInt = getRandomInteger(cocktails.length);
-
-    return cocktails[randomInt];
   },
 
   //fonction rechercherUnCocktailParSonNom = retourne un tableau de tous les cocktails de la table cocktails (modele Cocktail)
