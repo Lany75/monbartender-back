@@ -367,9 +367,7 @@ gestionRouter.put("/admin/:mail", async (request, response) => {
   const { mail } = request.params;
   const { action } = request.body;
 
-  console.log("action : ", action);
   if (action === "ajouter") {
-    console.log(`modif user ${mail} en admin`);
     await ajouterUnAdmin(mail);
     // const admins = await recupererLesAdmins();
     // response.status(OK);
@@ -377,7 +375,6 @@ gestionRouter.put("/admin/:mail", async (request, response) => {
   }
 
   if (action === "supprimer") {
-    console.log(`modif admin ${mail} en user`);
     await supprimerUnAdmin(mail);
     const admins = await recupererLesAdmins();
     response.status(OK);
@@ -389,7 +386,6 @@ gestionRouter.get("/users/", async (request, response) => {
   logger.info("Trying to get all users");
   const users = await recupererLesUsers();
 
-  console.log(users);
   logger.info("Users found");
   response.status(OK);
   response.json(users);
