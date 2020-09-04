@@ -8,8 +8,7 @@ const {
   recupererLesCocktails,
   recupererUnCocktail,
   rechercherUnCocktailParSonNom,
-  rechercherCocktailsParIngredients,
-  recupererUnCocktailAleatoire
+  rechercherCocktailsParIngredients
 } = require("../controllers/cocktails_controller");
 const {
   recupererIdCocktailsMoment
@@ -139,34 +138,6 @@ cocktailsRouter.get("/cocktail-du-moment", async (request, response) => {
 
   response.status(OK);
   response.json(cocktailsMoment);
-});
-
-/**
- * @swagger
- * /api/v1/cocktails/aleatoire:
- *   get:
- *     tags:
- *       - Cocktails
- *     description: Retourne un cocktail au hasard
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: Un cocktail
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Cocktail'
- *       404:
- *         description: Aucun cocktail n'existe
- */
-cocktailsRouter.get("/aleatoire", async (request, response) => {
-  logger.info(`Trying to get a random cocktail`);
-  const cocktailAleatoire = await recupererUnCocktailAleatoire();
-
-  logger.info(`Random cocktail has been found`);
-  response.status(OK);
-  response.json(cocktailAleatoire);
 });
 
 /**

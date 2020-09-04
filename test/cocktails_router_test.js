@@ -36,31 +36,31 @@ const cocktailsList = [
 const ingredientsMojito = [
   {
     id: "740367a4-dedf-4093-86d1-50eac62b2521",
-    nom: "menthe",
+    nom: "Menthe",
     quantite: "8",
     unite: "feuilles"
   },
   {
     id: "c3fd98ec-cad4-49c9-9a74-63ca90489a0a",
-    nom: "sucre",
+    nom: "Sucre",
     quantite: "5",
     unite: "gr"
   },
   {
     id: "bd799ef3-d7ae-4975-8be0-8f2397fa2b18",
-    nom: "rhum",
+    nom: "Rhum",
     quantite: "6",
     unite: "cl"
   },
   {
     id: "38925fb2-2267-47c7-b62e-e134e41a51c7",
-    nom: "jus de citron vert",
+    nom: "Jus De Citron Vert",
     quantite: "3",
     unite: "cl"
   },
   {
     id: "ad1d8a81-7ae6-4f5e-83a3-64889d390f8a",
-    nom: "eau gazeuse",
+    nom: "Eau Gazeuse",
     quantite: null,
     unite: null
   }
@@ -110,7 +110,17 @@ describe("MonBartender cocktails_router", () => {
         .set("Content-Type", "application/json")
         .then(res => {
           res.should.have.status(200);
-          res.body.should.be.eql(cocktailsList);
+          //res.body.should.be.eql(cocktailsList);
+          res.body.should.be.a("array");
+          var array = Array.from(res.body);
+          array.forEach(element => {
+            element.should.have.property("id");
+            element.should.have.property("nom");
+            element.should.have.property("photo");
+            element.should.have.property("verre");
+            element.should.have.property("alcool");
+            element.should.have.property("ingredient");
+          });
         });
     });
 
@@ -154,21 +164,6 @@ describe("MonBartender cocktails_router", () => {
             element.should.have.property("nom");
             element.should.have.property("photo");
           });
-        });
-    });
-  });
-
-  describe("Random Cocktail GET", () => {
-    it("it should return a random cocktail with status code 200 if everything is OK", () => {
-      return chai
-        .request(server)
-        .get("/api/v1/cocktails/aleatoire")
-        .set("Content-Type", "application/json")
-        .then(res => {
-          res.should.have.status(200);
-          res.body.should.have.property("id");
-          res.body.should.have.property("nom");
-          res.body.should.have.property("photo");
         });
     });
   });
@@ -219,7 +214,7 @@ describe("MonBartender cocktails_router", () => {
       return chai
         .request(server)
         .get(
-          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=tabasco&alcool=indifferent"
+          "/api/v1/cocktails/rechercher-par-ingredient?ingredient1=Tabasco&alcool=indifferent"
         )
         .set("Content-Type", "application/json")
         .then(res => {

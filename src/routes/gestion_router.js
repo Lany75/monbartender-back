@@ -40,12 +40,21 @@ const {
 } = require("../controllers/ingredients_controller");
 
 const {
+  recupererLesAdmins,
+  recupererLesUsers,
+  ajouterUnAdmin,
+  supprimerUnAdmin
+} = require("../controllers/admin_controller");
+
+const {
   OK,
   NOT_FOUND,
   CREATED,
   BAD_REQUEST,
   FORBIDDEN
 } = require("../helpers/status_code");
+const { request } = require("chai");
+const { response } = require("express");
 
 const gestionRouter = express.Router();
 
@@ -344,5 +353,46 @@ gestionRouter.delete(
     }
   }
 );
+
+gestionRouter.get("/admin/", async (request, response) => {
+  logger.info("Trying to get all admins");
+  const admins = await recupererLesAdmins();
+
+  logger.info("Admins found");
+  response.status(OK);
+  response.json(admins);
+});
+
+gestionRouter.put("/admin/:mail", async (request, response) => {
+  const { mail } = request.params;
+  const { action } = request.body;
+
+  console.log("action : ", action);
+  if (action === "ajouter") {
+    console.log(`modif user ${mail} en admin`);
+    await ajouterUnAdmin(mail);
+    // const admins = await recupererLesAdmins();
+    // response.status(OK);
+    // response.json(admins);
+  }
+
+  if (action === "supprimer") {
+    console.log(`modif admin ${mail} en user`);
+    await supprimerUnAdmin(mail);
+    const admins = await recupererLesAdmins();
+    response.status(OK);
+    response.json(admins);
+  }
+});
+
+gestionRouter.get("/users/", async (request, response) => {
+  logger.info("Trying to get all users");
+  const users = await recupererLesUsers();
+
+  console.log(users);
+  logger.info("Users found");
+  response.status(OK);
+  response.json(users);
+});
 
 module.exports = gestionRouter;
