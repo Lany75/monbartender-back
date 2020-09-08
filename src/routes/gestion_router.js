@@ -67,19 +67,18 @@ const gestionRouter = express.Router();
  *     description: modifie la liste des cocktails du moment
  *     produces:
  *       - application/json
- *     parameters:
- *       - in: query
- *         name: nomAncienCocktail
- *         description: nom de l'ancien cocktail du moment
+ *     requestBody:
+ *         description: nouveaux noms des cocktails du moment
  *         required: true
- *         schema:
- *           type: string
- *       - in: query
- *         name: nomNouveauCocktail
- *         description: nom du nouveau cocktail du moment
- *         required: true
- *         schema:
- *           type: string
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 cocktail1:
+ *                   type: string
+ *                 cocktail2:
+ *                   type: string
  *     responses:
  *       200:
  *         description: Modification réussie
@@ -96,18 +95,16 @@ gestionRouter.put(
   isAuthenticated,
   haveRight,
   async (request, response) => {
-    const nomAncienCocktail = request.query.nomAncienCocktail;
-    const nomNouveauCocktail = request.query.nomNouveauCocktail;
+    const { cocktail1, cocktail2 } = request.body;
+    const cocktailsMoment = [];
 
-    logger.info(`Trying to get cocktail's id of ${nomAncienCocktail}`);
-    const idAncienCocktail = await recupererIdCocktail(nomAncienCocktail);
-    logger.info(`Trying to get cocktail's id of ${nomNouveauCocktail}`);
-    const idNouveauCocktail = await recupererIdCocktail(nomNouveauCocktail);
+    logger.info(`Trying to get cocktail's id of ${cocktail1}`);
+    const idCocktail1 = await recupererIdCocktail(cocktail1);
+    logger.info(`Trying to get cocktail's id of ${cocktail2}`);
+    const idCocktail2 = await recupererIdCocktail(cocktail2);
 
     logger.info(`Trying to change cocktail of the day`);
-    await modifierCocktailMoment(idAncienCocktail, idNouveauCocktail);
-
-    const cocktailsMoment = [];
+    await modifierCocktailMoment(idCocktail1, idCocktail2);
 
     logger.info(`Trying to get new cocktail of the day id`);
     const idCocktailsMoment = await recupererIdCocktailsMoment();

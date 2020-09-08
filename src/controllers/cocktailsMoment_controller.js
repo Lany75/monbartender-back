@@ -1,4 +1,5 @@
 const { CocktailsMoment } = require("../models");
+const uuid = require("uuid");
 
 const cocktailMomentController = {
   // fonction recupererIdCocktailsMoment = retourne tous les id de la table cocktails_moment
@@ -11,11 +12,16 @@ const cocktailMomentController = {
     return cocktails;
   },
 
-  modifierCocktailMoment: async (ancienCocktail, nouveauCocktail) => {
-    await CocktailsMoment.update(
-      { cocktailId: nouveauCocktail },
-      { where: { cocktailId: ancienCocktail } }
-    );
+  modifierCocktailMoment: async (idCocktail1, idCocktail2) => {
+    await CocktailsMoment.destroy({ where: {} });
+    await CocktailsMoment.create({
+      id: uuid(),
+      cocktailId: idCocktail1
+    });
+    await CocktailsMoment.create({
+      id: uuid(),
+      cocktailId: idCocktail2
+    });
     return true;
   }
 };
