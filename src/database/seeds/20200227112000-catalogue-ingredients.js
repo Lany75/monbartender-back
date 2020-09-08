@@ -38,7 +38,7 @@ module.exports = [
   },
   {
     id: "e624bd35-e414-4874-a406-14a7d9d24231",
-    nom: "Jus de Tomate",
+    nom: "Jus De Tomate",
     createdAt: now,
     updatedAt: now
   },
