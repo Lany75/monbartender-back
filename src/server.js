@@ -27,12 +27,12 @@ app.get(
     }
   })
 );
-app.get("/swagger.json", function(req, res) {
+app.get("/swagger.json", function (req, res) {
   logger.info("Requesting swagger.json");
   res.setHeader("Content-Type", "application/json");
   res.send(swaggerSpec);
 });
-app.get("/oauth2-redirect.html", function(req, res) {
+app.get("/oauth2-redirect.html", function (req, res) {
   logger.info("Redirecting oauth2 response");
   const targetUrl = req.baseUrl + "/api-docs" + "/oauth2-redirect.html";
   logger.info(`targetURL:${targetUrl} et req:${req}`);
@@ -81,8 +81,7 @@ let server = app.listen(appSettings.port, appSettings.hostname, () => {
 function logErrorHandler(err, req, res, next) {
   // add this line to include winston logging
   logger.error(
-    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${
-      req.method
+    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method
     } - ${req.ip}`
   );
   logger.error(`${err.stack}`);
