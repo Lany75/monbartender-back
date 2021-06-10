@@ -11,6 +11,12 @@ module.exports = {
     idle: 15000,
     acquire: 30000
   },
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true
+    }
+  },
   logging: (...msg) => {
     logger.debug(msg);
   }
