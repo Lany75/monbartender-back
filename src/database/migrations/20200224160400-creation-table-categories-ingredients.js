@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("ingredients", {
+    return queryInterface.createTable("categories_ingredients", {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -10,14 +10,6 @@ module.exports = {
       nom: {
         allowNull: false,
         type: Sequelize.STRING(30)
-      },
-      categorieId: {
-        allowNull: false,
-        type: Sequelize.UUID,
-        references: {
-          model: "categories_ingredients",
-          key: "id"
-        }
       },
       createdAt: {
         allowNull: false,
@@ -32,6 +24,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("ingredients");
+    return queryInterface.dropTable("categories_ingredients");
   }
 };

@@ -3,8 +3,7 @@ const Sequelize = require("sequelize");
 
 const cocktailControllerV2 = {
   getAllCocktails: async () => {
-    let cocktails;
-    cocktails = await Cocktail.findAll({
+    const cocktails = await Cocktail.findAll({
       order: [
         ['nom', 'ASC'],
         [{ model: Ingredient }, 'nom', 'ASC'],

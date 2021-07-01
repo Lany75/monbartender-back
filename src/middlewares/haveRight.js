@@ -1,5 +1,4 @@
 const logger = require("../helpers/logger");
-const barController = require("../controllers/bars_controller");
 const { Bar } = require("../models");
 
 async function haveRight(req, res, next) {

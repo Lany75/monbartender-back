@@ -41,6 +41,10 @@ module.exports = (sequelize, DataTypes) => {
           len: [2, 30]
         }
       },
+      categorieId: {
+        allowNull: false,
+        type: DataTypes.UUID
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -73,6 +77,12 @@ module.exports = (sequelize, DataTypes) => {
     Ingredient.belongsToMany(models.Bar, {
       through: "bars_ingredients",
       foreignKey: "ingredientId"
+    });
+    Ingredient.belongsTo(models.CategorieIngredient, {
+      foreignKey: {
+        name: "categorieId",
+        allowNull: false
+      }
     });
   };
 
