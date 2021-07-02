@@ -34,13 +34,8 @@ const ingredientsControllerV2 = {
       },
       {
         where: { id: ingredientId },
-        returning: true,
-        plain: true
       }
     )
-      .then(result => {
-        return (result[1].dataValues);
-      });
   },
 
   idIsExisting: async ingredientId => {
