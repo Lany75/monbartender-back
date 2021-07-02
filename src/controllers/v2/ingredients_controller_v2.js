@@ -54,6 +54,14 @@ const ingredientsControllerV2 = {
       nom: nomIngredient,
       categorieId: categorieId
     })
+  },
+
+  deleteIngredient: async (ingredientId) => {
+    await Ingredient.destroy({
+      where: {
+        id: ingredientId
+      }
+    })
   }
 }
 

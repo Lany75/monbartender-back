@@ -15,8 +15,17 @@ const {
   putOneIngredient,
   idIsExisting,
   getNameIngredient,
-  addIngredient
+  addIngredient,
+  deleteIngredient
 } = require('../../controllers/v2/ingredients_controller_v2');
+
+const {
+  ingredientIsUsed
+} = require('../../controllers/v2/cocktailsIngredients_controller_v2');
+
+const {
+  deleteIngredientBars
+} = require("../../controllers/v2/barsIngredients_controller_v2");
 
 const {
   OK,
@@ -112,5 +121,34 @@ ingredientsRouterV2.post('/', isAuthenticated, haveRight, async (request, respon
       .json(ingredients);
   }
 })
+
+ingredientsRouterV2.delete(
+  '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { id } = request.params;
+
+    if (await idIsExisting(id)) {
+      if (!await ingredientIsUsed(id)) {
+        logger.info(`Trying to delete ingredient in bar-ingredients table`);
+        await deleteIngredientBars(id);
+
+        logger.info(`Trying to delete ingredient in ingredients table`);
+        await deleteIngredient(id);
+      }
+
+      logger.info(`Trying to get all ingredients`);
+      const ingredients = await getAllIngredients();
+
+      response
+        .status(OK)
+        .json(ingredients);
+    } else {
+      response
+        .status(BAD_REQUEST)
+        .json("Incorrect id");
+    }
+  })
 
 module.exports = ingredientsRouterV2;
