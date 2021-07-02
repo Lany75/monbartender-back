@@ -9,38 +9,66 @@ const {
   getAllCategories,
   getIdCategorie
 } = require("../../controllers/v2/categoriesIngredients_controller_v2");
+
 const {
   getAllIngredients,
-  putOneIngredient
+  putOneIngredient,
+  idIsExisting,
+  getNameIngredient
 } = require('../../controllers/v2/ingredients_controller_v2');
+
+const {
+  OK,
+  BAD_REQUEST
+} = require("../../helpers/status_code");
+
+const camelCaseText = require("../../utils/camelCaseText");
 
 const ingredientsRouterV2 = express.Router();
 
 ingredientsRouterV2.get('/', async (request, response) => {
   logger.info(`Trying to get all ingredients`);
   const ingredients = await getAllIngredients();
-  response.status(200).json(ingredients);
+  response.status(OK).json(ingredients);
 })
 
 ingredientsRouterV2.get('/categories', async (request, response) => {
   logger.info(`Trying to get all categories of ingredients`);
   const categories = await getAllCategories();
-  response.status(200).json(categories);
+  response.status(OK).json(categories);
 })
 
 ingredientsRouterV2.put('/:id', isAuthenticated, haveRight, async (request, response) => {
   const { id } = request.params;
   const { nom, categorie } = request.body;
 
-  logger.info(`Trying to get id of categorie ${categorie}`);
-  const categorieId = await getIdCategorie(categorie);
+  if (await idIsExisting(id)) {
+    if (!nom || nom === '' || !categorie || categorie === '') {
+      response.status(BAD_REQUEST);
+      response.json("Data missing for ingredient modification");
+    } else {
+      logger.info(`Trying to get ingredient ${camelCaseText(nom)}`);
+      const ingredient = await getNameIngredient(camelCaseText(nom));
 
-  logger.info(`Trying to modify ingredients ${id}`);
-  const newIngredient = await putOneIngredient(id, nom, categorieId);
+      if (!ingredient || ingredient.id === id) {
+        logger.info(`Trying to get id of categorie ${categorie}`);
+        const categorieId = await getIdCategorie(categorie);
 
-  const ingredients = await getAllIngredients();
+        if (categorieId) {
+          logger.info(`Trying to modify ingredients ${id}`);
+          const newIngredient = await putOneIngredient(id, camelCaseText(nom), categorieId);
+        }
+      }
 
-  response.status(200).json(ingredients);
+      logger.info(`Trying to get all ingredients`);
+      const ingredients = await getAllIngredients();
+
+      response.status(OK).json(ingredients);
+    }
+  } else {
+    response.status(BAD_REQUEST);
+    response.json("Incorrect id");
+  }
 })
 
 module.exports = ingredientsRouterV2;

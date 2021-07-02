@@ -17,8 +17,8 @@ const categoriesIngredientsV2 = {
       where: { nom: name }
     })
 
-    return categorieId.dataValues.id;
-  }
+    return categorieId?.dataValues.id;
+  },
 }
 
 module.exports = categoriesIngredientsV2;
