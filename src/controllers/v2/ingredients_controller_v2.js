@@ -16,6 +16,15 @@ const ingredientsControllerV2 = {
     return ingredients;
   },
 
+  getNameIngredient: async (ingredientName) => {
+    const ingredient = await Ingredient.findOne({
+      attributes: ['id', 'nom'],
+      where: { nom: ingredientName }
+    })
+
+    return ingredient?.dataValues;
+  },
+
   putOneIngredient: async (ingredientId, nom, categorieId) => {
     await Ingredient.update(
       {
@@ -31,6 +40,16 @@ const ingredientsControllerV2 = {
       .then(result => {
         return (result[1].dataValues);
       });
+  },
+
+  idIsExisting: async ingredientId => {
+    const ingredient = await Ingredient.findOne({
+      attributes: ['id'],
+      where: { id: ingredientId }
+    })
+
+    if (ingredient) return true;
+    else return false;
   }
 }
 
