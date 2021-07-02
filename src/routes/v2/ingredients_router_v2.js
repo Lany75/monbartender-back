@@ -14,12 +14,14 @@ const {
   getAllIngredients,
   putOneIngredient,
   idIsExisting,
-  getNameIngredient
+  getNameIngredient,
+  addIngredient
 } = require('../../controllers/v2/ingredients_controller_v2');
 
 const {
   OK,
-  BAD_REQUEST
+  BAD_REQUEST,
+  CREATED
 } = require("../../helpers/status_code");
 
 const camelCaseText = require("../../utils/camelCaseText");
@@ -68,6 +70,31 @@ ingredientsRouterV2.put('/:id', isAuthenticated, haveRight, async (request, resp
   } else {
     response.status(BAD_REQUEST);
     response.json("Incorrect id");
+  }
+})
+
+ingredientsRouterV2.post('/', isAuthenticated, haveRight, async (request, response) => {
+  const { nom, categorie } = request.body;
+
+  if (!nom || nom === '' || !categorie || categorie === '') {
+    response.status(BAD_REQUEST);
+    response.json("Data missing for ingredient adding");
+  } else {
+
+    if (!await getNameIngredient(camelCaseText(nom))) {
+      logger.info(`Trying to get id of categorie ${categorie}`);
+      const categorieId = await getIdCategorie(categorie);
+
+      if (categorieId) {
+        logger.info(`Trying to add ingredient ${nom}`);
+        await addIngredient(camelCaseText(nom), categorieId);
+      }
+    }
+
+    logger.info(`Trying to get all ingredients`);
+    const ingredients = await getAllIngredients();
+
+    response.status(CREATED).json(ingredients);
   }
 })
 

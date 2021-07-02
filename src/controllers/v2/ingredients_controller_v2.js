@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 const { Ingredient, CategorieIngredient } = require('../../models');
 
 const ingredientsControllerV2 = {
@@ -50,6 +51,14 @@ const ingredientsControllerV2 = {
 
     if (ingredient) return true;
     else return false;
+  },
+
+  addIngredient: async (nomIngredient, categorieId) => {
+    await Ingredient.create({
+      id: uuid(),
+      nom: nomIngredient,
+      categorieId: categorieId
+    })
   }
 }
 
