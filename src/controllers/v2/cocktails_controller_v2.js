@@ -66,6 +66,35 @@ const cocktailControllerV2 = {
       ]
     })
     return cocktails;
+  },
+
+  getOneIdCocktail: async id => {
+    const cocktail = await Cocktail.findByPk(id, {
+      order: [
+        ['nom', 'ASC'],
+        [{ model: Ingredient }, 'nom', 'ASC'],
+        [{ model: EtapesPreparation }, 'numEtape', 'ASC'],
+
+      ],
+      attributes: ['id', 'nom', 'photo', 'alcool'],
+      include: [
+        {
+          model: Verre,
+          attributes: ['id', 'nom']
+        },
+        {
+          model: Ingredient,
+          attributes: ['id', 'nom'],
+          through: { attributes: ['quantite', 'unite'] }
+        },
+        {
+          model: EtapesPreparation,
+          attributes: ["id", "numEtape", "texte"],
+          through: { attributes: [] }
+        }
+      ]
+    })
+    return cocktail;
   }
 }
 
