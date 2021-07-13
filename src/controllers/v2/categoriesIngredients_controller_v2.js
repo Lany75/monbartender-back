@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 const { CategorieIngredient } = require('../../models');
 
 const categoriesIngredientsV2 = {
@@ -19,6 +20,13 @@ const categoriesIngredientsV2 = {
 
     return categorieId?.dataValues.id;
   },
+
+  addCategory: async (CategoryName) => {
+    await CategorieIngredient.create({
+      id: uuid(),
+      nom: CategoryName
+    })
+  }
 }
 
 module.exports = categoriesIngredientsV2;
