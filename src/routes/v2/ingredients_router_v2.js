@@ -7,7 +7,8 @@ const logger = require("../../helpers/logger");
 
 const {
   getAllCategories,
-  getIdCategorie
+  getIdCategorie,
+  addCategory
 } = require("../../controllers/v2/categoriesIngredients_controller_v2");
 
 const {
@@ -45,12 +46,32 @@ ingredientsRouterV2.get('/', async (request, response) => {
     .json(ingredients);
 })
 
-ingredientsRouterV2.get('/categories', async (request, response) => {
-  logger.info(`Trying to get all categories of ingredients`);
-  const categories = await getAllCategories();
-  response
-    .status(OK)
-    .json(categories);
+ingredientsRouterV2.post('/', isAuthenticated, haveRight, async (request, response) => {
+  const { nom, categorie } = request.body;
+
+  if (!nom || nom === '' || !categorie || categorie === '') {
+    response
+      .status(BAD_REQUEST)
+      .json("Data missing for ingredient adding");
+  } else {
+
+    if (!await getNameIngredient(camelCaseText(nom))) {
+      logger.info(`Trying to get id of categorie ${categorie}`);
+      const categorieId = await getIdCategorie(categorie);
+
+      if (categorieId) {
+        logger.info(`Trying to add ingredient ${nom}`);
+        await addIngredient(camelCaseText(nom), categorieId);
+      }
+    }
+
+    logger.info(`Trying to get all ingredients`);
+    const ingredients = await getAllIngredients();
+
+    response
+      .status(CREATED)
+      .json(ingredients);
+  }
 })
 
 ingredientsRouterV2.put(
@@ -94,34 +115,6 @@ ingredientsRouterV2.put(
     }
   })
 
-ingredientsRouterV2.post('/', isAuthenticated, haveRight, async (request, response) => {
-  const { nom, categorie } = request.body;
-
-  if (!nom || nom === '' || !categorie || categorie === '') {
-    response
-      .status(BAD_REQUEST)
-      .json("Data missing for ingredient adding");
-  } else {
-
-    if (!await getNameIngredient(camelCaseText(nom))) {
-      logger.info(`Trying to get id of categorie ${categorie}`);
-      const categorieId = await getIdCategorie(categorie);
-
-      if (categorieId) {
-        logger.info(`Trying to add ingredient ${nom}`);
-        await addIngredient(camelCaseText(nom), categorieId);
-      }
-    }
-
-    logger.info(`Trying to get all ingredients`);
-    const ingredients = await getAllIngredients();
-
-    response
-      .status(CREATED)
-      .json(ingredients);
-  }
-})
-
 ingredientsRouterV2.delete(
   '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
   isAuthenticated,
@@ -148,6 +141,45 @@ ingredientsRouterV2.delete(
       response
         .status(BAD_REQUEST)
         .json("Incorrect id");
+    }
+  })
+
+ingredientsRouterV2.get('/category', async (request, response) => {
+  logger.info(`Trying to get all categories of ingredients`);
+  const categories = await getAllCategories();
+  response
+    .status(OK)
+    .json(categories);
+})
+
+ingredientsRouterV2.post('/category',
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { nom } = request.body;
+
+    if (!nom || nom === '') {
+      response
+        .status(BAD_REQUEST)
+        .json("Data missing for category adding");
+    } else {
+      if (!await getIdCategorie(nom.toUpperCase())) {
+        logger.info(`Trying to add category ${nom}`);
+        try {
+          await addCategory(nom.toUpperCase());
+        } catch (error) {
+          logger.error(
+            `An error has occured while adding category, message: ${error.message}`
+          );
+        }
+      }
+
+      logger.info(`Trying to get all categories`);
+      const categories = await getAllCategories();
+
+      response
+        .status(CREATED)
+        .json(categories);
     }
   })
 
