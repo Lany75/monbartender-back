@@ -8,7 +8,10 @@ const logger = require("../../helpers/logger");
 const {
   getAllCategories,
   getIdCategorie,
-  addCategory
+  addCategory,
+  categoryIdIsExisting,
+  getNameCategory,
+  putOneCategory
 } = require("../../controllers/v2/categoriesIngredients_controller_v2");
 
 const {
@@ -183,4 +186,40 @@ ingredientsRouterV2.post('/category',
     }
   })
 
+ingredientsRouterV2.put(
+  '/category/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { id } = request.params;
+    const { nom } = request.body;
+
+    if (await categoryIdIsExisting(id)) {
+      if (!nom || nom === '') {
+        response
+          .status(BAD_REQUEST)
+          .json("Data missing for category modification");
+      } else {
+        logger.info(`Trying to get category ${nom.toUpperCase()}`);
+        const category = await getNameCategory(nom.toUpperCase());
+
+        if (!category || category.id === id) {
+          logger.info(`Trying to modify category ${id}`);
+          await putOneCategory(id, nom.toUpperCase());
+        }
+      }
+
+      logger.info(`Trying to get all categories`);
+      const categories = await getAllCategories();
+
+      response
+        .status(OK)
+        .json(categories);
+
+    } else {
+      response
+        .status(BAD_REQUEST)
+        .json("Incorrect id");
+    }
+  })
 module.exports = ingredientsRouterV2;
