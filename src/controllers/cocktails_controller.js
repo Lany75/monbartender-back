@@ -93,13 +93,24 @@ const cocktailController = {
     if (alcool === "indifferent") {
       cocktails = await Cocktail.findAll({
         order: [["nom", "ASC"]],
-        attributes: ["id", "nom", "photo"],
+        attributes: ['id', 'nom', 'photo', 'alcool'],
         include: [
           {
+            model: Verre,
+            attributes: ['id', 'nom']
+          },
+          {
             model: Ingredient,
+            attributes: ['id', 'nom'],
+            through: { attributes: ['quantite', 'unite'] },
             where: {
               nom: { [Op.any]: ingredients }
             }
+          },
+          {
+            model: EtapesPreparation,
+            attributes: ["id", "numEtape", "texte"],
+            through: { attributes: [] }
           }
         ]
       });
@@ -107,13 +118,24 @@ const cocktailController = {
       cocktails = await Cocktail.findAll({
         where: { alcool: alcool },
         order: [["nom", "ASC"]],
-        attributes: ["id", "nom", "photo"],
+        attributes: ['id', 'nom', 'photo', 'alcool'],
         include: [
           {
+            model: Verre,
+            attributes: ['id', 'nom']
+          },
+          {
             model: Ingredient,
+            attributes: ['id', 'nom'],
+            through: { attributes: ['quantite', 'unite'] },
             where: {
               nom: { [Op.any]: ingredients }
             }
+          },
+          {
+            model: EtapesPreparation,
+            attributes: ["id", "numEtape", "texte"],
+            through: { attributes: [] }
           }
         ]
       });
