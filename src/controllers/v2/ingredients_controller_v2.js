@@ -62,6 +62,16 @@ const ingredientsControllerV2 = {
         id: ingredientId
       }
     })
+  },
+
+  categoryIsUsed: async categoryId => {
+    const category = await Ingredient.findOne({
+      attributes: ['categorieId'],
+      where: { categorieId: categoryId }
+    })
+
+    if (category) return true;
+    else return false;
   }
 }
 
