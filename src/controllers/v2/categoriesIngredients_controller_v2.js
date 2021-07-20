@@ -56,6 +56,14 @@ const categoriesIngredientsV2 = {
         where: { id: categoryId },
       }
     )
+  },
+
+  deleteCategoryIngredient: async categoryId => {
+    await CategorieIngredient.destroy({
+      where: {
+        id: categoryId
+      }
+    })
   }
 }
 

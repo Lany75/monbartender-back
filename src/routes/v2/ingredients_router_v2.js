@@ -11,7 +11,8 @@ const {
   addCategory,
   categoryIdIsExisting,
   getNameCategory,
-  putOneCategory
+  putOneCategory,
+  deleteCategoryIngredient
 } = require("../../controllers/v2/categoriesIngredients_controller_v2");
 
 const {
@@ -20,7 +21,8 @@ const {
   idIsExisting,
   getNameIngredient,
   addIngredient,
-  deleteIngredient
+  deleteIngredient,
+  categoryIsUsed
 } = require('../../controllers/v2/ingredients_controller_v2');
 
 const {
@@ -222,4 +224,30 @@ ingredientsRouterV2.put(
         .json("Incorrect id");
     }
   })
+
+ingredientsRouterV2.delete(
+  '/category/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
+  async (request, response) => {
+    const { id } = request.params;
+
+    if (await categoryIdIsExisting(id)) {
+      if (!await categoryIsUsed(id)) {
+        logger.info(`Trying to delete category in categories_ingredients table`);
+        await deleteCategoryIngredient(id);
+      }
+
+      logger.info(`Trying to get all categories`);
+      const categories = await getAllCategories();
+
+      response
+        .status(OK)
+        .json(categories);
+    } else {
+      response
+        .status(BAD_REQUEST)
+        .json("Incorrect id");
+    }
+  }
+)
+
 module.exports = ingredientsRouterV2;
