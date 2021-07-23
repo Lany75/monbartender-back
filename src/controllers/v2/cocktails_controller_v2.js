@@ -95,6 +95,16 @@ const cocktailControllerV2 = {
       ]
     })
     return cocktail;
+  },
+
+  glassIsUsed: async glassId => {
+    const glass = await Cocktail.findOne({
+      attributes: ['verreId'],
+      where: { verreId: glassId }
+    })
+
+    if (glass) return true;
+    else return false;
   }
 }
 
