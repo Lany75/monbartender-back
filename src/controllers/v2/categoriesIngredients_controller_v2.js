@@ -12,6 +12,15 @@ const categoriesIngredientsV2 = {
     return (categories);
   },
 
+  getNameCategory: async (categoryName) => {
+    const category = await CategorieIngredient.findOne({
+      attributes: ['id', 'nom'],
+      where: { nom: categoryName }
+    })
+
+    return category?.dataValues;
+  },
+
   getIdCategorie: async (name) => {
     const categorieId = await CategorieIngredient.findOne({
       attributes: ['id'],
@@ -25,6 +34,35 @@ const categoriesIngredientsV2 = {
     await CategorieIngredient.create({
       id: uuid(),
       nom: CategoryName
+    })
+  },
+
+  categoryIdIsExisting: async categoryId => {
+    const category = await CategorieIngredient.findOne({
+      attributes: ['id'],
+      where: { id: categoryId }
+    })
+
+    if (category) return true;
+    else return false;
+  },
+
+  putOneCategory: async (categoryId, nom) => {
+    await CategorieIngredient.update(
+      {
+        nom: nom,
+      },
+      {
+        where: { id: categoryId },
+      }
+    )
+  },
+
+  deleteCategoryIngredient: async categoryId => {
+    await CategorieIngredient.destroy({
+      where: {
+        id: categoryId
+      }
     })
   }
 }
