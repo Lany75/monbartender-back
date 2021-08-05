@@ -7,7 +7,6 @@ const logger = require("../../helpers/logger");
 
 const {
   getIdCategorie,
-  categoryIdIsExisting
 } = require("../../controllers/v2/categoriesIngredients_controller_v2");
 
 const {
@@ -17,7 +16,6 @@ const {
   getNameIngredient,
   addIngredient,
   deleteIngredient,
-  getAllIngredientsCategory
 } = require('../../controllers/v2/ingredients_controller_v2');
 
 const {
@@ -137,24 +135,6 @@ ingredientsRouterV2.delete(
       logger.info(`Trying to get all ingredients`);
       const ingredients = await getAllIngredients();
 
-      response
-        .status(OK)
-        .json(ingredients);
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
-    }
-  })
-
-ingredientsRouterV2.get(
-  '/category/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
-  async (request, response) => {
-    const { id } = request.params;
-
-    if (await categoryIdIsExisting(id)) {
-      logger.info(`Trying to get all ingredients of category ${id}`);
-      const ingredients = await getAllIngredientsCategory(id);
       response
         .status(OK)
         .json(ingredients);
