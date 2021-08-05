@@ -17,22 +17,6 @@ const ingredientsControllerV2 = {
     return ingredients;
   },
 
-  getAllIngredientsCategory: async (categoryId) => {
-    const ingredients = await Ingredient.findAll({
-      order: [['nom', 'ASC']],
-      attributes: ['id', 'nom'],
-      include: [
-        {
-          model: CategorieIngredient,
-          attributes: ['id', 'nom']
-        }
-      ],
-      where: { categorieId: categoryId }
-    })
-
-    return ingredients;
-  },
-
   getNameIngredient: async (ingredientName) => {
     const ingredient = await Ingredient.findOne({
       attributes: ['id', 'nom'],
