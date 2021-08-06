@@ -5,7 +5,8 @@ const logger = require("../../helpers/logger");
 const {
   getAllCocktails,
   getAllNameCocktails,
-  getOneIdCocktail
+  getOneIdCocktail,
+  searchCocktail
 } = require('../../controllers/v2/cocktails_controller_v2');
 
 const cocktailsRouterV2 = express.Router();
@@ -14,6 +15,18 @@ cocktailsRouterV2.get('/', async (request, response) => {
 
   logger.info(`Trying to get all cocktails`);
   const cocktails = await getAllCocktails();
+
+  response.status(200).json(cocktails);
+})
+
+cocktailsRouterV2.post('/search', async (request, response) => {
+  const { ingredients, typeCocktail } = request.body;
+
+  console.log(ingredients);
+  console.log(typeCocktail);
+
+  logger.info(`Trying to get all cocktails with ingredients`);
+  const cocktails = await searchCocktail(ingredients, typeCocktail);
 
   response.status(200).json(cocktails);
 })
