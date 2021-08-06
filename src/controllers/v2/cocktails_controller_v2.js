@@ -1,5 +1,6 @@
 const { Cocktail, Verre, Ingredient, EtapesPreparation } = require('../../models');
 const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 const cocktailControllerV2 = {
   getAllCocktails: async () => {
@@ -105,6 +106,45 @@ const cocktailControllerV2 = {
 
     if (glass) return true;
     else return false;
+  },
+
+  searchCocktail: async (ingredients, typeCocktail) => {
+    let whereCondition = { alcool: typeCocktail };
+    if (typeCocktail === 'indifferent') {
+      whereCondition = null;
+    }
+
+    const cocktails = await Cocktail.findAll({
+      order: [
+        ['nom', 'ASC'],
+        [{ model: Ingredient }, 'nom', 'ASC'],
+        [{ model: EtapesPreparation }, 'numEtape', 'ASC'],
+
+      ],
+      attributes: ['id', 'nom', 'photo', 'alcool'],
+      where: whereCondition,
+      include: [
+        {
+          model: Verre,
+          attributes: ['id', 'nom']
+        },
+        {
+          model: Ingredient,
+          attributes: ['id', 'nom'],
+          through: { attributes: ['quantite', 'unite'] },
+          where: {
+            nom: { [Op.any]: ingredients }
+          }
+        },
+        {
+          model: EtapesPreparation,
+          attributes: ["id", "numEtape", "texte"],
+          through: { attributes: [] }
+        }
+      ]
+    })
+
+    return cocktails;
   }
 }
 
