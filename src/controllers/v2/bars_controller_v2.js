@@ -1,7 +1,16 @@
-const { Bar, Ingredient, CategorieIngredient } = require("../../models");
-const uuid = require("uuid");
+const { Bar, Ingredient, CategorieIngredient } = require('../../models');
+const uuid = require('uuid');
 
 const barControllerV2 = {
+  getAllBars: async () => {
+    const bars = await Bar.findAll({
+      attributes: ['id', 'personneId', 'droits'],
+      order: [["personneId", "ASC"]],
+    })
+
+    return bars
+  },
+
   getUserBar: async mail => {
     const bar = await Bar.findOne({
       where: { personneId: mail },
