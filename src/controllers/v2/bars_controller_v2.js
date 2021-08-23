@@ -1,4 +1,5 @@
 const { Bar, Ingredient, CategorieIngredient } = require("../../models");
+const uuid = require("uuid");
 
 const barControllerV2 = {
   getUserBar: async mail => {
@@ -24,6 +25,14 @@ const barControllerV2 = {
       ]
     });
     return bar;
+  },
+
+  createUserBar: async mail => {
+    await Bar.create({
+      id: uuid(),
+      personneId: mail,
+      droits: false
+    });
   }
 }
 
