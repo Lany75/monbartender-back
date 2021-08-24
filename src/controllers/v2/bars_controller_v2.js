@@ -1,5 +1,6 @@
 const { Bar, Ingredient, CategorieIngredient } = require('../../models');
 const uuid = require('uuid');
+const Sequelize = require("sequelize");
 
 const barControllerV2 = {
   getAllBars: async () => {
@@ -42,6 +43,13 @@ const barControllerV2 = {
       personneId: mail,
       droits: false
     });
+  },
+
+  modifyUserRight: async mail => {
+    await Bar.update(
+      { droits: Sequelize.literal('NOT droits') },
+      { where: { personneId: mail } }
+    )
   }
 }
 

@@ -8,7 +8,8 @@ const logger = require("../../helpers/logger");
 const {
   getUserBar,
   createUserBar,
-  getAllBars
+  getAllBars,
+  modifyUserRight
 } = require("../../controllers/v2/bars_controller_v2");
 
 const {
@@ -37,6 +38,16 @@ barsRouterV2.get('/user', isAuthenticated, async (request, response) => {
   }
 
   response.status(OK).json(bar);
+})
+
+barsRouterV2.put('/:mail', async (request, response) => {
+  const { mail } = request.params;
+
+  logger.info(`Trying to modify ${mail}'s rights `);
+  await modifyUserRight(mail);
+
+  let bars = await getAllBars();
+  response.status(OK).json(bars);
 })
 
 module.exports = barsRouterV2;
