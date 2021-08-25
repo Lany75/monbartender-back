@@ -13,7 +13,7 @@ const {
 } = require("../../controllers/v2/bars_controller_v2");
 
 const {
-  postIngredientInBar,
+  postIngredientInUserBar,
   ingredientAlreadyInBar
 } = require('../../controllers/v2/barsIngredients_controller_v2');
 
@@ -49,7 +49,7 @@ barsRouterV2.get('/user', isAuthenticated, async (request, response) => {
   response.status(OK).json(bar);
 })
 
-barsRouterV2.put('/:mail', async (request, response) => {
+barsRouterV2.put('/:mail', isAuthenticated, haveRight, async (request, response) => {
   const { mail } = request.params;
 
   logger.info(`Trying to modify ${mail}'s rights `);
@@ -74,7 +74,7 @@ barsRouterV2.post(
         logger.info(`Verifying ingredient not in user's bar`);
         if (!await ingredientAlreadyInBar(ingredientId, bar.dataValues.id)) {
           logger.info(`Trying to post ingredient in user's bar`);
-          await postIngredientInBar(ingredientId, bar.dataValues.id);
+          await postIngredientInUserBar(ingredientId, bar.dataValues.id);
         }
 
         bar = await getUserBar(mail);
