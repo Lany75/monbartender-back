@@ -9,7 +9,7 @@ const barIngredientsControllerV2 = {
     })
   },
 
-  postIngredientInBar: async (ingredientId, userId) => {
+  postIngredientInUserBar: async (ingredientId, userId) => {
     await BarIngredient.create({
       barId: userId,
       ingredientId: ingredientId
@@ -24,6 +24,15 @@ const barIngredientsControllerV2 = {
 
     if (barIngredient) return true;
     else return false
+  },
+
+  deleteIngredientFromUserBar: async (ingredientId, userId) => {
+    await BarIngredient.destroy({
+      where: {
+        barId: userId,
+        ingredientId: ingredientId
+      }
+    })
   }
 }
 
