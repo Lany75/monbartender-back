@@ -33,8 +33,8 @@ barsIngredientsRouterV2.delete('/', isAuthenticated, async (request, response) =
 
     if (bar) {
       logger.info(`Trying to delete ingredients from ${mail}'s bar`);
-      deletedIngredients.forEach(async element => {
-        await deleteIngredientFromUserBar(element, bar.dataValues.id);
+      deletedIngredients.forEach(element => {
+        deleteIngredientFromUserBar(element, bar.dataValues.id);
       });
 
       bar = await getUserBar(mail);

@@ -6,6 +6,7 @@ const glassesControllerV2 = {
     const glasses = await Verre.findAll({
       order: [["nom", "ASC"]],
       attributes: ["id", "nom"],
+      raw: true
     })
 
     return glasses;
@@ -37,8 +38,8 @@ const glassesControllerV2 = {
     else return false;
   },
 
-  deleteGlass: async glassId => {
-    await Verre.destroy({
+  deleteGlass: glassId => {
+    return Verre.destroy({
       where: {
         id: glassId
       }
