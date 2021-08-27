@@ -24,6 +24,7 @@ const {
 } = require("../../helpers/status_code");
 
 const camelCaseText = require('../../utils/camelCaseText');
+const checkUUID = require('../../utils/checkUUID');
 
 const glassesRouterV2 = express.Router();
 
@@ -103,29 +104,27 @@ glassesRouterV2.put(
   }
 )
 
-glassesRouterV2.delete(
-  '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
-  isAuthenticated,
-  haveRight,
-  async (request, response) => {
-    const { id } = request.params;
+glassesRouterV2.delete('/', isAuthenticated, haveRight, async (request, response) => {
+  const { deletedGlasses } = request.body;
 
-    if (await glassIdIsExisting(id)) {
-      if (!await glassIsUsed(id)) {
-        logger.info(`Trying to delete glass in verres table`);
-        await deleteGlass(id);
-      }
-
-      const glasses = await getAllGlasses();
-      response
-        .status(OK)
-        .json(glasses);
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
+  if (!deletedGlasses || deletedGlasses.length === 0) {
+    response
+      .status(BAD_REQUEST)
+      .json("Aucun verre à supprimer");
+  } else {
+    logger.info(`Trying to delete glasses from database`);
+    const promiseTab = [];
+    for (let i = 0; i < deletedGlasses.length; i++) {
+      if (checkUUID(deletedGlasses[i]) && await glassIdIsExisting(deletedGlasses[i]) && !await glassIsUsed(deletedGlasses[i])) promiseTab.push(deleteGlass(deletedGlasses[i]));
     }
+
+    await Promise.all(promiseTab);
+
+    logger.info(`Trying to get all glasses`);
+    const glasses = await getAllGlasses();
+    response.status(OK).json(glasses);
+
   }
-)
+})
 
 module.exports = glassesRouterV2;
