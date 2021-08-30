@@ -76,10 +76,15 @@ glassesRouterV2.put(
     const { nom } = request.body;
 
     if (await glassIdIsExisting(id)) {
-      if (!nom || nom === '') {
+      if (
+        !(nom &&
+          /\S/.test(nom) &&
+          nom.length >= 2 &&
+          nom.length <= 30)
+      ) {
         response
           .status(BAD_REQUEST)
-          .json("Data missing for glass modification");
+          .json("Incorrect glass name");
       } else {
         logger.info(`Trying to get glass ${camelCaseText(nom)}`);
         const glass = await getNamedGlass(camelCaseText(nom));
