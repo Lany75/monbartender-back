@@ -29,7 +29,8 @@ const {
 const {
   OK,
   BAD_REQUEST,
-  CREATED
+  CREATED,
+  FORBIDDEN
 } = require("../../helpers/status_code");
 
 const camelCaseText = require("../../utils/camelCaseText");
@@ -50,29 +51,37 @@ ingredientsRouterV2.post('/',
   haveRight,
   async (request, response) => {
     const { nom, categorie } = request.body;
+    const formatName = nom?.replace(/\s+/g, ' ').trim();
 
-    if (!nom || nom === '' || !categorie || categorie === '') {
+    if (
+      !(categorie && nom &&
+        /\S/.test(formatName) &&
+        formatName.length >= 2 &&
+        formatName.length <= 30)
+    ) {
       response
         .status(BAD_REQUEST)
-        .json("Data missing for ingredient adding");
+        .json('Data missing or ingredient name is not correct for adding');
     } else {
+      const categoryId = await getIdCategorie(categorie.toUpperCase());
+      if (
+        await getNameIngredient(camelCaseText(formatName)) ||
+        !categoryId
+      ) {
+        response
+          .status(FORBIDDEN)
+          .json('Impossible to add ingredient');
+      } else {
+        logger.info(`Trying to add ingredient ${formatName}`);
+        await addIngredient(camelCaseText(formatName), categoryId);
 
-      if (!await getNameIngredient(camelCaseText(nom))) {
-        logger.info(`Trying to get id of categorie ${categorie}`);
-        const categorieId = await getIdCategorie(categorie);
+        logger.info(`Trying to get all ingredients`);
+        const ingredients = await getAllIngredients();
 
-        if (categorieId) {
-          logger.info(`Trying to add ingredient ${nom}`);
-          await addIngredient(camelCaseText(nom), categorieId);
-        }
+        response
+          .status(CREATED)
+          .json(ingredients);
       }
-
-      logger.info(`Trying to get all ingredients`);
-      const ingredients = await getAllIngredients();
-
-      response
-        .status(CREATED)
-        .json(ingredients);
     }
   })
 
