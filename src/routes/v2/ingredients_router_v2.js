@@ -12,7 +12,7 @@ const {
 const {
   getAllIngredients,
   putOneIngredient,
-  idIsExisting,
+  ingredientIdIsExisting,
   getNameIngredient,
   addIngredient,
   deleteIngredient,
@@ -33,6 +33,7 @@ const {
 } = require("../../helpers/status_code");
 
 const camelCaseText = require("../../utils/camelCaseText");
+const checkUUID = require('../../utils/checkUUID');
 
 const ingredientsRouterV2 = express.Router();
 
@@ -83,7 +84,7 @@ ingredientsRouterV2.put(
     const { id } = request.params;
     const { nom, categorie } = request.body;
 
-    if (await idIsExisting(id)) {
+    if (await ingredientIdIsExisting(id)) {
       if (!nom || nom === '' || !categorie || categorie === '') {
         response
           .status(BAD_REQUEST)
@@ -116,33 +117,34 @@ ingredientsRouterV2.put(
     }
   })
 
-ingredientsRouterV2.delete(
-  '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
-  isAuthenticated,
-  haveRight,
-  async (request, response) => {
-    const { id } = request.params;
+ingredientsRouterV2.delete('/', isAuthenticated, haveRight, async (request, response) => {
+  const { deletedIngredients } = request.body;
 
-    if (await idIsExisting(id)) {
-      if (!await ingredientIsUsed(id)) {
-        logger.info(`Trying to delete ingredient in bar-ingredients table`);
-        await deleteIngredientBars(id);
-
-        logger.info(`Trying to delete ingredient in ingredients table`);
-        await deleteIngredient(id);
+  if (!deletedIngredients || deletedIngredients.length === 0) {
+    response
+      .status(BAD_REQUEST)
+      .json("Aucun ingredient à supprimer");
+  } else {
+    logger.info(`Trying to delete ingredients from database`);
+    const promiseTab = [];
+    for (let i = 0; i < deletedIngredients.length; i++) {
+      if (
+        checkUUID(deletedIngredients[i]) &&
+        await ingredientIdIsExisting(deletedIngredients[i]) &&
+        !await ingredientIsUsed(deletedIngredients[i])
+      ) {
+        promiseTab.push(deleteIngredientBars(deletedIngredients[i]));
+        promiseTab.push(deleteIngredient(deletedIngredients[i]));
       }
-
-      logger.info(`Trying to get all ingredients`);
-      const ingredients = await getAllIngredients();
-
-      response
-        .status(OK)
-        .json(ingredients);
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
     }
-  })
+
+    await Promise.all(promiseTab);
+
+    logger.info(`Trying to get all ingredients`);
+    const ingredients = await getAllIngredients();
+    response.status(OK).json(ingredients);
+
+  }
+})
 
 module.exports = ingredientsRouterV2;

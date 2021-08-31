@@ -12,7 +12,7 @@ const {
 } = require("../../controllers/v2/barsIngredients_controller_v2");
 
 const {
-  idIsExisting
+  ingredientIdIsExisting
 } = require('../../controllers/v2/ingredients_controller_v2');
 
 const { BAD_REQUEST, OK, CREATED } = require("../../helpers/status_code");
@@ -52,7 +52,7 @@ barsIngredientsRouterV2.post('/', isAuthenticated, async (request, response) => 
   const mail = request.user.email;
   const { ingredientId } = request.body;
 
-  if (await idIsExisting(ingredientId)) {
+  if (await ingredientIdIsExisting(ingredientId)) {
     logger.info(`Trying to get ${mail}'s bar`);
     let bar = await getUserBar(mail);
 
