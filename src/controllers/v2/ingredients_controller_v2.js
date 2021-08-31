@@ -38,7 +38,7 @@ const ingredientsControllerV2 = {
     )
   },
 
-  idIsExisting: async ingredientId => {
+  ingredientIdIsExisting: async ingredientId => {
     const ingredient = await Ingredient.findOne({
       attributes: ['id'],
       where: { id: ingredientId }
