@@ -93,23 +93,33 @@ ingredientsRouterV2.put(
     const { id } = request.params;
     const { nom, categorie } = request.body;
 
-    if (await ingredientIdIsExisting(id)) {
-      if (!nom || nom === '' || !categorie || categorie === '') {
+    if (!await ingredientIdIsExisting(id)) {
+      response
+        .status(BAD_REQUEST)
+        .json("Incorrect id");
+    } else {
+      const formatName = nom?.replace(/\s+/g, ' ').trim();
+      const categoryId = await getIdCategorie(categorie.toUpperCase());
+
+      if (
+        !(categorie && categoryId && nom &&
+          /\S/.test(formatName) &&
+          formatName.length >= 2 &&
+          formatName.length <= 30)
+      ) {
         response
           .status(BAD_REQUEST)
-          .json("Data missing for ingredient modification");
+          .json("Invalid datas or ingredient name is not correct for adding");
       } else {
-        logger.info(`Trying to get ingredient ${camelCaseText(nom)}`);
-        const ingredient = await getNameIngredient(camelCaseText(nom));
-
-        if (!ingredient || ingredient.id === id) {
-          logger.info(`Trying to get id of categorie ${categorie}`);
-          const categorieId = await getIdCategorie(categorie);
-
-          if (categorieId) {
-            logger.info(`Trying to modify ingredients ${id}`);
-            await putOneIngredient(id, camelCaseText(nom), categorieId);
-          }
+        logger.info(`Verifying if ingredient with name ${camelCaseText(formatName)} already exist in database`);
+        const ingredient = await getNameIngredient(camelCaseText(formatName));
+        if (ingredient && ingredient.id !== id) {
+          response
+            .status(FORBIDDEN)
+            .json(`Ingredient ${formatName} already exist in database`);
+        } else {
+          logger.info(`Trying to modify ingredient ${id}`);
+          await putOneIngredient(id, camelCaseText(formatName), categoryId);
         }
 
         logger.info(`Trying to get all ingredients`);
@@ -119,10 +129,6 @@ ingredientsRouterV2.put(
           .status(OK)
           .json(ingredients);
       }
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
     }
   })
 
