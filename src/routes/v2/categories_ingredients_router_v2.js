@@ -26,6 +26,8 @@ const {
   FORBIDDEN
 } = require("../../helpers/status_code");
 
+const checkUUID = require('../../utils/checkUUID');
+
 const categoriesRouterV2 = express.Router();
 
 categoriesRouterV2.get('/', async (request, response) => {
@@ -112,30 +114,32 @@ categoriesRouterV2.put(
     }
   })
 
-categoriesRouterV2.delete(
-  '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
-  isAuthenticated,
-  haveRight,
-  async (request, response) => {
-    const { id } = request.params;
+categoriesRouterV2.delete('/', isAuthenticated, haveRight, async (request, response) => {
+  const { deletedCategories } = request.body;
 
-    if (await categoryIdIsExisting(id)) {
-      if (!await categoryIsUsed(id)) {
-        logger.info(`Trying to delete category in categories_ingredients table`);
-        await deleteCategoryIngredient(id);
+  if (!deletedCategories || deletedCategories.length === 0) {
+    response
+      .status(BAD_REQUEST)
+      .json("Aucune catégorie à supprimer");
+  } else {
+    logger.info(`Trying to delete categories from database`);
+    const promiseTab = [];
+    for (let i = 0; i < deletedCategories.length; i++) {
+      if (
+        checkUUID(deletedCategories[i]) &&
+        await categoryIdIsExisting(deletedCategories[i]) &&
+        !await categoryIsUsed(deletedCategories[i])
+      ) {
+        promiseTab.push(deleteCategoryIngredient(deletedCategories[i]));
       }
-
-      logger.info(`Trying to get all categories`);
-      const categories = await getAllCategories();
-
-      response
-        .status(OK)
-        .json(categories);
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
     }
-  })
+
+    await Promise.all(promiseTab);
+
+    logger.info(`Trying to get all categories`);
+    const categories = await getAllCategories();
+    response.status(OK).json(categories);
+  }
+})
 
 module.exports = categoriesRouterV2;

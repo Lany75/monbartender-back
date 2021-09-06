@@ -129,7 +129,13 @@ glassesRouterV2.delete('/', isAuthenticated, haveRight, async (request, response
     logger.info(`Trying to delete glasses from database`);
     const promiseTab = [];
     for (let i = 0; i < deletedGlasses.length; i++) {
-      if (checkUUID(deletedGlasses[i]) && await glassIdIsExisting(deletedGlasses[i]) && !await glassIsUsed(deletedGlasses[i])) promiseTab.push(deleteGlass(deletedGlasses[i]));
+      if (
+        checkUUID(deletedGlasses[i]) &&
+        await glassIdIsExisting(deletedGlasses[i]) &&
+        !await glassIsUsed(deletedGlasses[i])
+      ) {
+        promiseTab.push(deleteGlass(deletedGlasses[i]));
+      }
     }
 
     await Promise.all(promiseTab);
