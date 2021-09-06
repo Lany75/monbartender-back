@@ -22,7 +22,8 @@ const {
 const {
   OK,
   BAD_REQUEST,
-  CREATED
+  CREATED,
+  FORBIDDEN
 } = require("../../helpers/status_code");
 
 const categoriesRouterV2 = express.Router();
@@ -40,29 +41,37 @@ categoriesRouterV2.post('/',
   haveRight,
   async (request, response) => {
     const { nom } = request.body;
+    const formatName = nom?.replace(/\s+/g, ' ').trim();
 
-    if (!nom || nom === '') {
+    if (
+      !(nom &&
+        /\S/.test(formatName) &&
+        formatName.length >= 2 &&
+        formatName.length <= 30)
+    ) {
       response
         .status(BAD_REQUEST)
-        .json("Data missing for category adding");
+        .json('Data missing or category name is not correct for adding');
     } else {
-      if (!await getIdCategorie(nom.toUpperCase())) {
-        logger.info(`Trying to add category ${nom}`);
+      if (await getIdCategorie(formatName.toUpperCase())) {
+        response
+          .status(FORBIDDEN)
+          .json(`A category with name ${formatName} already exist`);
+      } else {
+        logger.info(`Trying to add category ${formatName}`);
         try {
-          await addCategory(nom.toUpperCase());
+          await addCategory(formatName.toUpperCase());
         } catch (error) {
           logger.error(
-            `An error has occured while adding category, message: ${error.message}`
+            `An error has occured while adding glass, message: ${error.message}`
           );
         }
+        logger.info(`Trying to get all categories`);
+        const categories = await getAllCategories();
+        response
+          .status(CREATED)
+          .json(categories);
       }
-
-      logger.info(`Trying to get all categories`);
-      const categories = await getAllCategories();
-
-      response
-        .status(CREATED)
-        .json(categories);
     }
   })
 

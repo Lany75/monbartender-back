@@ -52,9 +52,7 @@ glassesRouterV2.post('/',
       response
         .status(BAD_REQUEST)
         .json('Data missing or glass name is not correct for adding');
-
     } else {
-
       if (await getIdGlass(camelCaseText(formatName))) {
         response
           .status(FORBIDDEN)
