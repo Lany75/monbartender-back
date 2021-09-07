@@ -103,7 +103,11 @@ glassesRouterV2.put(
         logger.info(`Trying to get glass ${camelCaseText(formatName)}`);
         const glass = await getNamedGlass(camelCaseText(formatName));
 
-        if (!glass || glass.id === id) {
+        if (glass && glass.id !== id) {
+          response
+            .status(FORBIDDEN)
+            .json(`Glass ${formatName} already exist in database`);
+        } else {
           logger.info(`Trying to modify glass ${id}`);
           await putOneGlass(id, camelCaseText(formatName));
         }
