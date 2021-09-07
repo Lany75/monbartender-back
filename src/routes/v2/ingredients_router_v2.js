@@ -23,7 +23,7 @@ const {
 } = require('../../controllers/v2/cocktailsIngredients_controller_v2');
 
 const {
-  deleteIngredientBars
+  deleteIngredientFromAllBars
 } = require("../../controllers/v2/barsIngredients_controller_v2");
 
 const {
@@ -148,7 +148,7 @@ ingredientsRouterV2.delete('/', isAuthenticated, haveRight, async (request, resp
         await ingredientIdIsExisting(deletedIngredients[i]) &&
         !await ingredientIsUsed(deletedIngredients[i])
       ) {
-        promiseTab.push(deleteIngredientBars(deletedIngredients[i]));
+        promiseTab.push(deleteIngredientFromAllBars(deletedIngredients[i]));
         promiseTab.push(deleteIngredient(deletedIngredients[i]));
       }
     }
