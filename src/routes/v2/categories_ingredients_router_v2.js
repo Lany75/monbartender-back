@@ -85,32 +85,41 @@ categoriesRouterV2.put(
     const { id } = request.params;
     const { nom } = request.body;
 
-    if (await categoryIdIsExisting(id)) {
-      if (!nom || nom === '') {
-        response
-          .status(BAD_REQUEST)
-          .json("Data missing for category modification");
-      } else {
-        logger.info(`Trying to get category ${nom.toUpperCase()}`);
-        const category = await getNameCategory(nom.toUpperCase());
-
-        if (!category || category.id === id) {
-          logger.info(`Trying to modify category ${id}`);
-          await putOneCategory(id, nom.toUpperCase());
-        }
-      }
-
-      logger.info(`Trying to get all categories`);
-      const categories = await getAllCategories();
-
-      response
-        .status(OK)
-        .json(categories);
-
-    } else {
+    if (!await categoryIdIsExisting(id)) {
       response
         .status(BAD_REQUEST)
         .json("Incorrect id");
+    } else {
+      const formatName = nom?.replace(/\s+/g, ' ').trim();
+
+      if (
+        !(nom &&
+          /\S/.test(formatName) &&
+          formatName.length >= 2 &&
+          formatName.length <= 30)
+      ) {
+        response
+          .status(BAD_REQUEST)
+          .json("Incorrect category name");
+      } else {
+        logger.info(`Trying to get category ${formatName.toUpperCase()}`);
+        const category = await getNameCategory(formatName.toUpperCase());
+
+        if (category && category.id !== id) {
+          response
+            .status(FORBIDDEN)
+            .json(`Category ${formatName} already exist in database`);
+        } else {
+          logger.info(`Trying to modify category ${id}`);
+          await putOneCategory(id, formatName.toUpperCase());
+        }
+
+        logger.info(`Trying to get all categories`);
+        const categories = await getAllCategories();
+        response
+          .status(OK)
+          .json(categories);
+      }
     }
   })
 
