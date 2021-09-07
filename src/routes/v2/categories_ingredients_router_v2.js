@@ -22,8 +22,11 @@ const {
 const {
   OK,
   BAD_REQUEST,
-  CREATED
+  CREATED,
+  FORBIDDEN
 } = require("../../helpers/status_code");
+
+const checkUUID = require('../../utils/checkUUID');
 
 const categoriesRouterV2 = express.Router();
 
@@ -40,29 +43,37 @@ categoriesRouterV2.post('/',
   haveRight,
   async (request, response) => {
     const { nom } = request.body;
+    const formatName = nom?.replace(/\s+/g, ' ').trim();
 
-    if (!nom || nom === '') {
+    if (
+      !(nom &&
+        /\S/.test(formatName) &&
+        formatName.length >= 2 &&
+        formatName.length <= 30)
+    ) {
       response
         .status(BAD_REQUEST)
-        .json("Data missing for category adding");
+        .json('Data missing or category name is not correct for adding');
     } else {
-      if (!await getIdCategorie(nom.toUpperCase())) {
-        logger.info(`Trying to add category ${nom}`);
+      if (await getIdCategorie(formatName.toUpperCase())) {
+        response
+          .status(FORBIDDEN)
+          .json(`A category with name ${formatName} already exist`);
+      } else {
+        logger.info(`Trying to add category ${formatName}`);
         try {
-          await addCategory(nom.toUpperCase());
+          await addCategory(formatName.toUpperCase());
         } catch (error) {
           logger.error(
-            `An error has occured while adding category, message: ${error.message}`
+            `An error has occured while adding glass, message: ${error.message}`
           );
         }
+        logger.info(`Trying to get all categories`);
+        const categories = await getAllCategories();
+        response
+          .status(CREATED)
+          .json(categories);
       }
-
-      logger.info(`Trying to get all categories`);
-      const categories = await getAllCategories();
-
-      response
-        .status(CREATED)
-        .json(categories);
     }
   })
 
@@ -74,59 +85,70 @@ categoriesRouterV2.put(
     const { id } = request.params;
     const { nom } = request.body;
 
-    if (await categoryIdIsExisting(id)) {
-      if (!nom || nom === '') {
+    if (!await categoryIdIsExisting(id)) {
+      response
+        .status(BAD_REQUEST)
+        .json("Incorrect id");
+    } else {
+      const formatName = nom?.replace(/\s+/g, ' ').trim();
+
+      if (
+        !(nom &&
+          /\S/.test(formatName) &&
+          formatName.length >= 2 &&
+          formatName.length <= 30)
+      ) {
         response
           .status(BAD_REQUEST)
-          .json("Data missing for category modification");
+          .json("Incorrect category name");
       } else {
-        logger.info(`Trying to get category ${nom.toUpperCase()}`);
-        const category = await getNameCategory(nom.toUpperCase());
+        logger.info(`Trying to get category ${formatName.toUpperCase()}`);
+        const category = await getNameCategory(formatName.toUpperCase());
 
-        if (!category || category.id === id) {
+        if (category && category.id !== id) {
+          response
+            .status(FORBIDDEN)
+            .json(`Category ${formatName} already exist in database`);
+        } else {
           logger.info(`Trying to modify category ${id}`);
-          await putOneCategory(id, nom.toUpperCase());
+          await putOneCategory(id, formatName.toUpperCase());
         }
+
+        logger.info(`Trying to get all categories`);
+        const categories = await getAllCategories();
+        response
+          .status(OK)
+          .json(categories);
       }
-
-      logger.info(`Trying to get all categories`);
-      const categories = await getAllCategories();
-
-      response
-        .status(OK)
-        .json(categories);
-
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
     }
   })
 
-categoriesRouterV2.delete(
-  '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
-  isAuthenticated,
-  haveRight,
-  async (request, response) => {
-    const { id } = request.params;
+categoriesRouterV2.delete('/', isAuthenticated, haveRight, async (request, response) => {
+  const { deletedCategories } = request.body;
 
-    if (await categoryIdIsExisting(id)) {
-      if (!await categoryIsUsed(id)) {
-        logger.info(`Trying to delete category in categories_ingredients table`);
-        await deleteCategoryIngredient(id);
+  if (!deletedCategories || deletedCategories.length === 0) {
+    response
+      .status(BAD_REQUEST)
+      .json("Aucune catégorie à supprimer");
+  } else {
+    logger.info(`Trying to delete categories from database`);
+    const promiseTab = [];
+    for (let i = 0; i < deletedCategories.length; i++) {
+      if (
+        checkUUID(deletedCategories[i]) &&
+        await categoryIdIsExisting(deletedCategories[i]) &&
+        !await categoryIsUsed(deletedCategories[i])
+      ) {
+        promiseTab.push(deleteCategoryIngredient(deletedCategories[i]));
       }
-
-      logger.info(`Trying to get all categories`);
-      const categories = await getAllCategories();
-
-      response
-        .status(OK)
-        .json(categories);
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
     }
-  })
+
+    await Promise.all(promiseTab);
+
+    logger.info(`Trying to get all categories`);
+    const categories = await getAllCategories();
+    response.status(OK).json(categories);
+  }
+})
 
 module.exports = categoriesRouterV2;
