@@ -33,19 +33,27 @@ barsIngredientsRouterV2.delete('/', isAuthenticated, async (request, response) =
     logger.info(`Trying to get ${mail}'s bar`);
     let bar = await getUserBar(mail);
 
-    if (bar) {
-      logger.info(`Trying to delete ingredients from ${mail}'s bar`);
-      deletedIngredients.forEach(element => {
-        deleteIngredientFromUserBar(element, bar.dataValues.id);
-      });
-
-      bar = await getUserBar(mail);
-      response.status(OK).json(bar);
-
-    } else {
+    if (!bar) {
       response
         .status(BAD_REQUEST)
         .json("Bar inexistant");
+    } else {
+      logger.info(`Trying to delete ingredients from ${mail}'s bar`);
+      const promiseTab = [];
+      for (let i = 0; i < deletedIngredients.length; i++) {
+        if (
+          checkUUID(deletedIngredients[i]) &&
+          await ingredientIdIsExisting(deletedIngredients[i])
+        ) {
+          promiseTab.push(deleteIngredientFromUserBar(deletedIngredients[i], bar.dataValues.id));
+        }
+      }
+
+      await Promise.all(promiseTab);
+
+      logger.info(`Trying to get ${mail}'s bar`);
+      bar = await getUserBar(mail);
+      response.status(OK).json(bar);
     }
   }
 })
@@ -80,6 +88,7 @@ barsIngredientsRouterV2.post('/', isAuthenticated, async (request, response) => 
         logger.info(`Trying to post ingredient in user's bar`);
         await postIngredientInUserBar(ingredientId, bar.dataValues.id);
 
+        logger.info(`Trying to get ${mail}'s bar`);
         bar = await getUserBar(mail);
         response.status(CREATED).json(bar);
       }
