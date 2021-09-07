@@ -4,9 +4,20 @@ const isAuthenticated = require("../../middlewares/is_authenticated");
 const logger = require("../../helpers/logger");
 
 const { getUserBar } = require("../../controllers/v2/bars_controller_v2");
-const { deleteIngredientFromUserBar } = require("../../controllers/v2/barsIngredients_controller_v2");
 
-const { BAD_REQUEST, OK } = require("../../helpers/status_code");
+const {
+  postIngredientInUserBar,
+  ingredientAlreadyInBar,
+  deleteIngredientFromUserBar
+} = require("../../controllers/v2/barsIngredients_controller_v2");
+
+const {
+  ingredientIdIsExisting
+} = require('../../controllers/v2/ingredients_controller_v2');
+
+const { BAD_REQUEST, OK, CREATED, FORBIDDEN } = require("../../helpers/status_code");
+
+const checkUUID = require('../../utils/checkUUID');
 
 const barsIngredientsRouterV2 = express.Router();
 
@@ -22,22 +33,67 @@ barsIngredientsRouterV2.delete('/', isAuthenticated, async (request, response) =
     logger.info(`Trying to get ${mail}'s bar`);
     let bar = await getUserBar(mail);
 
-    if (bar) {
-      logger.info(`Trying to delete ingredients from ${mail}'s bar`);
-      deletedIngredients.forEach(async element => {
-        await deleteIngredientFromUserBar(element, bar.dataValues.id);
-      });
-
-      bar = await getUserBar(mail);
-      response.status(OK).json(bar);
-
-    } else {
+    if (!bar) {
       response
         .status(BAD_REQUEST)
         .json("Bar inexistant");
+    } else {
+      logger.info(`Trying to delete ingredients from ${mail}'s bar`);
+      const promiseTab = [];
+      for (let i = 0; i < deletedIngredients.length; i++) {
+        if (
+          checkUUID(deletedIngredients[i]) &&
+          await ingredientIdIsExisting(deletedIngredients[i])
+        ) {
+          promiseTab.push(deleteIngredientFromUserBar(deletedIngredients[i], bar.dataValues.id));
+        }
+      }
+
+      await Promise.all(promiseTab);
+
+      logger.info(`Trying to get ${mail}'s bar`);
+      bar = await getUserBar(mail);
+      response.status(OK).json(bar);
     }
   }
+})
 
+barsIngredientsRouterV2.post('/', isAuthenticated, async (request, response) => {
+  const mail = request.user.email;
+  const { ingredientId } = request.body;
+
+  if (
+    !(ingredientId &&
+      checkUUID(ingredientId) &&
+      await ingredientIdIsExisting(ingredientId))
+  ) {
+    response
+      .status(BAD_REQUEST)
+      .json(`No ingredient to add to the ${mail}'s bar or incorrect id`);
+  } else {
+    logger.info(`Trying to get ${mail}'s bar`);
+    let bar = await getUserBar(mail);
+
+    if (!bar) {
+      response
+        .status(BAD_REQUEST)
+        .json("Bar inexistant");
+    } else {
+      logger.info(`Verifying ingredient not in user's bar`);
+      if (await ingredientAlreadyInBar(ingredientId, bar.dataValues.id)) {
+        response
+          .status(FORBIDDEN)
+          .json(`Ingredient already exist in ${mail}'s bar `);
+      } else {
+        logger.info(`Trying to post ingredient in user's bar`);
+        await postIngredientInUserBar(ingredientId, bar.dataValues.id);
+
+        logger.info(`Trying to get ${mail}'s bar`);
+        bar = await getUserBar(mail);
+        response.status(CREATED).json(bar);
+      }
+    }
+  }
 })
 
 module.exports = barsIngredientsRouterV2;

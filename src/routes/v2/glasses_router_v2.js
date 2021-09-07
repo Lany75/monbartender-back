@@ -20,10 +20,11 @@ const {
 } = require('../../controllers/v2/cocktails_controller_v2');
 
 const {
-  OK, CREATED, BAD_REQUEST
+  OK, CREATED, BAD_REQUEST, FORBIDDEN
 } = require("../../helpers/status_code");
 
 const camelCaseText = require('../../utils/camelCaseText');
+const checkUUID = require('../../utils/checkUUID');
 
 const glassesRouterV2 = express.Router();
 
@@ -40,29 +41,37 @@ glassesRouterV2.post('/',
   haveRight,
   async (request, response) => {
     const { nom } = request.body;
+    const formatName = nom?.replace(/\s+/g, ' ').trim();
 
-    if (!nom || nom === '') {
+    if (
+      !(nom &&
+        /\S/.test(formatName) &&
+        formatName.length >= 2 &&
+        formatName.length <= 30)
+    ) {
       response
         .status(BAD_REQUEST)
-        .json('Data missing for glass adding');
+        .json('Data missing or glass name is not correct for adding');
     } else {
-
-      if (!await getIdGlass(camelCaseText(nom))) {
-        logger.info(`Trying to add glass ${nom}`);
+      if (await getIdGlass(camelCaseText(formatName))) {
+        response
+          .status(FORBIDDEN)
+          .json(`A glass with name ${formatName} already exist`);
+      } else {
+        logger.info(`Trying to add glass ${formatName}`);
         try {
-          await addGlass(camelCaseText(nom));
+          await addGlass(camelCaseText(formatName));
         } catch (error) {
           logger.error(
             `An error has occured while adding glass, message: ${error.message}`
           );
         }
+        logger.info(`Trying to get all glasses`);
+        const glasses = await getAllGlasses();
+        response
+          .status(CREATED)
+          .json(glasses);
       }
-
-      logger.info(`Trying to get all glasses`);
-      const glasses = await getAllGlasses();
-      response
-        .status(CREATED)
-        .json(glasses);
     }
   })
 
@@ -74,58 +83,72 @@ glassesRouterV2.put(
     const { id } = request.params;
     const { nom } = request.body;
 
-    if (await glassIdIsExisting(id)) {
-      if (!nom || nom === '') {
+    if (!await glassIdIsExisting(id)) {
+      response
+        .status(BAD_REQUEST)
+        .json("Incorrect id");
+    } else {
+      const formatName = nom?.replace(/\s+/g, ' ').trim();
+
+      if (
+        !(nom &&
+          /\S/.test(formatName) &&
+          formatName.length >= 2 &&
+          formatName.length <= 30)
+      ) {
         response
           .status(BAD_REQUEST)
-          .json("Data missing for glass modification");
+          .json("Incorrect glass name");
       } else {
-        logger.info(`Trying to get glass ${camelCaseText(nom)}`);
-        const glass = await getNamedGlass(camelCaseText(nom));
+        logger.info(`Trying to get glass ${camelCaseText(formatName)}`);
+        const glass = await getNamedGlass(camelCaseText(formatName));
 
-        if (!glass || glass.id === id) {
+        if (glass && glass.id !== id) {
+          response
+            .status(FORBIDDEN)
+            .json(`Glass ${formatName} already exist in database`);
+        } else {
           logger.info(`Trying to modify glass ${id}`);
-          await putOneGlass(id, camelCaseText(nom));
+          await putOneGlass(id, camelCaseText(formatName));
         }
+
+        logger.info(`Trying to get all glasses`);
+        const glasses = await getAllGlasses();
+        response
+          .status(OK)
+          .json(glasses);
       }
-
-      logger.info(`Trying to get all glasses`);
-      const glasses = await getAllGlasses();
-      response
-        .status(OK)
-        .json(glasses);
-
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
     }
   }
 )
 
-glassesRouterV2.delete(
-  '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
-  isAuthenticated,
-  haveRight,
-  async (request, response) => {
-    const { id } = request.params;
+glassesRouterV2.delete('/', isAuthenticated, haveRight, async (request, response) => {
+  const { deletedGlasses } = request.body;
 
-    if (await glassIdIsExisting(id)) {
-      if (!await glassIsUsed(id)) {
-        logger.info(`Trying to delete glass in verres table`);
-        await deleteGlass(id);
+  if (!deletedGlasses || deletedGlasses.length === 0) {
+    response
+      .status(BAD_REQUEST)
+      .json("Aucun verre à supprimer");
+  } else {
+    logger.info(`Trying to delete glasses from database`);
+    const promiseTab = [];
+    for (let i = 0; i < deletedGlasses.length; i++) {
+      if (
+        checkUUID(deletedGlasses[i]) &&
+        await glassIdIsExisting(deletedGlasses[i]) &&
+        !await glassIsUsed(deletedGlasses[i])
+      ) {
+        promiseTab.push(deleteGlass(deletedGlasses[i]));
       }
-
-      const glasses = await getAllGlasses();
-      response
-        .status(OK)
-        .json(glasses);
-    } else {
-      response
-        .status(BAD_REQUEST)
-        .json("Incorrect id");
     }
+
+    await Promise.all(promiseTab);
+
+    logger.info(`Trying to get all glasses`);
+    const glasses = await getAllGlasses();
+    response.status(OK).json(glasses);
+
   }
-)
+})
 
 module.exports = glassesRouterV2;

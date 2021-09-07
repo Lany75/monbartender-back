@@ -58,8 +58,8 @@ const categoriesIngredientsV2 = {
     )
   },
 
-  deleteCategoryIngredient: async categoryId => {
-    await CategorieIngredient.destroy({
+  deleteCategoryIngredient: categoryId => {
+    return CategorieIngredient.destroy({
       where: {
         id: categoryId
       }
