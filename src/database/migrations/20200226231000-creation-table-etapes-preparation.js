@@ -15,6 +15,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.TEXT
       },
+      cocktailId: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        references: {
+          model: "cocktails",
+          key: "id"
+        }
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

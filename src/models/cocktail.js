@@ -98,9 +98,11 @@ module.exports = (sequelize, DataTypes) => {
       through: "cocktails_ingredients",
       foreignKey: "cocktailId"
     });
-    Cocktail.belongsToMany(models.EtapesPreparation, {
-      through: "cocktails_etapes",
-      foreignKey: "cocktailId"
+    Cocktail.hasMany(models.EtapesPreparation, {
+      foreignKey: {
+        name: "cocktailId",
+        allowNull: false
+      }
     });
   };
 
