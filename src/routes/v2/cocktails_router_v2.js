@@ -8,6 +8,9 @@ const {
   getOneIdCocktail,
   searchCocktail
 } = require('../../controllers/v2/cocktails_controller_v2');
+const {
+  getMomentCocktailIds
+} = require("../../controllers/v2/cocktailsMoment_controller_v2");
 
 const cocktailsRouterV2 = express.Router();
 
@@ -17,6 +20,27 @@ cocktailsRouterV2.get('/', async (request, response) => {
   const cocktails = await getAllCocktails();
 
   response.status(200).json(cocktails);
+})
+
+cocktailsRouterV2.get('/moment-cocktail', async (request, response) => {
+  const cocktailsMoment = [];
+
+  logger.info(`Trying to get id of cocktails of the day`);
+  const idCocktailsMoment = await getMomentCocktailIds();
+
+  logger.info(`Cocktails of the day list has been found`);
+  for (let i = 0; i < idCocktailsMoment.length; i++) {
+    const cocktail = await getOneIdCocktail(idCocktailsMoment[i].cocktailId);
+
+    cocktailsMoment.push({
+      id: idCocktailsMoment[i].cocktailId,
+      nom: cocktail.dataValues.nom,
+      photo: cocktail.dataValues.photo
+    });
+  }
+
+  response.status(200);
+  response.json(cocktailsMoment);
 })
 
 cocktailsRouterV2.post('/search', async (request, response) => {

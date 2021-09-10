@@ -1,5 +1,5 @@
 const { Cocktail, Verre, Ingredient, EtapesPreparation } = require('../../models');
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const cocktailControllerV2 = {
@@ -24,8 +24,7 @@ const cocktailControllerV2 = {
         },
         {
           model: EtapesPreparation,
-          attributes: ["id", "numEtape", "texte"],
-          through: { attributes: [] }
+          attributes: ['id', 'numEtape', 'texte']
         }
       ]
     })
@@ -37,9 +36,9 @@ const cocktailControllerV2 = {
     const cocktails = await Cocktail.findAll({
       where: {
         nom: Sequelize.where(
-          Sequelize.fn("LOWER", Sequelize.col("Cocktail.nom")),
-          "LIKE",
-          "%" + name + "%"
+          Sequelize.fn('LOWER', Sequelize.col('Cocktail.nom')),
+          'LIKE',
+          '%' + name + '%'
         )
       },
       order: [
@@ -61,8 +60,7 @@ const cocktailControllerV2 = {
         },
         {
           model: EtapesPreparation,
-          attributes: ["id", "numEtape", "texte"],
-          through: { attributes: [] }
+          attributes: ['id', 'numEtape', 'texte']
         }
       ]
     })
@@ -90,8 +88,7 @@ const cocktailControllerV2 = {
         },
         {
           model: EtapesPreparation,
-          attributes: ["id", "numEtape", "texte"],
-          through: { attributes: [] }
+          attributes: ['id', 'numEtape', 'texte']
         }
       ]
     })
@@ -138,8 +135,7 @@ const cocktailControllerV2 = {
         },
         {
           model: EtapesPreparation,
-          attributes: ["id", "numEtape", "texte"],
-          through: { attributes: [] }
+          attributes: ['id', 'numEtape', 'texte'],
         }
       ]
     })
