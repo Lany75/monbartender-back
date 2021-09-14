@@ -12,7 +12,7 @@ module.exports = [
     //menthe
     ingredientId: "740367a4-dedf-4093-86d1-50eac62b2521",
     quantite: "8",
-    unite: "feuilles",
+    unite: "feuille(s)",
     createdAt: now,
     updatedAt: now
   },
@@ -80,7 +80,7 @@ module.exports = [
     //worcestershire
     ingredientId: "13999790-02af-4b2e-9775-7ac19fc35f1b",
     quantite: "2",
-    unite: "gouttes",
+    unite: "goutte(s)",
     createdAt: now,
     updatedAt: now
   },
@@ -90,7 +90,7 @@ module.exports = [
     //tabasco
     ingredientId: "6793d13b-e38c-4183-825b-df2ca8957fca",
     quantite: "1",
-    unite: "goutte",
+    unite: "goutte(s)",
     createdAt: now,
     updatedAt: now
   },
@@ -138,7 +138,7 @@ module.exports = [
     //menthe
     ingredientId: "740367a4-dedf-4093-86d1-50eac62b2521",
     quantite: "8",
-    unite: "feuilles",
+    unite: "feuille(s)",
     createdAt: now,
     updatedAt: now
   },
