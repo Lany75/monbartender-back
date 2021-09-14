@@ -27,7 +27,7 @@ module.exports = {
       },
       unite: {
         allowNull: true,
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING(30)
       },
       createdAt: {
         allowNull: false,
