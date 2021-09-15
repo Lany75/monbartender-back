@@ -54,6 +54,26 @@ const unitiesControllerV2 = {
       }
     })
   },
+
+  getNamedUnity: async unityName => {
+    const unity = await Unite.findOne({
+      attributes: ['id', 'nom'],
+      where: { nom: unityName }
+    })
+
+    return unity?.dataValues;
+  },
+
+  putOneUnity: async (unityId, unityName) => {
+    await Unite.update(
+      {
+        nom: unityName
+      },
+      {
+        where: { id: unityId }
+      }
+    )
+  }
 }
 
 module.exports = unitiesControllerV2;

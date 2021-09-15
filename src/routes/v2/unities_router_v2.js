@@ -11,7 +11,9 @@ const {
   addUnity,
   getNameOfUnity,
   unityIdIsExisting,
-  deleteUnity
+  deleteUnity,
+  getNamedUnity,
+  putOneUnity
 } = require('../../controllers/v2/unities_controller_v2');
 
 const { unityIsUsed } = require('../../controllers/v2/cocktailsIngredients_controller_v2');
@@ -69,7 +71,8 @@ unitiesRouterV2.post('/',
           .json(unities);
       }
     }
-  })
+  }
+)
 
 unitiesRouterV2.delete('/', isAuthenticated, haveRight, async (request, response) => {
   const { deletedUnities } = request.body;
@@ -99,5 +102,53 @@ unitiesRouterV2.delete('/', isAuthenticated, haveRight, async (request, response
     response.status(OK).json(unities);
   }
 })
+
+unitiesRouterV2.put(
+  '/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
+  isAuthenticated,
+  haveRight,
+  async (request, response) => {
+    const { id } = request.params;
+    const { nom } = request.body;
+
+    if (!await unityIdIsExisting(id)) {
+      response
+        .status(BAD_REQUEST)
+        .json("Incorrect id");
+    } else {
+      const formatName = nom?.replace(/\s+/g, ' ').trim();
+
+      if (
+        !(nom &&
+          /\S/.test(formatName) &&
+          formatName.length >= 1 &&
+          formatName.length <= 30)
+      ) {
+        response
+          .status(BAD_REQUEST)
+          .json("Incorrect unity name");
+      } else {
+        logger.info(`Trying to get unity ${formatName}`);
+        const unity = await getNamedUnity(formatName);
+
+
+        if (unity && unity.id !== id) {
+          response
+            .status(FORBIDDEN)
+            .json(`Unity ${formatName} already exist in database`);
+        } else {
+          logger.info(`Trying to modify unity ${id}`);
+          await putOneUnity(id, formatName);
+        }
+
+        logger.info(`Trying to get all unities`);
+        const unities = await getAllUnities();
+        response
+          .status(OK)
+          .json(unities);
+      }
+    }
+  }
+)
 
 module.exports = unitiesRouterV2;
