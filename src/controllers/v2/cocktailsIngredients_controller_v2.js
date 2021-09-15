@@ -9,6 +9,16 @@ const cocktailsIngredientControllerV2 = {
 
     if (ingredient) return true;
     else return false;
+  },
+
+  unityIsUsed: async (unityName) => {
+    const ingredient = await CocktailIngredient.findOne({
+      attributes: ['ingredientId'],
+      where: { unite: unityName }
+    })
+
+    if (ingredient) return true;
+    else return false;
   }
 }
 
