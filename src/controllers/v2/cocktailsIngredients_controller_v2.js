@@ -35,6 +35,14 @@ const cocktailsIngredientControllerV2 = {
         unite: unite
       });
     }
+  },
+
+  untieCocktailIngredient: async idCocktail => {
+    await CocktailIngredient.destroy({
+      where: {
+        cocktailId: idCocktail
+      }
+    })
   }
 }
 

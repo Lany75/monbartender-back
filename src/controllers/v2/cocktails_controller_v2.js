@@ -154,6 +154,33 @@ const cocktailControllerV2 = {
     });
     return cocktail.id;
   },
+
+  cocktailIdIsExisting: async cocktailId => {
+    const cocktail = await Cocktail.findOne({
+      attributes: ['id'],
+      where: { id: cocktailId }
+    })
+
+    if (cocktail) return true;
+    else return false;
+  },
+
+  deleteCocktail: async cocktailId => {
+    await Cocktail.destroy({
+      where: {
+        id: cocktailId
+      }
+    })
+  },
+
+  getCocktailImage: async cocktailId => {
+    const photo = await Cocktail.findOne({
+      attributes: ['photo'],
+      where: { id: cocktailId }
+    })
+
+    return photo.dataValues.photo;
+  }
 }
 
 module.exports = cocktailControllerV2;

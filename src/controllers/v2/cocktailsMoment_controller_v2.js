@@ -9,6 +9,16 @@ const cocktailMomentControllerV2 = {
 
     return cocktails;
   },
+
+  cocktailIsMomentCocktail: async cocktailId => {
+    const cocktail = await CocktailsMoment.findOne({
+      attributes: ['id'],
+      where: { cocktailId: cocktailId }
+    })
+
+    if (cocktail) return true;
+    else return false;
+  }
 }
 
 
