@@ -9,6 +9,14 @@ const stepControllerV2 = {
       cocktailId: cocktailId
     });
     return etape.id;
+  },
+
+  deleteAllSteps: async cocktailId => {
+    await EtapesPreparation.destroy({
+      where: {
+        cocktailId: cocktailId
+      }
+    })
   }
 }
 
