@@ -1,6 +1,7 @@
 const { Cocktail, Verre, Ingredient, EtapesPreparation } = require('../../models');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const uuid = require("uuid");
 
 const cocktailControllerV2 = {
   getAllCocktails: async () => {
@@ -141,7 +142,18 @@ const cocktailControllerV2 = {
     })
 
     return cocktails;
-  }
+  },
+
+  postCocktail: async (nom, photo, idVerre, type) => {
+    const cocktail = await Cocktail.create({
+      id: uuid(),
+      nom: nom,
+      photo: photo,
+      verreId: idVerre,
+      alcool: type
+    });
+    return cocktail.id;
+  },
 }
 
 module.exports = cocktailControllerV2;

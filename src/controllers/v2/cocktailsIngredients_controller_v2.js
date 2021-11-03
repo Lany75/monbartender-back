@@ -19,6 +19,22 @@ const cocktailsIngredientControllerV2 = {
 
     if (ingredient) return true;
     else return false;
+  },
+
+  bindCocktailIngredient: async (idCocktail, idIngredient, quantite, unite) => {
+    if (quantite === "" || unite === "") {
+      await CocktailIngredient.create({
+        cocktailId: idCocktail,
+        ingredientId: idIngredient
+      });
+    } else {
+      await CocktailIngredient.create({
+        cocktailId: idCocktail,
+        ingredientId: idIngredient,
+        quantite: quantite,
+        unite: unite
+      });
+    }
   }
 }
 
