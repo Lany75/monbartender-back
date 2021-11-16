@@ -1,6 +1,7 @@
 const { Cocktail, Verre, Ingredient, EtapesPreparation } = require('../../models');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const uuid = require("uuid");
 
 const cocktailControllerV2 = {
   getAllCocktails: async () => {
@@ -141,6 +142,44 @@ const cocktailControllerV2 = {
     })
 
     return cocktails;
+  },
+
+  postCocktail: async (nom, photo, idVerre, type) => {
+    const cocktail = await Cocktail.create({
+      id: uuid(),
+      nom: nom,
+      photo: photo,
+      verreId: idVerre,
+      alcool: type
+    });
+    return cocktail.id;
+  },
+
+  cocktailIdIsExisting: async cocktailId => {
+    const cocktail = await Cocktail.findOne({
+      attributes: ['id'],
+      where: { id: cocktailId }
+    })
+
+    if (cocktail) return true;
+    else return false;
+  },
+
+  deleteCocktail: async cocktailId => {
+    await Cocktail.destroy({
+      where: {
+        id: cocktailId
+      }
+    })
+  },
+
+  getCocktailImage: async cocktailId => {
+    const photo = await Cocktail.findOne({
+      attributes: ['photo'],
+      where: { id: cocktailId }
+    })
+
+    return photo.dataValues.photo;
   }
 }
 

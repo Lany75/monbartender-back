@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
    *         updatedAt:
    *           type: string
    */
-  const cocktailIngredient = sequelize.define(
+  const CocktailIngredient = sequelize.define(
     "CocktailIngredient",
     {
       cocktailId: {
@@ -65,7 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         type: DataTypes.STRING,
         validate: {
-          len: [0, 50]
+          len: [1, 30]
         }
       },
       createdAt: {
@@ -92,5 +92,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return cocktailIngredient;
+  return CocktailIngredient;
 };
